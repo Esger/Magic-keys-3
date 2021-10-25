@@ -1,3 +1,19 @@
-button{
-  color:purple;
+.key {
+  display         : flex;
+  justify-content : center;
+  align-items     : center;
+  width           : 60px;
+  height          : 60px;
+  color           : var(--black);
+  font            : normal 2.4em / 1 "Source Code Pro", "Courier New", Courier, monospace;
+  text-shadow     : 0px 1px 1px #ccc;
+  background-color: #fff;
+  border-radius   : 7px;
+  border          : 1px solid #666;
+  box-shadow      : 0 2px 3px #111;
+  overflow        : hidden;
+  cursor          : pointer;
+  &.small{
+    font-size: 1.8em;
+  }
 }
