@@ -4,7 +4,7 @@
 
   <key repeat.for="key of modifiers"
        data-position="${key.position}"
-       css.bind="getCss(key)"
+       css="${getCss(key)}"
        display.bind="key.display"
        class-name.bind="key.className"></key>
 

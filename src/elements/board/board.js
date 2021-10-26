@@ -64,14 +64,14 @@ export class BoardCustomElement {
         position: 'p6'
       },
       {
-        name: 'comma',
-        display: ',',
-        position: 'p8'
-      },
-      {
         name: 'enter',
         display: '↵',
         position: 'p7'
+      },
+      {
+        name: 'comma',
+        display: ',',
+        position: 'p8'
       },
       {
         name: 'space',
@@ -80,7 +80,9 @@ export class BoardCustomElement {
       },
     ]
   }
+
   getCss(key) {
-    return 'template-area: ' + key.position;
+    return 'template-area: ' + key.position + ';';
   }
+
 }
