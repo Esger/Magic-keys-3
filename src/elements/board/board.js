@@ -1,5 +1,6 @@
 export class BoardCustomElement {
   constructor() {
+    this.maxKeys = 8;
     this.keys = [
       {
         name: 'a',
@@ -33,6 +34,78 @@ export class BoardCustomElement {
         name: 'h',
         output: 'h'
       },
+      {
+        name: 'i',
+        output: 'j'
+      },
+      {
+        name: 'k',
+        output: 'k'
+      },
+      {
+        name: 'l',
+        output: 'l'
+      },
+      {
+        name: 'm',
+        output: 'm'
+      },
+      {
+        name: 'n',
+        output: 'n'
+      },
+      {
+        name: 'o',
+        output: 'o'
+      },
+      {
+        name: 'p',
+        output: 'p'
+      },
+      {
+        name: 'q',
+        output: 'q'
+      },
+      {
+        name: 'r',
+        output: 'r'
+      },
+      {
+        name: 's',
+        output: 's'
+      },
+      {
+        name: 't',
+        output: 't'
+      },
+      {
+        name: 'u',
+        output: 'u'
+      },
+      {
+        name: 'v',
+        output: 'v'
+      },
+      {
+        name: 'v',
+        output: 'v'
+      },
+      {
+        name: 'w',
+        output: 'w'
+      },
+      {
+        name: 'x',
+        output: 'x'
+      },
+      {
+        name: 'y',
+        output: 'y'
+      },
+      {
+        name: 'z',
+        output: 'z'
+      },
     ];
     this.modifiers = [
       {
@@ -50,11 +123,13 @@ export class BoardCustomElement {
         name: 'symbols',
         position: 'p2',
         display: '@',
+        className: 'small'
       },
       {
         name: 'brackets',
         display: '()',
-        position: 'p3'
+        position: 'p3',
+        className: 'small'
       },
       {
         name: 'backspace',
@@ -92,9 +167,4 @@ export class BoardCustomElement {
       },
     ]
   }
-
-  getCss(key) {
-    return 'template-area: ' + key.position + ';';
-  }
-
 }
