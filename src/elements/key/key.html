@@ -1,4 +1,5 @@
 <template>
   <require from="./key.css"></require>
-  <button class="key ${className}">${display}</button>
+  <button class="key ${className}"
+          click.delegate="keyIsPressed()">${display}</button>
 </template>

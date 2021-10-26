@@ -2,28 +2,36 @@ export class BoardCustomElement {
   constructor() {
     this.keys = [
       {
-        name: 'a'
+        name: 'a',
+        output: 'a'
       },
       {
-        name: 'b'
+        name: 'b',
+        output: 'b'
       },
       {
-        name: 'c'
+        name: 'c',
+        output: 'c'
       },
       {
-        name: 'd'
+        name: 'd',
+        output: 'd'
       },
       {
-        name: 'e'
+        name: 'e',
+        output: 'e'
       },
       {
-        name: 'f'
+        name: 'f',
+        output: 'f'
       },
       {
-        name: 'g'
+        name: 'g',
+        output: 'g'
       },
       {
-        name: 'h'
+        name: 'h',
+        output: 'h'
       },
     ];
     this.modifiers = [
@@ -61,21 +69,25 @@ export class BoardCustomElement {
       {
         name: 'dot',
         display: '.',
+        output: '.',
         position: 'p6'
       },
       {
         name: 'enter',
         display: '↵',
+        output: '\n',
         position: 'p7'
       },
       {
         name: 'comma',
         display: ',',
+        output: ',',
         position: 'p8'
       },
       {
         name: 'space',
         display: ' ',
+        output: ' ',
         position: 'p9'
       },
     ]
