@@ -1,25 +1,33 @@
 import { inject } from "aurelia-framework";
 import { EventAggregator } from 'aurelia-event-aggregator';
+import { KeysService } from "services/keys-service";
 
-@inject(Element, EventAggregator)
+@inject(Element, EventAggregator, KeysService)
 export class TerminalCustomElement{
-  constructor(element, eventAggregator) {
+  constructor(element, eventAggregator, keysService) {
     this._element = element;
     this._eventAggregator = eventAggregator;
-    this._keypressedSubscriber = this._eventAggregator.subscribe('keyIsPressed', key => {
-      key.output && this._addKeyToOutput(key.output);
-    });
-  }
-
-  attached() {
+    this._keysService = keysService;
+    this._keypressedSubscriber = this._eventAggregator.subscribe('keyIsPressed', key => this._handleKey(key));
     this.value = '';
+  }
+  
+  attached() {
   }
   
   detached() {
     this._keypressedSubscriber.dispose();
   }
   
-  _addKeyToOutput(char) {
-    this.value += char;
+  _handleKey(key) {
+    switch (true) {
+      case key.output?.length > 0: this.value += key.output;
+        break;
+      case key.name == 'backspace': this.value = this.value.slice(0, -1);
+        break;
+      default: break;
+    }
+    const tail = this.value.substr(-2);
+    this._keysService.registerKeystroke(tail)
   }
 }

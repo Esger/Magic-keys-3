@@ -8,10 +8,9 @@
        class-name.bind="key.className"></key>
 
   <section class="dynamic">
-    <key repeat.for="key of keys"
-         if.bind="$index < maxKeys"
+    <key repeat.for="key of keySubset"
          key.bind="key"
          display.bind="key.name"></key>
   </section>
-
+  
 </template>
