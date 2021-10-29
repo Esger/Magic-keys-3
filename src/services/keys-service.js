@@ -8,157 +8,131 @@ export class KeysService {
   _keysKnowledge = [
     {
       name: 'a',
-      type: 'alpha',
       output: 'a',
       successors: [],
     },
     {
       name: 'b',
-      type: 'alpha',
       output: 'b',
       successors: [],
     },
     {
       name: 'c',
-      type: 'alpha',
       output: 'c',
       successors: [],
     },
     {
       name: 'd',
-      type: 'alpha',
       output: 'd',
       successors: [],
     },
     {
       name: 'e',
-      type: 'alpha',
       output: 'e',
       successors: [],
     },
     {
       name: 'f',
-      type: 'alpha',
       output: 'f',
       successors: [],
     },
     {
       name: 'g',
-      type: 'alpha',
       output: 'g',
       successors: [],
     },
     {
       name: 'h',
-      type: 'alpha',
       output: 'h',
       successors: [],
     },
     {
       name: 'i',
-      type: 'alpha',
       output: 'i',
       successors: [],
     },
     {
       name: 'j',
-      type: 'alpha',
       output: 'j',
       successors: [],
     },
     {
       name: 'k',
-      type: 'alpha',
       output: 'k',
       successors: [],
     },
     {
       name: 'l',
-      type: 'alpha',
       output: 'l',
       successors: [],
     },
     {
       name: 'm',
-      type: 'alpha',
       output: 'm',
       successors: [],
     },
     {
       name: 'n',
-      type: 'alpha',
       output: 'n',
       successors: [],
     },
     {
       name: 'o',
-      type: 'alpha',
       output: 'o',
       successors: [],
     },
     {
       name: 'p',
-      type: 'alpha',
       output: 'p',
       successors: [],
     },
     {
       name: 'q',
-      type: 'alpha',
       output: 'q',
       successors: [],
     },
     {
       name: 'r',
-      type: 'alpha',
       output: 'r',
       successors: [],
     },
     {
       name: 's',
-      type: 'alpha',
       output: 's',
       successors: [],
     },
     {
       name: 't',
-      type: 'alpha',
       output: 't',
       successors: [],
     },
     {
       name: 'u',
-      type: 'alpha',
       output: 'u',
       successors: [],
     },
     {
       name: 'v',
-      type: 'alpha',
       output: 'v',
       successors: [],
     },
     {
       name: 'w',
-      type: 'alpha',
       output: 'w',
       successors: [],
     },
     {
       name: 'x',
-      type: 'alpha',
       output: 'x',
       successors: [],
     },
     {
       name: 'y',
-      type: 'alpha',
       output: 'y',
       successors: [],
     },
     {
       name: 'z',
-      type: 'alpha',
       output: 'z',
       successors: [],
     },
@@ -203,28 +177,24 @@ export class KeysService {
   _nonAlpha = [
     {
       name: 'dot',
-      type: 'nonAlpha',
       display: '.',
       output: '.',
       position: 'p6'
     },
     {
       name: 'enter',
-      type: 'nonAlpha',
       display: '↵',
       output: '\n',
       position: 'p7'
     },
     {
       name: 'comma',
-      type: 'nonAlpha',
       display: ',',
       output: ',',
       position: 'p8'
     },
     {
       name: 'space',
-      type: 'nonAlpha',
       display: ' ',
       output: ' ',
       position: 'p9'
@@ -245,7 +215,6 @@ export class KeysService {
     this._keysKnowledge.forEach(key => {
       this._keys.push({
         name: key.name,
-        type: 'alpha', // kan weg??
         output: key.output
       });
       this._letters.push(key.name);
