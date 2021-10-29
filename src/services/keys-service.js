@@ -238,7 +238,8 @@ export class KeysService {
     successors: [],
   };
   _text = '';
-  
+  _tailLength = 2;
+
   constructor(eventAggregator) {
     this._eventAggregator = eventAggregator;
     this._keysKnowledge.forEach(key => {
@@ -252,21 +253,26 @@ export class KeysService {
     this._getText();
   }
 
-  getKeys(char) {
-    if (char) {
-      const targetKey = this._keysKnowledge.find(key => key.name == char) || this._wordKnowledge;
-      const predictedKeys = [];
-      const completingKeys = [];
-      this._keysKnowledge.forEach(key => {
-        const keyIsUsedBefore = targetKey.successors.includes(key.name);
-        keyIsUsedBefore ? predictedKeys.push(key) : completingKeys.push(key);
-      });
-      return [...predictedKeys, ...completingKeys];
-    }
-    return this._keys;
+  getTailLength() {
+    return this._tailLength;
   }
 
-  getModifiers() { 
+  getKeys(char) {
+    const targetKey = this._keysKnowledge.find(key => key.name == char) || this._wordKnowledge;
+    const predictedKeys = [];
+    const completingKeys = [];
+    // predictedKeys = targetKey.successors.map(this._keysKnowledge.find(key => key.name == char));
+    targetKey.successors.forEach(char => {
+      predictedKeys.push(this._keysKnowledge.find(key => key.name == char));
+    });
+    this._keysKnowledge.forEach(key => {
+      const keyIsUsedBefore = targetKey.successors.includes(key.name);
+      !keyIsUsedBefore && completingKeys.push(key);
+    });
+    return [...predictedKeys, ...completingKeys];
+  }
+
+  getModifiers() {
     return [...this._modifiers, ...this._nonAlpha];
   }
 
@@ -292,7 +298,7 @@ export class KeysService {
       }
     }
   }
-  
+
   _learnLetter(learningCharObj, lessonChar) {
     const successors = learningCharObj.successors;
     const successorPos = successors.indexOf(lessonChar);
@@ -306,12 +312,12 @@ export class KeysService {
     } else {
       learningCharObj.successors.push(lessonChar);
     }
-    console.table([learningCharObj.name, ...learningCharObj.successors]);
+    // console.table([learningCharObj.name, ...learningCharObj.successors]);
   };
 
-  _getText() {
+  _getText(lang = 'nl') {
     const httpClient = new HttpClient();
-    httpClient.fetch('assets/lipsum.txt')
+    httpClient.fetch('assets/lipsum-' + lang + '.txt')
       .then(response => {
         return response.text();
       }).then(data => {
@@ -321,7 +327,15 @@ export class KeysService {
   }
 
   _train() {
-    console.log(this._text);
+    const lastPosition = this._text.length - this._tailLength;
+    if (lastPosition > 0) {
+      for (let startPos = 0; startPos < lastPosition; startPos++) {
+        const tail = this._text.substring(startPos - this._tailLength, startPos);
+        this.registerKeystroke(tail);
+      }
+      this._eventAggregator.publish('trainingReady');
+    }
+    // console.log(this._text);
   }
 
 }

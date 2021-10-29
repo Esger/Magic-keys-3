@@ -10,6 +10,7 @@ export class TerminalCustomElement{
     this._eventAggregator = eventAggregator;
     this._keysService = keysService;
     this.value = '';
+    this._tailLength = this._keysService.getTailLength();
   }
   
   attached() {
@@ -28,7 +29,7 @@ export class TerminalCustomElement{
         break;
       default: break;
     }
-    const tail = this.value.substr(-2);
+    const tail = this.value.substr(-this._tailLength);
     this._keysService.registerKeystroke(tail);
   }
 

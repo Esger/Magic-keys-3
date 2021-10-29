@@ -13,13 +13,20 @@ export class BoardCustomElement {
     this.keySubset = this._getSubset();
     this.modifiers = this._keysService.getModifiers();
   }
-
+  
   attached() {
+    this._trainingReadySubscriber = this._eventAggregator.subscribe('trainingReady', _ => {
+      setTimeout(() => {
+        this.keys = this._keysService.getKeys()
+        this.keySubset = this._getSubset();
+      });
+    });
     this._keypressedSubscriber = this._eventAggregator.subscribe('keyIsPressed', key => this._handleKey(key));
   }
 
   detached() {
     this._keypressedSubscriber.dispose();
+    this._trainingReadySubscriber.dispose();
   }
 
   _resetSubset() {
