@@ -8,8 +8,7 @@ export class BoardCustomElement {
     this._eventAggregator = eventAggregator;
     this._keysService = keysService;
     this.maxKeys = 8;
-    this.firstKey = 0;
-    this.lastKey = this.maxKeys;
+    this._resetSubset();
     this.keys = this._keysService.getKeys();
     this.keySubset = this._getSubset();
     this.modifiers = this._keysService.getModifiers();
@@ -23,12 +22,17 @@ export class BoardCustomElement {
     this._keypressedSubscriber.dispose();
   }
 
+  _resetSubset() {
+    this.firstKey = 0;
+    this.lastKey = this.maxKeys;
+  }
+
   _getSubset() {
     const keys = [...this.keys, ...this.keys];
     let subset = keys.slice(this.firstKey, this.lastKey);
     return subset;
   }
-  
+
   _shiftStartEnd() {
     if (this.lastKey > this.keys.length) {
       this.firstKey = this.lastKey % this.keys.length;
@@ -36,16 +40,19 @@ export class BoardCustomElement {
     } else {
       this.firstKey = this.lastKey;
       this.lastKey += this.maxKeys;
-    }  
+    }
   }
-  
+
   _handleKey(key) {
     switch (true) {
       case key.name == 'next':
         this._shiftStartEnd();
-        this.keySubset = this._getSubset();
         break;
+      case key.output?.length > 0:
+        this.keys = this._keysService.getKeys(key.output);
+        this._resetSubset();
       default: break;
     }
+    this.keySubset = this._getSubset();
   }
 }

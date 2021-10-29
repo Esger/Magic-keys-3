@@ -237,18 +237,28 @@ export class KeysService {
     this._keysKnowledge.forEach(key => {
       this._keys.push({
         name: key.name,
-        type: 'alpha',
+        type: 'alpha', // kan weg??
         output: key.output
       });
       this._letters.push(key.name);
     });
   }
 
-  getKeys() {
+  getKeys(char) {
+    if (char) {
+      const targetKey = this._keysKnowledge.find(key => key.name == char);
+      const predictedKeys = [];
+      const completingKeys = [];
+      this._keysKnowledge.forEach(key => {
+        const keyIsUsedBefore = targetKey.successors.includes(key.name);
+        keyIsUsedBefore ? predictedKeys.push(key) : completingKeys.push(key);
+      });
+      return [...predictedKeys, ...completingKeys];
+    }
     return this._keys;
   }
 
-  getModifiers() {
+  getModifiers() { 
     return [...this._modifiers, ...this._nonAlpha];
   }
 
