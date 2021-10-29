@@ -81,6 +81,7 @@
         ],
         "dependencies": [
           "aurelia-bootstrapper",
+          "aurelia-fetch-client",
           "aurelia-loader-default",
           "aurelia-pal-browser",
           {

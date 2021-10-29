@@ -1,3 +1,8 @@
+import { inject } from "aurelia-framework";
+import { EventAggregator } from 'aurelia-event-aggregator'; // kan weg?
+import { HttpClient } from 'aurelia-fetch-client';
+
+@inject(EventAggregator)
 export class KeysService {
 
   _keysKnowledge = [
@@ -232,8 +237,10 @@ export class KeysService {
     name: 'new_word',
     successors: [],
   };
+  _text = '';
   
-  constructor() {
+  constructor(eventAggregator) {
+    this._eventAggregator = eventAggregator;
     this._keysKnowledge.forEach(key => {
       this._keys.push({
         name: key.name,
@@ -242,6 +249,7 @@ export class KeysService {
       });
       this._letters.push(key.name);
     });
+    this._getText();
   }
 
   getKeys(char) {
@@ -300,5 +308,20 @@ export class KeysService {
     }
     console.table([learningCharObj.name, ...learningCharObj.successors]);
   };
+
+  _getText() {
+    const httpClient = new HttpClient();
+    httpClient.fetch('assets/lipsum.txt')
+      .then(response => {
+        return response.text();
+      }).then(data => {
+        this._text = data;
+        this._train();
+      });
+  }
+
+  _train() {
+    console.log(this._text);
+  }
 
 }
