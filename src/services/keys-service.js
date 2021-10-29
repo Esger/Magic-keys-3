@@ -3,135 +3,162 @@ export class KeysService {
   _keysKnowledge = [
     {
       name: 'a',
+      type: 'alpha',
       output: 'a',
-      predecessors: [],
+      successors: [],
     },
     {
       name: 'b',
+      type: 'alpha',
       output: 'b',
-      predecessors: [],
+      successors: [],
     },
     {
       name: 'c',
+      type: 'alpha',
       output: 'c',
-      predecessors: [],
+      successors: [],
     },
     {
       name: 'd',
+      type: 'alpha',
       output: 'd',
-      predecessors: [],
+      successors: [],
     },
     {
       name: 'e',
+      type: 'alpha',
       output: 'e',
-      predecessors: [],
+      successors: [],
     },
     {
       name: 'f',
+      type: 'alpha',
       output: 'f',
-      predecessors: [],
+      successors: [],
     },
     {
       name: 'g',
+      type: 'alpha',
       output: 'g',
-      predecessors: [],
+      successors: [],
     },
     {
       name: 'h',
+      type: 'alpha',
       output: 'h',
-      predecessors: [],
+      successors: [],
     },
     {
       name: 'i',
+      type: 'alpha',
       output: 'i',
-      predecessors: [],
+      successors: [],
     },
     {
       name: 'j',
+      type: 'alpha',
       output: 'j',
-      predecessors: [],
+      successors: [],
     },
     {
       name: 'k',
+      type: 'alpha',
       output: 'k',
-      predecessors: [],
+      successors: [],
     },
     {
       name: 'l',
+      type: 'alpha',
       output: 'l',
-      predecessors: [],
+      successors: [],
     },
     {
       name: 'm',
+      type: 'alpha',
       output: 'm',
-      predecessors: [],
+      successors: [],
     },
     {
       name: 'n',
+      type: 'alpha',
       output: 'n',
-      predecessors: [],
+      successors: [],
     },
     {
       name: 'o',
+      type: 'alpha',
       output: 'o',
-      predecessors: [],
+      successors: [],
     },
     {
       name: 'p',
+      type: 'alpha',
       output: 'p',
-      predecessors: [],
+      successors: [],
     },
     {
       name: 'q',
+      type: 'alpha',
       output: 'q',
-      predecessors: [],
+      successors: [],
     },
     {
       name: 'r',
+      type: 'alpha',
       output: 'r',
-      predecessors: [],
+      successors: [],
     },
     {
       name: 's',
+      type: 'alpha',
       output: 's',
-      predecessors: [],
+      successors: [],
     },
     {
       name: 't',
+      type: 'alpha',
       output: 't',
-      predecessors: [],
+      successors: [],
     },
     {
       name: 'u',
+      type: 'alpha',
       output: 'u',
-      predecessors: [],
+      successors: [],
     },
     {
       name: 'v',
+      type: 'alpha',
       output: 'v',
-      predecessors: [],
+      successors: [],
     },
     {
       name: 'w',
+      type: 'alpha',
       output: 'w',
-      predecessors: [],
+      successors: [],
     },
     {
       name: 'x',
+      type: 'alpha',
       output: 'x',
-      predecessors: [],
+      successors: [],
     },
     {
       name: 'y',
+      type: 'alpha',
       output: 'y',
-      predecessors: [],
+      successors: [],
     },
     {
       name: 'z',
+      type: 'alpha',
       output: 'z',
-      predecessors: [],
+      successors: [],
     },
   ];
+
   _modifiers = [
     {
       name: 'shift',
@@ -166,39 +193,54 @@ export class KeysService {
       display: '⇨',
       position: 'p5'
     },
+  ];
+
+  _nonAlpha = [
     {
       name: 'dot',
+      type: 'nonAlpha',
       display: '.',
       output: '.',
       position: 'p6'
     },
     {
       name: 'enter',
+      type: 'nonAlpha',
       display: '↵',
       output: '\n',
       position: 'p7'
     },
     {
       name: 'comma',
+      type: 'nonAlpha',
       display: ',',
       output: ',',
       position: 'p8'
     },
     {
       name: 'space',
+      type: 'nonAlpha',
       display: ' ',
       output: ' ',
       position: 'p9'
     },
   ]
-  _keys = [];
 
+  _keys = []; // simple copy of _knowledge to prevent passing lots of data around.
+  _letters = [];
+  _wordKnowledge = {
+    name: 'new_word',
+    successors: [],
+  };
+  
   constructor() {
     this._keysKnowledge.forEach(key => {
       this._keys.push({
         name: key.name,
+        type: 'alpha',
         output: key.output
       });
+      this._letters.push(key.name);
     });
   }
 
@@ -207,12 +249,46 @@ export class KeysService {
   }
 
   getModifiers() {
-    return this._modifiers;
+    return [...this._modifiers, ...this._nonAlpha];
   }
 
   registerKeystroke(tail) {
-    const chars = tail.split('');
-    // console.table(chars);
+    // TODO check better for more extended charactersets
+    if (tail.length > 0) {
+      const splitTail = tail.split('');
+      const lessonChar = splitTail[splitTail.length - 1];
+      // possible tail patterns
+      // 'ab' -> learn 'a' is followed by 'b'
+      // 'a.' -> skip learning
+      // '. ' -> skip learning
+      // '  ' -> skip learning
+      // ' a' -> skip learning
+      // => all chars are part of _knowledge and and of type alpha
+      const allAlpha = splitTail.every(key => this._letters.indexOf(key) > -1);
+      if (allAlpha && tail.length > 1) {
+        const learningCharObj = this._keysKnowledge.find(key => key.name == splitTail[0]);
+        this._learnLetter(learningCharObj, lessonChar);
+      } else {
+        // build successors for start new word
+        (this._letters.indexOf(lessonChar) > -1) && this._learnLetter(this._wordKnowledge, lessonChar);
+      }
+    }
   }
+  
+  _learnLetter(learningCharObj, lessonChar) {
+    const successors = learningCharObj.successors;
+    const successorPos = successors.indexOf(lessonChar);
+    if (successorPos > -1) {
+      if (successorPos > 0) {
+        // shift current one position down
+        const temp = successors[successorPos - 1];
+        successors[successorPos - 1] = lessonChar;
+        successors[successorPos] = temp;
+      }
+    } else {
+      learningCharObj.successors.push(lessonChar);
+    }
+    console.table([learningCharObj.name, ...learningCharObj.successors]);
+  };
 
 }

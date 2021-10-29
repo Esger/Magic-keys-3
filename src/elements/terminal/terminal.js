@@ -4,15 +4,16 @@ import { KeysService } from "services/keys-service";
 
 @inject(Element, EventAggregator, KeysService)
 export class TerminalCustomElement{
+
   constructor(element, eventAggregator, keysService) {
     this._element = element;
     this._eventAggregator = eventAggregator;
     this._keysService = keysService;
-    this._keypressedSubscriber = this._eventAggregator.subscribe('keyIsPressed', key => this._handleKey(key));
     this.value = '';
   }
   
   attached() {
+    this._keypressedSubscriber = this._eventAggregator.subscribe('keyIsPressed', key => this._handleKey(key));
   }
   
   detached() {
@@ -28,6 +29,7 @@ export class TerminalCustomElement{
       default: break;
     }
     const tail = this.value.substr(-2);
-    this._keysService.registerKeystroke(tail)
+    this._keysService.registerKeystroke(tail);
   }
+
 }
