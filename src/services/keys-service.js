@@ -246,7 +246,7 @@ export class KeysService {
 
   getKeys(char) {
     if (char) {
-      const targetKey = this._keysKnowledge.find(key => key.name == char);
+      const targetKey = this._keysKnowledge.find(key => key.name == char) || this._wordKnowledge;
       const predictedKeys = [];
       const completingKeys = [];
       this._keysKnowledge.forEach(key => {
