@@ -1,0 +1,16 @@
+<template>
+  <require from="./board.css"></require>
+  <require from="elements/key/key"></require>
+
+  <key repeat.for="key of modifiers"
+       key.bind="key"
+       display.bind="key.display"
+       class-name.bind="key.className"></key>
+
+  <section class="dynamic">
+    <key repeat.for="key of keySubset"
+         key.bind="key"
+         display.bind="key.name"></key>
+  </section>
+  
+</template>

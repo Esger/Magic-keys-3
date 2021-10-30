@@ -1,0 +1,18 @@
+board {
+  display: grid;
+  grid-template-areas:
+    "p0 p1 p2 p3 p4 p5"
+    "p6 pd pd pd pd p7"
+    "p8 pd pd pd pd p9";
+}
+
+.dynamic {
+  grid-area : pd;
+  display   : flex;
+  flex-wrap : wrap;
+}
+
+board, .dynamic{
+  column-gap: 8px;
+  row-gap   : 8px;
+}

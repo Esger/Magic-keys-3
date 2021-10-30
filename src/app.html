@@ -1,4 +1,10 @@
 <template>
   <require from="./app.css"></require>
-  <h1>${message}<span>hallo</span></h1>
+  <require from="elements/board/board"></require>
+  <require from="elements/terminal/terminal"></require>
+    <wrapper>
+      <h1>${message}</h1>
+      <terminal></terminal>
+      <board></board>
+    </wrapper>
 </template>
