@@ -36,8 +36,34 @@ export class BoardCustomElement {
 
   _getSubset() {
     const keys = [...this.keys, ...this.keys];
-    let subset = keys.slice(this.firstKey, this.lastKey);
-    return subset;
+    let newSubset = keys.slice(this.firstKey, this.lastKey);
+    if (this.keySubset) {
+      const currentSubset = JSON.parse(JSON.stringify(this.keySubset)); // deep copy to mark items to be replaced.
+      const newKeyIndices = [];
+      currentSubset.forEach((key, index, subset) => {
+        const isNewKey = !newSubset.some(k => k.name == key.name);
+        if (isNewKey) {
+          key.replace = true;
+        } else {
+          newSubset = this._removeFromSet(newSubset, key);
+        }
+      });
+      newSubset.forEach((key, index, subset) => {
+        const newKeyIndex = currentSubset.findIndex(k => k.replace == true);
+        currentSubset[newKeyIndex] = key;
+      });
+      return currentSubset;
+    }
+    return newSubset;
+  }
+
+  _removeFromSet(set, key) {
+    let newSet = set;
+    const index = newSet.findIndex(k => k.name == key.name);
+    if (index > -1) {
+      newSet.splice(index, 1);
+    }
+    return newSet;
   }
 
   _shiftStartEnd() {
