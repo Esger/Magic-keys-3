@@ -1,5 +1,5 @@
 import { inject } from "aurelia-framework";
-import { EventAggregator } from 'aurelia-event-aggregator'; // kan weg?
+import { EventAggregator } from 'aurelia-event-aggregator';
 import { HttpClient } from 'aurelia-fetch-client';
 
 @inject(EventAggregator)
@@ -10,131 +10,157 @@ export class KeysService {
       name: 'a',
       output: 'a',
       successors: [],
+      count: 0,
     },
     {
       name: 'b',
       output: 'b',
       successors: [],
+      count: 0,
     },
     {
       name: 'c',
       output: 'c',
       successors: [],
+      count: 0,
     },
     {
       name: 'd',
       output: 'd',
       successors: [],
+      count: 0,
     },
     {
       name: 'e',
       output: 'e',
       successors: [],
+      count: 0,
     },
     {
       name: 'f',
       output: 'f',
       successors: [],
+      count: 0,
     },
     {
       name: 'g',
       output: 'g',
       successors: [],
+      count: 0,
     },
     {
       name: 'h',
       output: 'h',
       successors: [],
+      count: 0,
     },
     {
       name: 'i',
       output: 'i',
       successors: [],
+      count: 0,
     },
     {
       name: 'j',
       output: 'j',
       successors: [],
+      count: 0,
     },
     {
       name: 'k',
       output: 'k',
       successors: [],
+      count: 0,
     },
     {
       name: 'l',
       output: 'l',
       successors: [],
+      count: 0,
     },
     {
       name: 'm',
       output: 'm',
       successors: [],
+      count: 0,
     },
     {
       name: 'n',
       output: 'n',
       successors: [],
+      count: 0,
     },
     {
       name: 'o',
       output: 'o',
       successors: [],
+      count: 0,
     },
     {
       name: 'p',
       output: 'p',
       successors: [],
+      count: 0,
     },
     {
       name: 'q',
       output: 'q',
       successors: [],
+      count: 0,
     },
     {
       name: 'r',
       output: 'r',
       successors: [],
+      count: 0,
     },
     {
       name: 's',
       output: 's',
       successors: [],
+      count: 0,
     },
     {
       name: 't',
       output: 't',
       successors: [],
+      count: 0,
     },
     {
       name: 'u',
       output: 'u',
       successors: [],
+      count: 0,
     },
     {
       name: 'v',
       output: 'v',
       successors: [],
+      count: 0,
     },
     {
       name: 'w',
       output: 'w',
       successors: [],
+      count: 0,
     },
     {
       name: 'x',
       output: 'x',
       successors: [],
+      count: 0,
     },
     {
       name: 'y',
       output: 'y',
       successors: [],
+      count: 0,
     },
     {
       name: 'z',
       output: 'z',
       successors: [],
+      count: 0,
     },
   ];
 
@@ -206,6 +232,7 @@ export class KeysService {
   _wordKnowledge = {
     name: 'new_word',
     successors: [],
+    count: 0,
   };
   _text = '';
   _tailLength = 2;
@@ -230,14 +257,16 @@ export class KeysService {
     const targetKey = this._keysKnowledge.find(key => key.name == char) || this._wordKnowledge;
     const predictedKeys = [];
     const completingKeys = [];
-    // predictedKeys = targetKey.successors.map(this._keysKnowledge.find(key => key.name == char));
+
     targetKey.successors.forEach(char => {
       predictedKeys.push(this._keysKnowledge.find(key => key.name == char));
     });
+
     this._keysKnowledge.forEach(key => {
       const keyIsUsedBefore = targetKey.successors.includes(key.name);
       !keyIsUsedBefore && completingKeys.push(key);
     });
+
     return [...predictedKeys, ...completingKeys];
   }
 
