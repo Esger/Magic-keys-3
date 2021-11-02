@@ -25,8 +25,8 @@ export class BoardCustomElement {
   }
 
   detached() {
-    this._keypressedSubscriber.dispose();
     this._trainingReadySubscriber.dispose();
+    this._keypressedSubscriber.dispose();
   }
 
   _resetSubset() {
@@ -37,6 +37,7 @@ export class BoardCustomElement {
   _getSubset() {
     const keys = [...this.keys, ...this.keys];
     let newSubset = keys.slice(this.firstKey, this.lastKey);
+    console.table(newSubset);
     // replace only unneeded keys for new subset
     if (this.keySubset) {
       const currentSubset = JSON.parse(JSON.stringify(this.keySubset)); // deep copy to mark items to be replaced.
@@ -85,13 +86,16 @@ export class BoardCustomElement {
     switch (true) {
       case key.name == 'next':
         this._nextSubset();
+        this.keySubset = this._getSubset();
         break;
-      case key.output?.length > 0:
-        this.keys = this._keysService.getKeys(key.output);
+      default:
+        setTimeout(() => {
+          this.keys = this._keysService.getKeys();
+          this._resetSubset();
+          this.keySubset = this._getSubset();
+        });
         // console.table(this.keys)
-        this._resetSubset();
-      default: break;
+      break;
     }
-    this.keySubset = this._getSubset();
   }
 }

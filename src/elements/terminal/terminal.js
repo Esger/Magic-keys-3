@@ -25,8 +25,8 @@ export class TerminalCustomElement {
     switch (true) {
       case key.output?.length > 0: this.value += key.output;
         const tail = this.value.substr(-this._tailLength);
+        console.log(key, tail);
         this._keysService.registerKeystroke(tail);
-        // this._eventAggregator.publish('newTail',tail);
         break;
       case key.name == 'backspace': this.value = this.value.slice(0, -1);
         break;

@@ -162,6 +162,11 @@ export class KeysService {
       successors: [],
       count: 0,
     },
+    {
+      name: 'new_word',
+      successors: [],
+      count: 0,
+    },
   ];
 
   _modifiers = [
@@ -229,22 +234,20 @@ export class KeysService {
 
   _keys = []; // simple copy of _knowledge to prevent passing lots of data around.
   _letters = [];
-  _wordKnowledge = {
-    name: 'new_word',
-    successors: [],
-    count: 0,
-  };
   _text = '';
-  _tailLength = 2;
+  _tail = '';
+  _tailLength = 3;
 
   constructor(eventAggregator) {
     this._eventAggregator = eventAggregator;
     this._keysKnowledge.forEach(key => {
-      this._keys.push({
-        name: key.name,
-        output: key.output
-      });
-      this._letters.push(key.name);
+      if (key.output?.length) {
+        this._keys.push({
+          name: key.name,
+          output: key.output
+        });
+        this._letters.push(key.name);
+      }
     });
     this._getText();
   }
@@ -253,21 +256,33 @@ export class KeysService {
     return this._tailLength;
   }
 
-  getKeys(char) {
-    const targetKey = this._keysKnowledge.find(key => key.name == char) || this._wordKnowledge;
-    const predictedKeys = [];
-    const completingKeys = [];
-
-    targetKey.successors.forEach(char => {
-      predictedKeys.push(this._keysKnowledge.find(key => key.name == char));
-    });
-
-    this._keysKnowledge.forEach(key => {
-      const keyIsUsedBefore = targetKey.successors.includes(key.name);
-      !keyIsUsedBefore && completingKeys.push(key);
-    });
-
-    return [...predictedKeys, ...completingKeys];
+  getKeys() {
+    const useTail = this._tail.length && this._letters.indexOf(this._tail.substr(-1)) > -1;
+    let nameStr = useTail ? this._tail.slice(-(this._tailLength - 1)) : 'new_word';
+    let probableKeys = [];
+    let knowledgeObj = undefined;
+    while (nameStr.length > 0 && probableKeys.length < 26) {
+      knowledgeObj = this._keysKnowledge.find(key => key.name == nameStr);
+      const keys = knowledgeObj?.successors.map(char => this._keysKnowledge.find(key => key.name == char));
+      keys?.forEach(key => {
+        const keyIsUsedBefore = probableKeys?.some(k => k.name == key.name);
+        if (!keyIsUsedBefore) {
+          probableKeys.push(key);
+        }
+      });
+      nameStr = (nameStr == 'new_word') ? '' : nameStr.slice(1);
+    }
+    
+    let completingKeys = [];
+    if (probableKeys.length < 26) {
+      this._keysKnowledge.filter(key => (key.name.length == 1) && (key.name != 'new_word')).forEach(key => {
+        const keyIsUsedBefore = probableKeys?.some(k => k.name == key.name);
+        if (!keyIsUsedBefore) {
+          completingKeys.push(key);
+        }
+      });
+    };
+    return [...probableKeys, ...completingKeys];
   }
 
   getModifiers() {
@@ -275,10 +290,11 @@ export class KeysService {
   }
 
   registerKeystroke(tail) {
+    // For the typed key (last char of Tail) register preceding characters of Tail
     // TODO check better for more extended charactersets
-    if (tail.length > 0) {
-      const splitTail = tail.split('');
-      const lessonChar = splitTail[splitTail.length - 1];
+    this._tail = tail;
+    while (tail.length > 0) {
+      const lessonChar = tail.substr(-1); // the key
       // possible tail patterns
       // 'ab' -> learn 'a' is followed by 'b'
       // 'a.' -> skip learning
@@ -286,21 +302,36 @@ export class KeysService {
       // '  ' -> skip learning
       // ' a' -> skip learning
       // => all chars are part of _knowledge and and of type alpha
+      const splitTail = tail.split('');
       const allAlpha = splitTail.every(key => this._letters.indexOf(key) > -1);
       if (allAlpha && tail.length > 1) {
-        const learningCharObj = this._keysKnowledge.find(key => key.name == splitTail[0]);
-        this._learnLetter(learningCharObj, lessonChar);
+        const learningString = tail.slice(0, -1);
+        this._addToKnowledge(learningString, lessonChar);
       } else {
         // build successors for start new word
-        (this._letters.indexOf(lessonChar) > -1) && this._learnLetter(this._wordKnowledge, lessonChar);
+        (this._letters.indexOf(lessonChar) > -1) && this._addToKnowledge('new_word', lessonChar);
       }
+      tail = tail.slice(1);
     }
   }
 
-  _learnLetter(learningCharObj, lessonChar) {
-    const successors = learningCharObj.successors;
+  _newKeyKnowledgeItem(name) {
+    const newItem = {
+      count: 0,
+      name: name,
+      successors: [],
+    };
+    this._keysKnowledge.push(newItem);
+    return newItem;
+  }
+
+  _addToKnowledge(learningString, lessonChar) {
+    const learningTailObj = this._keysKnowledge.find(key => key.name == learningString) ||
+      this._newKeyKnowledgeItem(learningString);
+    const successors = learningTailObj.successors;
     const successorPos = successors.indexOf(lessonChar);
     if (successorPos > -1) {
+      learningTailObj.count++;
       if (successorPos > 0) {
         // shift current one position down
         const temp = successors[successorPos - 1];
@@ -308,7 +339,7 @@ export class KeysService {
         successors[successorPos] = temp;
       }
     } else {
-      learningCharObj.successors.push(lessonChar);
+      learningTailObj.successors.push(lessonChar);
     }
     // console.table([learningCharObj.name, ...learningCharObj.successors]);
   };
@@ -325,15 +356,16 @@ export class KeysService {
   }
 
   _train() {
-    const lastPosition = this._text.length - this._tailLength;
+    const lastPosition = this._text.length;
     if (lastPosition > 0) {
       for (let startPos = 0; startPos < lastPosition; startPos++) {
         const tail = this._text.substring(startPos - this._tailLength, startPos);
         this.registerKeystroke(tail);
       }
+      this._tail = '';
       this._eventAggregator.publish('trainingReady');
     }
-    // console.log(this._text);
+    console.table(this._keysKnowledge);
   }
 
 }
