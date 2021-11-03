@@ -201,7 +201,8 @@ export class KeysService {
     {
       name: 'next',
       display: '⇨',
-      position: 'p5'
+      position: 'p5',
+      className: 'highlight'
     },
   ];
   
