@@ -204,25 +204,28 @@ export class KeysService {
       position: 'p5'
     },
   ];
-
+  
   _nonAlpha = [
     {
       name: 'dot',
       display: '.',
       output: '.',
-      position: 'p6'
+      position: 'p6',
+      className: 'small'
     },
     {
       name: 'enter',
       display: '↵',
       output: '\n',
-      position: 'p7'
+      position: 'p7',
+      className: 'small'
     },
     {
       name: 'comma',
       display: ',',
       output: ',',
-      position: 'p8'
+      position: 'p8',
+      className: 'small'
     },
     {
       name: 'space',
@@ -250,6 +253,11 @@ export class KeysService {
       }
     });
     this._getText();
+  }
+
+  setTailLength(value) {
+    this._tailLength = value;
+    this._train();
   }
 
   getTailLength() {

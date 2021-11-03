@@ -1,0 +1,10 @@
+<template>
+  <require from="./header.css"></require>
+
+  <h1>${message}</h1>
+  <label>Depth <input type="number"
+                min="0"
+                max="4"
+                value.bind="depth"
+                change.delegate="setDepth()"></label>
+</template>
