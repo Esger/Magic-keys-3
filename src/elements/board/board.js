@@ -8,6 +8,7 @@ export class BoardCustomElement {
     this._eventAggregator = eventAggregator;
     this._keysService = keysService;
     this.maxKeys = 8;
+    this.boardType = undefined;
     this._resetSubset();
     this.keys = this._keysService.getKeys();
     this.keySubset = this._getSubset();
@@ -22,11 +23,18 @@ export class BoardCustomElement {
       });
     });
     this._keypressedSubscriber = this._eventAggregator.subscribe('keyIsPressed', key => this._handleKey(key));
+    this._boardTypeSubscriber = this._eventAggregator.subscribe('boardType', alphaKeyCount => this._setBoardType(alphaKeyCount));
   }
 
   detached() {
     this._trainingReadySubscriber.dispose();
     this._keypressedSubscriber.dispose();
+    this._boardTypeSubscriber.dispose();
+  }
+
+  _setBoardType(alphaKeyCount) {
+    this.maxKeys = alphaKeyCount;
+    this.boardType = 'board--' + alphaKeyCount + 'keys';
   }
 
   _resetSubset() {

@@ -1,4 +1,4 @@
-<template>
+<template class.bind="boardType">
   <require from="./board.css"></require>
   <require from="elements/key/key"></require>
 
@@ -10,7 +10,7 @@
   <section class="dynamic">
     <key repeat.for="key of keySubset"
          key.bind="key"
-         display.bind="key.name"></key>
+         display.bind="key.name" containerless></key>
   </section>
   
 </template>

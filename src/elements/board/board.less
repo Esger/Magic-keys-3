@@ -1,18 +1,39 @@
 board {
   display: grid;
-  grid-template-areas:
-    "p0 p1 p2 p3 p4 p5"
-    "p6 pd pd pd pd p7"
-    "p8 pd pd pd pd p9";
+
+  &.board--8keys {
+    width: 400px;
+    grid-template-areas:
+      "shift numeric symbol  brackets backspace next"
+      "comma dynamic dynamic dynamic  dynamic   enter"
+      "dot   dynamic dynamic dynamic  dynamic   space";
+
+    .hide8 {
+      display: none;
+      // opacity       : 0;
+      // pointer-events: none;
+    }
+  }
+
+  &.board--9keys {
+    width: 332px;
+    grid-template-areas:
+      "numeric symbol  brackets quotes  backspace"
+      "shift   dynamic dynamic  dynamic next"
+      "comma   dynamic dynamic  dynamic enter"
+      "dot     dynamic dynamic  dynamic space";
+  }
+
 }
 
 .dynamic {
-  grid-area : pd;
-  display   : flex;
-  flex-wrap : wrap;
+  grid-area: dynamic;
+  display  : flex;
+  flex-wrap: wrap;
 }
 
-board, .dynamic{
+board,
+.dynamic {
   column-gap: 8px;
   row-gap   : 8px;
 }

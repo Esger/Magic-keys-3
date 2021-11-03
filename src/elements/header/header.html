@@ -2,9 +2,15 @@
   <require from="./header.css"></require>
 
   <h1>${message}</h1>
-  <label>Depth <input type="number"
+  <label>Keys<input type="number"
+                min="8"
+                max="9"
+                value.bind="alphaKeys"
+                change.delegate="setAlphaKeyCount()"></label>
+  <label>Depth<input type="number"
                 min="0"
                 max="4"
                 value.bind="depth"
                 change.delegate="setDepth()"></label>
+                
 </template>

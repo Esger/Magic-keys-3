@@ -173,59 +173,55 @@ export class KeysService {
     {
       name: 'shift',
       display: '⇧',
-      position: 'p0'
     },
     {
       name: 'numeric',
       display: '123',
-      position: 'p1',
       className: 'small'
     },
     {
       name: 'symbols',
-      position: 'p2',
       display: '@',
       className: 'small'
     },
     {
       name: 'brackets',
       display: '()',
-      position: 'p3',
       className: 'small'
+    },
+    {
+      name: 'quotes',
+      display: '"',
+      className: 'small hide8'
     },
     {
       name: 'backspace',
       display: '⇦',
-      position: 'p4'
     },
     {
       name: 'next',
       display: '⇨',
-      position: 'p5',
       className: 'highlight'
     },
   ];
-  
+
   _nonAlpha = [
     {
       name: 'dot',
       display: '.',
       output: '.',
-      position: 'p6',
       className: 'small'
     },
     {
       name: 'enter',
       display: '↵',
       output: '\n',
-      position: 'p7',
       className: 'small'
     },
     {
       name: 'comma',
       display: ',',
       output: ',',
-      position: 'p8',
       className: 'small'
     },
     {
@@ -256,6 +252,12 @@ export class KeysService {
     this._getText();
   }
 
+  setAlphaKeyCount(count) {
+    setTimeout(() => {
+      this._eventAggregator.publish('boardType', count);
+    });
+  }
+
   setTailLength(value) {
     this._tailLength = value;
     this._train();
@@ -281,7 +283,7 @@ export class KeysService {
       });
       nameStr = (nameStr == 'new_word') ? '' : nameStr.slice(1);
     }
-    
+
     let completingKeys = [];
     if (probableKeys.length < 26) {
       this._keysKnowledge.filter(key => (key.name.length == 1) && (key.name != 'new_word')).forEach(key => {
