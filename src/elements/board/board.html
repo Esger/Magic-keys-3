@@ -1,16 +1,15 @@
 <template class.bind="boardType">
   <require from="./board.css"></require>
-  <require from="elements/key/key"></require>
 
-  <key repeat.for="key of modifiers"
-       key.bind="key"
-       display.bind="key.display"
-       class-name.bind="key.className"></key>
+  <button repeat.for="key of modifiers"
+          class="key ${key.name} ${key.className}"
+          css="grid-area: ${key.name}"
+          click.delegate="keyIsPressed(key)">${key.display}</button>
 
   <section class="dynamic">
-    <key repeat.for="key of keySubset"
-         key.bind="key"
-         display.bind="key.name" containerless></key>
+    <button repeat.for="key of keySubset"
+            class="key ${key.name} ${key.className}"
+            click.delegate="keyIsPressed(key)">${key.name}</button>
   </section>
-  
+
 </template>

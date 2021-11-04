@@ -40,6 +40,8 @@ export class BoardCustomElement {
   _resetSubset() {
     this.firstKey = 0;
     this.lastKey = this.maxKeys;
+    // this._resetSubset();
+    this._getSubset();
   }
 
   _getSubset() {
@@ -88,6 +90,11 @@ export class BoardCustomElement {
       this.firstKey = this.lastKey;
       this.lastKey += this.maxKeys;
     }
+  }
+
+  keyIsPressed(key) {
+    this._eventAggregator.publish('keyIsPressed', key);
+    this._handleKey(key)
   }
 
   _handleKey(key) {

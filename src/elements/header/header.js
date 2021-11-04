@@ -4,7 +4,7 @@ import { KeysService } from "services/keys-service";
 @inject(KeysService)
 export class headerCustomElement {
   message = 'Magic Keys';
-  depth = 1;
+  depth = 2;
   alphaKeys = 8;
 
   constructor(keysService) {
