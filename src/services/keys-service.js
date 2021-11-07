@@ -10,163 +10,136 @@ export class KeysService {
       name: 'a',
       output: 'a',
       successors: [],
-      count: 0,
-    },
+      },
     {
       name: 'b',
       output: 'b',
       successors: [],
-      count: 0,
-    },
+      },
     {
       name: 'c',
       output: 'c',
       successors: [],
-      count: 0,
-    },
+      },
     {
       name: 'd',
       output: 'd',
       successors: [],
-      count: 0,
-    },
+      },
     {
       name: 'e',
       output: 'e',
       successors: [],
-      count: 0,
-    },
+      },
     {
       name: 'f',
       output: 'f',
       successors: [],
-      count: 0,
-    },
+      },
     {
       name: 'g',
       output: 'g',
       successors: [],
-      count: 0,
-    },
+      },
     {
       name: 'h',
       output: 'h',
       successors: [],
-      count: 0,
-    },
+      },
     {
       name: 'i',
       output: 'i',
       successors: [],
-      count: 0,
-    },
+      },
     {
       name: 'j',
       output: 'j',
       successors: [],
-      count: 0,
-    },
+      },
     {
       name: 'k',
       output: 'k',
       successors: [],
-      count: 0,
-    },
+      },
     {
       name: 'l',
       output: 'l',
       successors: [],
-      count: 0,
-    },
+      },
     {
       name: 'm',
       output: 'm',
       successors: [],
-      count: 0,
-    },
+      },
     {
       name: 'n',
       output: 'n',
       successors: [],
-      count: 0,
-    },
+      },
     {
       name: 'o',
       output: 'o',
       successors: [],
-      count: 0,
-    },
+      },
     {
       name: 'p',
       output: 'p',
       successors: [],
-      count: 0,
-    },
+      },
     {
       name: 'q',
       output: 'q',
       successors: [],
-      count: 0,
-    },
+      },
     {
       name: 'r',
       output: 'r',
       successors: [],
-      count: 0,
-    },
+      },
     {
       name: 's',
       output: 's',
       successors: [],
-      count: 0,
-    },
+      },
     {
       name: 't',
       output: 't',
       successors: [],
-      count: 0,
-    },
+      },
     {
       name: 'u',
       output: 'u',
       successors: [],
-      count: 0,
-    },
+      },
     {
       name: 'v',
       output: 'v',
       successors: [],
-      count: 0,
-    },
+      },
     {
       name: 'w',
       output: 'w',
       successors: [],
-      count: 0,
-    },
+      },
     {
       name: 'x',
       output: 'x',
       successors: [],
-      count: 0,
-    },
+      },
     {
       name: 'y',
       output: 'y',
       successors: [],
-      count: 0,
-    },
+      },
     {
       name: 'z',
       output: 'z',
       successors: [],
-      count: 0,
-    },
+      },
     {
       name: 'new_word',
       successors: [],
-      count: 0,
-    },
+      },
   ];
 
   _modifiers = [
@@ -236,7 +209,7 @@ export class KeysService {
   _letters = [];
   _text = '';
   _tail = '';
-  _tailLength = 3;
+  _tailLength = 4;
 
   constructor(eventAggregator) {
     this._eventAggregator = eventAggregator;
@@ -253,9 +226,12 @@ export class KeysService {
   }
 
   setAlphaKeyCount(count) {
-    setTimeout(() => {
-      this._eventAggregator.publish('boardType', count);
-    });
+    this._alphaKeyCount = count;
+    this._eventAggregator.publish('boardType', count);
+  }
+
+  getAlphaKeyCount() {
+    return this._alphaKeyCount;
   }
 
   setTailLength(value) {
@@ -293,7 +269,7 @@ export class KeysService {
         }
       });
     };
-    return [...probableKeys, ...completingKeys];
+    return JSON.parse(JSON.stringify([...probableKeys, ...completingKeys])) || [];
   }
 
   getModifiers() {
@@ -328,8 +304,7 @@ export class KeysService {
 
   _newKeyKnowledgeItem(name) {
     const newItem = {
-      count: 0,
-      name: name,
+        name: name,
       successors: [],
     };
     this._keysKnowledge.push(newItem);
@@ -342,7 +317,6 @@ export class KeysService {
     const successors = learningTailObj.successors;
     const successorPos = successors.indexOf(lessonChar);
     if (successorPos > -1) {
-      learningTailObj.count++;
       if (successorPos > 0) {
         // shift current one position down
         const temp = successors[successorPos - 1];
