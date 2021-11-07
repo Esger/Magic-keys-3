@@ -1,18 +1,65 @@
 board {
   display: grid;
-  grid-template-areas:
-    "p0 p1 p2 p3 p4 p5"
-    "p6 pd pd pd pd p7"
-    "p8 pd pd pd pd p9";
+
+  &.board--8keys {
+    width: 400px;
+    grid-template-areas:
+      "shift numeric symbols brackets backspace next"
+      "comma dynamic dynamic dynamic  dynamic   enter"
+      "dot   dynamic dynamic dynamic  dynamic   space";
+
+    .hide8 {
+      display: none;
+    }
+  }
+
+  &.board--9keys {
+    width: 332px;
+    grid-template-areas:
+      "numeric symbols brackets quotes  backspace"
+      "shift   dynamic dynamic  dynamic next"
+      "comma   dynamic dynamic  dynamic enter"
+      "dot     dynamic dynamic  dynamic space";
+  }
+
+}
+
+.key {
+  display         : flex;
+  justify-content : center;
+  align-items     : center;
+  width           : 60px;
+  height          : 60px;
+  color           : var(--black);
+  font-family     : "Source Code Pro";
+  font-size       : 2.4em;
+  font-weight     : 300;
+  line-height     : 1;
+  text-shadow     : 0px 1px 1px #ccc;
+  background-color: #fff;
+  border-radius   : 7px;
+  border          : 1px solid #666;
+  box-shadow      : 0 2px 3px #111;
+  overflow        : hidden;
+  cursor          : pointer;
+
+  &.small {
+    font-size: 1.8em;
+  }
+
+  &.highlight {
+    color: var(--highlightColor);
+  }
 }
 
 .dynamic {
-  grid-area : pd;
-  display   : flex;
-  flex-wrap : wrap;
+  grid-area: dynamic;
+  display  : flex;
+  flex-wrap: wrap;
 }
 
-board, .dynamic{
+board,
+.dynamic {
   column-gap: 8px;
   row-gap   : 8px;
 }
