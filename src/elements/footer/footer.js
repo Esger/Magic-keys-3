@@ -27,7 +27,7 @@ export class FooterCustomElement {
   }
 
   _calcEffectiveness() {
-    this.effectiveness = 100 * this.hitCount / (this.hitCount + this.missedCount);
+    this.effectiveness = Math.round(100 * this.hitCount / (this.hitCount + this.missedCount));
   }
 
 }
