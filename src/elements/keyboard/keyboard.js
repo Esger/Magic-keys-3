@@ -3,7 +3,7 @@ import { EventAggregator } from 'aurelia-event-aggregator';
 import { KeysService } from "services/keys-service";
 
 @inject(EventAggregator, KeysService)
-export class BoardCustomElement {
+export class KeyboardCustomElement {
   constructor(eventAggregator, keysService) {
     this._eventAggregator = eventAggregator;
     this._keysService = keysService;
