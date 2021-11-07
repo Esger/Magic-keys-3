@@ -4,12 +4,14 @@
   <button repeat.for="key of modifiers"
           class="key ${key.name} ${key.className}"
           css="grid-area: ${key.name}"
-          click.delegate="keyIsPressed(key)">${key.display}</button>
+          click.delegate="keyIsPressed(key)"
+          touchstard.delegate="keyIsPressed(key)">${key.display}</button>
 
   <section class="dynamic">
     <button repeat.for="key of keySubset"
             class="key ${key.name} ${key.className}"
-            click.delegate="keyIsPressed(key)">${key.name}</button>
+            click.delegate="keyIsPressed(key)"
+            touchstard.delegate="keyIsPressed(key)">${key.name}</button>
   </section>
 
 </template>
