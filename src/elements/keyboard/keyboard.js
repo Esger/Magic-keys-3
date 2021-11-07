@@ -16,24 +16,22 @@ export class KeyboardCustomElement {
 
   attached() {
     this._trainingReadySubscriber = this._eventAggregator.subscribe('trainingReady', _ => {
-      setTimeout(() => {
-        this.keys = this._keysService.getKeys()
-        this.keySubset = this._getSubset();
-      });
+      this.keys = this._keysService.getKeys()
+      this.keySubset = this._getSubset();
     });
-    this._keypressedSubscriber = this._eventAggregator.subscribe('keyIsPressed', key => this._handleKey(key));
     this._boardTypeSubscriber = this._eventAggregator.subscribe('boardType', dynamicKeysAmount => this._setBoardType(dynamicKeysAmount));
   }
 
   detached() {
     this._trainingReadySubscriber.dispose();
-    this._keypressedSubscriber.dispose();
     this._boardTypeSubscriber.dispose();
   }
 
   _setBoardType(amount) {
     this.maxKeys = parseInt(amount, 10);
     this.boardType = 'board--' + amount + 'keys';
+    this.keyHitCount = 0;
+    this.keyMissedCount = 0;
     this._resetSubset();
   }
 
@@ -106,15 +104,17 @@ export class KeyboardCustomElement {
       case key.name == 'next':
         this._nextSubset();
         this.keySubset = this._getSubset();
+        this.keyMissedCount++;
+        this._eventAggregator.publish('keyMissed',(this.keyMissedCount));
         break;
       default:
-        setTimeout(() => {
-          this.keys = this._keysService.getKeys();
-          this._resetSubset();
-          this.keySubset = this._getSubset();
-        });
+        this.keys = this._keysService.getKeys();
+        this._resetSubset();
+        this.keySubset = this._getSubset();
+        key.output?.length && this.keyHitCount++;
+        this._eventAggregator.publish('keyHit',(this.keyHitCount));
         // console.table(this.keys)
-        break;
+        break;  
     }
   }
 }
