@@ -350,16 +350,16 @@ export class KeysService {
       }
       this._tail = '';
       this._eventAggregator.publish('trainingReady');
+      this._saveKnowledge();
     }
-    this._saveKnowledge();
     console.table(this._keysKnowledge);
   }
-
+  
   _loadKnowledge() {
     if (localStorage.getItem("magic-keys-3")) {
       this._keysKnowledge = JSON.parse(localStorage.getItem("magic-keys-3"));
     } else {
-      this._train();
+      this._getText();
     }
   }
 
