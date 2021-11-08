@@ -1,11 +1,13 @@
 import { inject } from "aurelia-framework";
 import { EventAggregator } from 'aurelia-event-aggregator';
+import { KeysService } from "services/keys-service";
 
-@inject(EventAggregator)
+@inject(EventAggregator, KeysService)
 export class FooterCustomElement {
 
-  constructor(eventAggregator) {
+  constructor(eventAggregator, keysService) {
     this._eventAggregator = eventAggregator;
+    this._keyService = keysService;
     this.hitCount = 0;
     this.missedCount = 0;
   }
@@ -24,6 +26,14 @@ export class FooterCustomElement {
   detached() {
     this._hitCountSubscriber.dispose();
     this._missedCountSubscriber.dispose();
+  }
+
+  resetData() {
+    this._keyService.resetData();
+  }
+  
+  cleanData() {
+    this._keyService.cleanData();
   }
 
   _calcEffectiveness() {

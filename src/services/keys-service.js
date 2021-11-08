@@ -243,6 +243,18 @@ export class KeysService {
     return this._tailLength;
   }
 
+  resetData() {
+    this.cleanData();
+    this._getText();
+  }
+
+  cleanData() {
+    const cleanKnowledge = this._keysKnowledge.filter(key => key.name.length == 1 || key.name == 'new_word');
+    cleanKnowledge.forEach(key => key.successors = []);
+    this._keysKnowledge = cleanKnowledge;
+    this._eventAggregator.publish('dataReady');
+  }
+
   getKeys() {
     const useTail = this._tail.length && this._letters.indexOf(this._tail.substr(-1)) > -1;
     let nameStr = useTail ? this._tail.slice(-(this._tailLength - 1)) : 'new_word';
@@ -349,17 +361,17 @@ export class KeysService {
         this.registerKeystroke(tail);
       }
       this._tail = '';
-      this._eventAggregator.publish('trainingReady');
+      this._eventAggregator.publish('dataReady');
+      this._saveKnowledge();
     }
-    this._saveKnowledge();
     console.table(this._keysKnowledge);
   }
-
+  
   _loadKnowledge() {
     if (localStorage.getItem("magic-keys-3")) {
       this._keysKnowledge = JSON.parse(localStorage.getItem("magic-keys-3"));
     } else {
-      this._train();
+      this._getText();
     }
   }
 

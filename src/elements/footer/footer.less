@@ -2,11 +2,24 @@
   text-align: right;
 }
 
-footer a {
-  color          : var(--black);
-  text-decoration: none;
+footer {
+  p {
+    display        : flex;
+    justify-content: space-between;
+    margin-bottom  : 4px;
+  }
 
-  &:hover {
-    text-decoration: underline;
+  a {
+    color          : var(--black);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  button {
+    padding: 0 8px;
+    cursor : pointer;
   }
 }
