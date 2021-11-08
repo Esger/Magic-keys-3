@@ -15,7 +15,7 @@ export class KeyboardCustomElement {
   }
 
   attached() {
-    this._trainingReadySubscriber = this._eventAggregator.subscribe('trainingReady', _ => {
+    this._trainingReadySubscriber = this._eventAggregator.subscribe('dataReady', _ => {
       this.keys = this._keysService.getKeys()
       this.keySubset = this._getSubset();
     });
