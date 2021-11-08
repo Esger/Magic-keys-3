@@ -222,7 +222,7 @@ export class KeysService {
         this._letters.push(key.name);
       }
     });
-    this._getText();
+    this._loadKnowledge();
   }
 
   setAlphaKeyCount(count) {
@@ -299,6 +299,7 @@ export class KeysService {
         (this._letters.indexOf(lessonChar) > -1) && this._addToKnowledge('new_word', lessonChar);
       }
       tail = tail.slice(1);
+      this._saveWhenIdle();
     }
   }
 
@@ -350,7 +351,27 @@ export class KeysService {
       this._tail = '';
       this._eventAggregator.publish('trainingReady');
     }
+    this._saveKnowledge();
     console.table(this._keysKnowledge);
+  }
+
+  _loadKnowledge() {
+    if (localStorage.getItem("magic-keys-3")) {
+      this._keysKnowledge = JSON.parse(localStorage.getItem("magic-keys-3"));
+    } else {
+      this._train();
+    }
+  }
+
+  _saveWhenIdle() {
+    clearTimeout(this._saveTimeoutId);
+    this._saveTimeoutId = setTimeout(() => {
+      this._saveKnowledge();
+    }, 10000);
+  }
+
+  _saveKnowledge() {
+    localStorage.setItem("magic-keys-3", JSON.stringify(this._keysKnowledge));
   }
 
 }
