@@ -44,12 +44,21 @@ keyboard {
   overflow        : hidden;
   cursor          : pointer;
 
+  &.caps {
+    text-transform: uppercase;
+    font-size     : 2em;
+  }
+
+  &.active{
+    background: var(--highlightColor);
+  }
+  
   &.small {
     font-size: 1.8em;
   }
-
+  
   &.highlight {
-    color: var(--highlightColor);
+    background: var(--highlightColor);
   }
 }
 

@@ -12,6 +12,7 @@ export class KeyboardCustomElement {
     this.keys = this._keysService.getKeys();
     this.modifiers = this._keysService.getModifiers();
     this._setBoardType(this.maxKeys);
+    this.caps = false;
   }
 
   attached() {
@@ -101,20 +102,24 @@ export class KeyboardCustomElement {
 
   _handleKey(key) {
     switch (true) {
+      case key.name == 'shift':
+        this.caps = !this.caps;
+        break;
       case key.name == 'next':
         this._nextSubset();
         this.keySubset = this._getSubset();
         this.keyMissedCount++;
-        this._eventAggregator.publish('keyMissed',(this.keyMissedCount));
+        this._eventAggregator.publish('keyMissed', (this.keyMissedCount));
         break;
       default:
+        this.caps = false;
         this.keys = this._keysService.getKeys();
         this._resetSubset();
         this.keySubset = this._getSubset();
         key.output?.length && this.keyHitCount++;
-        this._eventAggregator.publish('keyHit',(this.keyHitCount));
+        this._eventAggregator.publish('keyHit', (this.keyHitCount));
         // console.table(this.keys)
-        break;  
+        break;
     }
   }
 }

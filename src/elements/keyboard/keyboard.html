@@ -2,14 +2,14 @@
   <require from="./keyboard.css"></require>
 
   <button repeat.for="key of modifiers"
-          class="key ${key.name} ${key.className}"
+          class="key ${key.name} ${key.className} ${caps && key.name == 'shift' ? 'active' : ''}"
           css="grid-area: ${key.name}"
           click.delegate="keyIsPressed(key)"
           touchstard.delegate="keyIsPressed(key)">${key.display}</button>
 
   <section class="dynamic">
     <button repeat.for="key of keySubset"
-            class="key ${key.name} ${key.className}"
+            class="key ${key.name} ${key.className} ${caps ? 'caps' : ''}"
             click.delegate="keyIsPressed(key)"
             touchstard.delegate="keyIsPressed(key)">${key.name}</button>
   </section>
