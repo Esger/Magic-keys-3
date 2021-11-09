@@ -35,7 +35,7 @@ export class TerminalCustomElement {
         this.value = this.caps ? this.value + key.output.toUpperCase() : this.value + key.output;
         this.caps = this.capsLock;
         const tail = this.value.substr(-this._tailLength);
-        this._keysService.registerKeystroke(tail);
+        this._keysService.registerKeystroke(tail.toLocaleLowerCase());
         break;
       case key.name == 'backspace':
         this.value = this.value.slice(0, -1);

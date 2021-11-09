@@ -5,7 +5,8 @@
           class="key ${key.name} ${key.className} ${caps && key.name == 'shift' ? 'active' : ''}"
           css="grid-area: ${key.name}"
           click.delegate="keyIsPressed(key)"
-          touchstard.delegate="keyIsPressed(key)">${key.display}</button>
+          touchstard.delegate="keyIsPressed(key)"
+          title.one-time="key.title || ''">${key.display}</button>
 
   <section class="dynamic">
     <button repeat.for="key of keySubset"
