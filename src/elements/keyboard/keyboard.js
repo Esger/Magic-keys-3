@@ -103,7 +103,12 @@ export class KeyboardCustomElement {
   _handleKey(key) {
     switch (true) {
       case key.name == 'shift':
-        this.caps = !this.caps;
+        this.capsLock = this.capsLockPending;
+        this.caps = !this.caps || this.capsLock;
+        this.capsLockPending = true;
+        setTimeout(() => {
+          this.capsLockPending = false;
+        }, 300);
         break;
       case key.name == 'next':
         this._nextSubset();
@@ -112,7 +117,7 @@ export class KeyboardCustomElement {
         this._eventAggregator.publish('keyMissed', (this.keyMissedCount));
         break;
       default:
-        this.caps = false;
+        this.caps = this.capsLock;
         this.keys = this._keysService.getKeys();
         this._resetSubset();
         this.keySubset = this._getSubset();

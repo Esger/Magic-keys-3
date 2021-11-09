@@ -24,11 +24,16 @@ export class TerminalCustomElement {
   _handleKey(key) {
     switch (true) {
       case key.name == 'shift':
-        this.caps = true;
+        this.capsLock = this.capsLockPending;
+        this.caps = !this.caps || this.capsLock;
+        this.capsLockPending = true;
+        setTimeout(() => {
+          this.capsLockPending = false;
+        }, 300);
         break;
       case key.output?.length > 0:
         this.value = this.caps ? this.value + key.output.toUpperCase() : this.value + key.output;
-        this.caps = false;
+        this.caps = this.capsLock;
         const tail = this.value.substr(-this._tailLength);
         this._keysService.registerKeystroke(tail);
         break;
