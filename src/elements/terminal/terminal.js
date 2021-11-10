@@ -23,12 +23,22 @@ export class TerminalCustomElement {
 
   _handleKey(key) {
     switch (true) {
-      case key.output?.length > 0: this.value += key.output;
-        const tail = this.value.substr(-this._tailLength);
-        console.log(key, tail);
-        this._keysService.registerKeystroke(tail);
+      case key.name == 'shift':
+        this.capsLock = this.capsLockPending;
+        this.caps = !this.caps || this.capsLock;
+        this.capsLockPending = true;
+        setTimeout(() => {
+          this.capsLockPending = false;
+        }, 300);
         break;
-      case key.name == 'backspace': this.value = this.value.slice(0, -1);
+      case key.output?.length > 0:
+        this.value = this.caps ? this.value + key.output.toUpperCase() : this.value + key.output;
+        this.caps = this.capsLock;
+        const tail = this.value.substr(-this._tailLength);
+        this._keysService.registerKeystroke(tail.toLocaleLowerCase());
+        break;
+      case key.name == 'backspace':
+        this.value = this.value.slice(0, -1);
         break;
       default: break;
     }

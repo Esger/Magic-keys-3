@@ -146,6 +146,7 @@ export class KeysService {
     {
       name: 'shift',
       display: '⇧',
+      title: 'Double click for Caps-lock'
     },
     {
       name: 'numeric',
@@ -174,7 +175,8 @@ export class KeysService {
     {
       name: 'next',
       display: '⇨',
-      className: 'highlight'
+      className: 'highlight',
+      title: 'More keys…'
     },
   ];
 
@@ -379,7 +381,7 @@ export class KeysService {
     clearTimeout(this._saveTimeoutId);
     this._saveTimeoutId = setTimeout(() => {
       this._saveKnowledge();
-    }, 10000);
+    }, 5000);
   }
 
   _saveKnowledge() {
