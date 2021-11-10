@@ -13,15 +13,19 @@ export class MenuCustomElement {
             menuVisible: false,
             menuDisabled: false,
             submenuBoardsVisible: false,
+            submenuDepthVisible: false,
         };
         this.boardTypes = [
             { name: '8 keys', keyAmount: '8' },
             { name: '9 keys', keyAmount: '9' },
         ];
+        this.depths = [1, 2, 3, 4, 5];
     }
 
     attached() {
         this._$body = $('body');
+        this.getDepth();
+        this.getAlphaKeyCount();
     }
 
     showTheMenu(event) {
@@ -37,6 +41,8 @@ export class MenuCustomElement {
         this._$body.off('click.closeMenu');
         setTimeout(_ => {
             this.settings.menuVisible = false;
+            this.settings.submenuBoardsVisible = false;
+            this.settings.submenuDepthVisible = false;
         });
     }
 
@@ -45,13 +51,36 @@ export class MenuCustomElement {
         return false;
     }
 
+    toggleSubmenuDepth() {
+        this.settings.submenuDepthVisible = !this.settings.submenuDepthVisible;
+        return false;
+    }
+
     setKeyAmount(amount) {
-        this.alphaKeys = amount;
+        this.currentBoardType = amount;
         this._keyService.setAlphaKeyCount(amount);
     }
 
     getAlphaKeyCount() {
-        this.alphaKeys = this._keyService.getAlphaKeyCount();
+        this.currentBoardType = this._keyService.getAlphaKeyCount();
+    }
+
+    setDepth(depth) {
+        this.currentDepth = depth;
+        this._keyService.setTailLength(depth);
+    }
+
+    getDepth() {
+        this.currentDepth = this._keyService.getTailLength();
+    }
+
+    resetData() {
+        this._keyService.resetData();
+        this._eventAggregator.subscribeOnce('dataReady', _ => this.getDepth());
+    }
+
+    cleanData() {
+        this._keyService.cleanData();
     }
 
 }

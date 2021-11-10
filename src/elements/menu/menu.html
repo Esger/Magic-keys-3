@@ -20,12 +20,26 @@
             <ul if.bind="settings.submenuBoardsVisible"
                 class="subMenu">
                 <li repeat.for="boardType of boardTypes"
+                    class="${boardType.keyAmount == currentBoardType ? 'active' : ''}"
                     click.delegate="setKeyAmount(boardType.keyAmount)">${boardType.name}</li>
             </ul>
         </li>
 
-        <li click.delegate="rotateBoard()"
-            touchstart.delegate="rotateBoard()">Rotate</li>
+        <li mouseenter.trigger="toggleSubmenuDepth()"
+            mouseleave.trigger="toggleSubmenuDepth()"
+            touchend.delegate="toggleSubmenuDepth()">
+            Learning&nbsp;<i class="fa fa-angle-right"></i>
+            <ul if.bind="settings.submenuDepthVisible"
+                class="subMenu">
+                <li repeat.for="depth of depths"
+                    class="${depth == currentDepth ? 'active' : ''}"
+                    click.delegate="setDepth(depth)">Depth: ${depth}</li>
+            </ul>
+        </li>
+
+        <li click.delegate="resetData()">Reset to default knowledge</li>
+
+        <li click.delegate="cleanData()">Clean all knowledge</li>
 
     </ul>
 
