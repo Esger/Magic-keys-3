@@ -1,0 +1,46 @@
+<template class="hamburger">
+    <require from="./menu.css"></require>
+    <i class="fa fa-bars"
+    class.bind="menuDisabled ? 'disabled' : ''"
+    click.delegate="showTheMenu($event)"
+    touchstart.delegate="showTheMenu($event)"></i>
+
+    <ul class="menu"
+        if.bind="settings.menuVisible">
+
+        <li click.delegate="hideTheMenu()"
+            touchstart.delegate="hideTheMenu()">
+            <i class="fa fa-times"></i>
+        </li>
+
+        <li mouseenter.trigger="toggleSubmenuBoards()"
+            mouseleave.trigger="toggleSubmenuBoards()"
+            touchend.delegate="toggleSubmenuBoards()">
+            Keyboards&nbsp;<i class="fa fa-angle-right"></i>
+            <ul if.bind="settings.submenuBoardsVisible"
+                class="subMenu">
+                <li repeat.for="boardType of boardTypes"
+                    class="${boardType.keyAmount == currentBoardType ? 'active' : ''}"
+                    click.delegate="setKeyAmount(boardType.keyAmount)">${boardType.name}</li>
+            </ul>
+        </li>
+
+        <li mouseenter.trigger="toggleSubmenuDepth()"
+            mouseleave.trigger="toggleSubmenuDepth()"
+            touchend.delegate="toggleSubmenuDepth()">
+            Learning&nbsp;<i class="fa fa-angle-right"></i>
+            <ul if.bind="settings.submenuDepthVisible"
+                class="subMenu">
+                <li repeat.for="depth of depths"
+                    class="${depth == currentDepth ? 'active' : ''}"
+                    click.delegate="setDepth(depth)">Depth: ${depth}</li>
+            </ul>
+        </li>
+
+        <li click.delegate="resetData()">Reset to default knowledge</li>
+
+        <li click.delegate="cleanData()">Clean all knowledge</li>
+
+    </ul>
+
+</template>

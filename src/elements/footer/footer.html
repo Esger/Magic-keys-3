@@ -1,14 +1,9 @@
 <template>
-  <require from="./footer.css"></require>
+    <require from="./footer.css"></require>
 
-  <p><span>Correct ${hitCount}</span>
-    <button click.delegate="resetData()"
-            title="Reset to default knowledge">Reset</button>
-  </p>
-  <p><span>Missed ${missedCount}</span>
-    <button click.delegate="cleanData()"
-            title="Clean all knowledge">Clean</button>
-  </p>
-  <p>Effective ${effectiveness}%</p>
-  <p><span></span><span>&copy;&thinsp;<a href="https://ashware.nl">ashWare</a></span></p>
+    <p><span>Correct ${hitCount}</span>
+        <span>Missed ${missedCount}</span>
+        <span>Effective ${effectiveness || 100}%</span>
+    </p>
+    <p><span></span><span>&copy;&thinsp;<a href="https://ashware.nl">ashWare</a></span></p>
 </template>
