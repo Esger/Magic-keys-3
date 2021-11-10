@@ -1,0 +1,32 @@
+<template class="hamburger">
+    <require from="./menu.css"></require>
+    <i class="fa fa-bars"
+    class.bind="menuDisabled ? 'disabled' : ''"
+    click.delegate="showTheMenu($event)"
+    touchstart.delegate="showTheMenu($event)"></i>
+
+    <ul class="menu"
+        if.bind="settings.menuVisible">
+
+        <li click.delegate="hideTheMenu()"
+            touchstart.delegate="hideTheMenu()">
+            <i class="fa fa-times"></i>
+        </li>
+
+        <li mouseenter.trigger="toggleSubmenuBoards()"
+            mouseleave.trigger="toggleSubmenuBoards()"
+            touchend.delegate="toggleSubmenuBoards()">
+            Keyboards&nbsp;<i class="fa fa-angle-right"></i>
+            <ul if.bind="settings.submenuBoardsVisible"
+                class="subMenu">
+                <li repeat.for="boardType of boardTypes"
+                    click.delegate="setKeyAmount(boardType.keyAmount)">${boardType.name}</li>
+            </ul>
+        </li>
+
+        <li click.delegate="rotateBoard()"
+            touchstart.delegate="rotateBoard()">Rotate</li>
+
+    </ul>
+
+</template>

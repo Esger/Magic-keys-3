@@ -1,16 +1,13 @@
 <template>
-  <require from="./header.css"></require>
+    <require from="elements/menu/menu"></require>
+    <require from="./header.css"></require>
 
-  <h1>${message}</h1>
-  <label>Keys<input type="number"
-                    min="8"
-                    max="9"
-                    value.bind="alphaKeys"
-                    change.delegate="setAlphaKeyCount()"></label>
-  <label>Depth<input type="number"
-                    min="0"
-                    max="5"
-                    value.bind="depth"
-                    change.delegate="setDepth()"></label>
+    <h1>${message}</h1>
+    <label>Depth<input type="number"
+        min="0"
+        max="5"
+        value.bind="depth"
+        change.delegate="setDepth()"></label>
+    <menu></menu>
 
 </template>
