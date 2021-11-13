@@ -23,13 +23,13 @@ export class MenuCustomElement {
     }
 
     attached() {
-        this._$body = $('body');
+        this._$html = $('html');
         this.getDepth();
         this.getAlphaKeyCount();
     }
 
     showTheMenu(event) {
-        this._$body.on('click.closeMenu', event => {
+        this._$html.on('click.closeMenu', event => {
             const clickInside = event.target.closest('menu')?.length > 0;
             !clickInside && this.hideTheMenu();
         });
@@ -38,7 +38,7 @@ export class MenuCustomElement {
     }
 
     hideTheMenu() {
-        this._$body.off('click.closeMenu');
+        this._$html.off('click.closeMenu');
         setTimeout(_ => {
             this.settings.menuVisible = false;
             this.settings.submenuBoardsVisible = false;
@@ -48,11 +48,13 @@ export class MenuCustomElement {
 
     toggleSubmenuBoards() {
         this.settings.submenuBoardsVisible = !this.settings.submenuBoardsVisible;
+        this.settings.submenuDepthVisible = false;
         return false;
     }
 
     toggleSubmenuDepth() {
         this.settings.submenuDepthVisible = !this.settings.submenuDepthVisible;
+        this.settings.submenuBoardsVisible = false;
         return false;
     }
 

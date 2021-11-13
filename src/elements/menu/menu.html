@@ -2,7 +2,8 @@
     <require from="./menu.css"></require>
     <i class="fa fa-bars"
     class.bind="menuDisabled ? 'disabled' : ''"
-    click.delegate="showTheMenu($event)"></i>
+    mouseenter.trigger="showTheMenu($event)"
+    touchstart.delegate="showTheMenu($event)"></i>
 
     <ul class="menu"
         if.bind="settings.menuVisible">
@@ -13,7 +14,8 @@
         </li>
 
         <li mouseenter.trigger="toggleSubmenuBoards()"
-            mouseleave.trigger="toggleSubmenuBoards()">
+            mouseleave.trigger="toggleSubmenuBoards()"
+            touchstart.delegate="toggleSubmenuBoards()">
             Keyboards&nbsp;<i class="fa fa-angle-right"></i>
             <ul if.bind="settings.submenuBoardsVisible"
                 class="subMenu">
@@ -24,7 +26,7 @@
         </li>
 
         <li mouseenter.trigger="toggleSubmenuDepth()"
-            mouseleave.trigger="toggleSubmenuDepth()"
+            mouseleave.trigger="toggleSubmenutoggleSubmenuDepth()"
             touchend.delegate="toggleSubmenuDepth()">
             Learning&nbsp;<i class="fa fa-angle-right"></i>
             <ul if.bind="settings.submenuDepthVisible"

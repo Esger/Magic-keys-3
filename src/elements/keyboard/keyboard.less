@@ -88,15 +88,19 @@ keyboard {
         }
     }
 
-    .board--9keys.numeric &.shift {
-        display: none;
-    }
-
-    .board--9keys.numeric & {
-
-        .comma,
-        .period {
+    .numeric {
+        &.board--9keys &.shift {
             display: none;
         }
+
+        &.board--9keys & {
+
+            .comma,
+            .period {
+                display: none;
+            }
+        }
+
     }
+
 }
