@@ -1,75 +1,86 @@
+keyboard,
+.dynamic {
+    column-gap    : var(--gapSize);
+    row-gap       : var(--gapSize);
+    grid-auto-rows: 1fr;
+}
+
+.dynamic {
+    grid-area: dynamic;
+    display  : grid;
+}
+
 keyboard {
-  display      : grid;
-  margin-bottom: 24px;
+    display      : grid;
+    margin-bottom: 24px;
+    width        : 100%;
 
-  &.board--8keys {
-    width: 400px;
-    grid-template-areas:
-      "shift numeric symbols brackets backspace next"
-      "comma dynamic dynamic dynamic  dynamic   enter"
-      "dot   dynamic dynamic dynamic  dynamic   space";
+    &.board--8keys {
+        --gapSize: 6px;
+        --keySize: calc(~"(100% - (5 * var(--gapSize))) / 6");
+        grid-template-areas:
+            "shift numeric symbols brackets backspace next"
+            "comma dynamic dynamic dynamic  dynamic   enter"
+            "dot   dynamic dynamic dynamic  dynamic   space";
+        grid-template-columns: repeat(6, minmax(0, var(--keySize)));
+        height               : calc(~"3 * var(--keySize) + 2 * var(--gapSize)");
 
-    .hide8 {
-      display: none;
+        .hide8 {
+            display: none;
+        }
+
+        .dynamic {
+            --keySize            : calc(~"(100% - (3 * var(--gapSize))) / 4");
+            grid-template-columns: repeat(4, minmax(0, var(--keySize)));
+        }
     }
-  }
 
-  &.board--9keys {
-    width: 332px;
-    grid-template-areas:
-      "numeric symbols brackets quotes  backspace"
-      "shift   dynamic dynamic  dynamic next"
-      "comma   dynamic dynamic  dynamic enter"
-      "dot     dynamic dynamic  dynamic space";
-  }
+    &.board--9keys {
+        --gapSize          : 8px;
+        --keySize          : calc(~"(100% - (4 * var(--gapSize))) / 5");
+        grid-template-areas: "numeric symbols brackets quotes  backspace"
+            "shift   dynamic dynamic  dynamic next"
+            "comma   dynamic dynamic  dynamic enter"
+            "dot     dynamic dynamic  dynamic space";
+        grid-template-columns: repeat(5, minmax(0, var(--keySize)));
+
+        .dynamic {
+            --keySize            : calc(~"(100% - (2 * var(--gapSize))) / 3");
+            grid-template-columns: repeat(3, minmax(0, var(--keySize)));
+        }
+    }
 
 }
 
 .key {
-  display         : flex;
-  justify-content : center;
-  align-items     : center;
-  width           : 60px;
-  height          : 60px;
-  color           : var(--black);
-  font-family     : "Source Code Pro";
-  font-size       : 2.4em;
-  font-weight     : 400;
-  line-height     : 1;
-  text-shadow     : 0px 1px 1px #ccc;
-  background-color: #fff;
-  border-radius   : 7px;
-  border          : 1px solid #666;
-  box-shadow      : 0 2px 3px #111;
-  overflow        : hidden;
-  cursor          : pointer;
+    display         : flex;
+    aspect-ratio    : 1;
+    justify-content : center;
+    align-items     : center;
+    color           : var(--black);
+    font-family     : "Source Code Pro";
+    font-size       : clamp(1.3333rem, ~"-0.6668rem + 10.6672vw", 2rem); // 1.3em - 2em
+    font-weight     : 400;
+    line-height     : 1;
+    text-transform  : uppercase;
+    text-shadow     : 0px 1px 1px #ccc;
+    background-color: #fff;
+    border-radius   : 7px;
+    border          : 1px solid #666;
+    box-shadow      : 0 2px 3px #111;
+    overflow        : hidden;
+    cursor          : pointer;
 
-  &.caps {
-    text-transform: uppercase;
-    font-size     : 2em;
-  }
+    &.active {
+        background: var(--highlightColor);
+    }
 
-  &.active{
-    background: var(--highlightColor);
-  }
-  
-  &.small {
-    font-size: 1.8em;
-  }
-  
-  &.highlight {
-    background: var(--highlightColor);
-  }
-}
+    &.small {
+        // font-size: clamp(1.2rem, ~"-0.6rem + 9.6vw", 1.8rem);
+        font-size: clamp(1rem, ~"-0.2000rem + 6.4000vw", 1.4rem);
+    }
 
-.dynamic {
-  grid-area: dynamic;
-  display  : flex;
-  flex-wrap: wrap;
-}
-
-keyboard,
-.dynamic {
-  column-gap: 8px;
-  row-gap   : 8px;
+    &.highlight {
+        background: var(--highlightColor);
+    }
 }
