@@ -2,7 +2,10 @@
     <require from="./keyboard.css"></require>
 
     <button repeat.for="key of modifiers"
-          class="key ${key.name} ${key.className} ${caps && key.name == 'shift' ? 'active' : ''}"
+          class="key ${key.name} ${key.className} 
+                ${caps && key.name == 'shift' ? 'active' : ''}
+                ${numeric && key.display == '123' ? 'hide' : ''}
+                ${!numeric && key.display == 'abc' ? 'hide' : ''}"
           css="grid-area: ${key.name}"
           click.delegate="keyIsPressed(key)"
           touchstard.delegate="keyIsPressed(key)"
