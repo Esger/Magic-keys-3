@@ -36,10 +36,11 @@ keyboard {
     }
 
     &.board--9keys {
-        --gapSize          : 8px;
-        --keySize          : calc(~"(100% - (4 * var(--gapSize))) / 5");
-        grid-template-areas: "numeric symbols brackets quotes  backspace"
-            "shift   dynamic dynamic  dynamic next"
+        --gapSize: 8px;
+        --keySize: calc(~"(100% - (4 * var(--gapSize))) / 5");
+        grid-template-areas:
+            "numeric symbols brackets quotes  next"
+            "shift   dynamic dynamic  dynamic backspace"
             "comma   dynamic dynamic  dynamic enter"
             "dot     dynamic dynamic  dynamic space";
         grid-template-columns: repeat(5, minmax(0, var(--keySize)));
