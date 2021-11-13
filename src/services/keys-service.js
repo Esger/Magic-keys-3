@@ -171,7 +171,7 @@ export class KeysService {
         {
             name: 'quotes',
             display: '"',
-            className: 'small hide8'
+            className: 'small quotes'
         },
         {
             name: 'backspace',
@@ -187,7 +187,7 @@ export class KeysService {
 
     _nonAlpha = [
         {
-            name: 'dot',
+            name: 'period',
             display: '.',
             output: '.',
             className: 'small'
@@ -231,7 +231,8 @@ export class KeysService {
         },
         {
             name: '5',
-            output: '5'
+            output: '5',
+            className: 'five'
         },
         {
             name: '6',
@@ -251,7 +252,8 @@ export class KeysService {
         },
         {
             name: '0',
-            output: '0'
+            output: '0',
+            className: 'zero'
         },
     ]
 

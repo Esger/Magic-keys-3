@@ -34,6 +34,7 @@ export class KeyboardCustomElement {
         this.boardType = 'board--' + amount + 'keys';
         this.keyHitCount = 0;
         this.keyMissedCount = 0;
+        this.numeric = false;
         this._resetSubset();
     }
 
@@ -129,7 +130,7 @@ export class KeyboardCustomElement {
                 this.caps = this.capsLock;
                 this.keys = this._keysService.getKeys();
                 this._resetSubset();
-                this.keySubset = this._getAlphaSubset();
+                this.keySubset = this.numeric ? this._getNumberSubset() : this._getAlphaSubset();
                 key.output?.length && this.keyHitCount++;
                 this._eventAggregator.publish('keyHit', (this.keyHitCount));
                 // console.table(this.keys)

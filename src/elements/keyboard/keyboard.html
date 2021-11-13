@@ -1,4 +1,4 @@
-<template class.bind="boardType">
+<template class="${boardType} ${numeric ? 'numeric' : ''}">
     <require from="./keyboard.css"></require>
 
     <button repeat.for="key of modifiers"
@@ -11,11 +11,9 @@
           touchstard.delegate="keyIsPressed(key)"
           title.one-time="key.title || ''">${key.display}</button>
 
-    <section class="dynamic">
-        <button repeat.for="key of keySubset"
-            class="key ${key.name} ${key.className}"
-            click.delegate="keyIsPressed(key)"
-            touchstard.delegate="keyIsPressed(key)">${key.name}</button>
-    </section>
+    <button repeat.for="key of keySubset"
+        class="key ${key.name} ${key.className}"
+        click.delegate="keyIsPressed(key)"
+        touchstard.delegate="keyIsPressed(key)">${key.name}</button>
 
 </template>
