@@ -14,6 +14,8 @@ export class MenuCustomElement {
             menuDisabled: false,
             submenuBoardsVisible: false,
             submenuDepthVisible: false,
+            currentBoardType: undefined,
+            currentDepth: undefined
         };
         this.boardTypes = [
             { name: '8 keys', keyAmount: '8' },
@@ -59,21 +61,21 @@ export class MenuCustomElement {
     }
 
     setKeyAmount(amount) {
-        this.currentBoardType = amount;
+        this.settings.currentBoardType = amount;
         this._keyService.setAlphaKeyCount(amount);
     }
 
     getAlphaKeyCount() {
-        this.currentBoardType = this._keyService.getAlphaKeyCount();
+        this.settings.currentBoardType = this._keyService.getAlphaKeyCount();
     }
 
     setDepth(depth) {
-        this.currentDepth = depth;
+        this.settings.currentDepth = depth;
         this._keyService.setTailLength(depth);
     }
 
     getDepth() {
-        this.currentDepth = this._keyService.getTailLength();
+        this.settings.currentDepth = this._keyService.getTailLength();
     }
 
     resetData() {
