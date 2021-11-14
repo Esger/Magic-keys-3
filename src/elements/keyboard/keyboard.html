@@ -1,18 +1,19 @@
-<template class.bind="boardType">
+<template class="${boardType} ${numeric ? 'numeric' : ''}">
     <require from="./keyboard.css"></require>
 
     <button repeat.for="key of modifiers"
-          class="key ${key.name} ${key.className} ${caps && key.name == 'shift' ? 'active' : ''}"
+          class="key ${key.name} ${key.className} 
+                ${caps && key.name == 'shift' ? 'active' : ''}
+                ${numeric && key.display == '123' ? 'hide' : ''}
+                ${!numeric && key.display == 'abc' ? 'hide' : ''}"
           css="grid-area: ${key.name}"
           click.delegate="keyIsPressed(key)"
           touchstard.delegate="keyIsPressed(key)"
           title.one-time="key.title || ''">${key.display}</button>
 
-    <section class="dynamic">
-        <button repeat.for="key of keySubset"
-            class="key ${key.name} ${key.className}"
-            click.delegate="keyIsPressed(key)"
-            touchstard.delegate="keyIsPressed(key)">${key.name}</button>
-    </section>
+    <button repeat.for="key of keySubset"
+        class="key ${key.name} ${key.className}"
+        click.delegate="keyIsPressed(key)"
+        touchstard.delegate="keyIsPressed(key)">${key.name}</button>
 
 </template>

@@ -1,19 +1,10 @@
-keyboard,
-.dynamic {
+keyboard {
+    display       : grid;
     column-gap    : var(--gapSize);
     row-gap       : var(--gapSize);
     grid-auto-rows: 1fr;
-}
-
-.dynamic {
-    grid-area: dynamic;
-    display  : grid;
-}
-
-keyboard {
-    display      : grid;
-    margin-bottom: 24px;
-    width        : 100%;
+    margin-bottom : 24px;
+    width         : 100%;
 
     &.board--8keys {
         --gapSize: 6px;
@@ -21,17 +12,11 @@ keyboard {
         grid-template-areas:
             "shift numeric symbols brackets backspace next"
             "comma dynamic dynamic dynamic  dynamic   enter"
-            "dot   dynamic dynamic dynamic  dynamic   space";
+            "period   dynamic dynamic dynamic  dynamic   space";
         grid-template-columns: repeat(6, minmax(0, var(--keySize)));
-        height               : calc(~"3 * var(--keySize) + 2 * var(--gapSize)");
 
         .hide8 {
             display: none;
-        }
-
-        .dynamic {
-            --keySize            : calc(~"(100% - (3 * var(--gapSize))) / 4");
-            grid-template-columns: repeat(4, minmax(0, var(--keySize)));
         }
     }
 
@@ -42,15 +27,9 @@ keyboard {
             "numeric symbols brackets quotes  next"
             "shift   dynamic dynamic  dynamic backspace"
             "comma   dynamic dynamic  dynamic enter"
-            "dot     dynamic dynamic  dynamic space";
+            "period  dynamic dynamic  dynamic space";
         grid-template-columns: repeat(5, minmax(0, var(--keySize)));
-
-        .dynamic {
-            --keySize            : calc(~"(100% - (2 * var(--gapSize))) / 3");
-            grid-template-columns: repeat(3, minmax(0, var(--keySize)));
-        }
     }
-
 }
 
 .key {
@@ -84,4 +63,44 @@ keyboard {
     &.highlight {
         background: var(--highlightColor);
     }
+
+    &.hide {
+        display: none;
+    }
+
+    .board--8keys & {
+        &.zero {
+            grid-area: comma;
+        }
+
+        &.five {
+            grid-area: period;
+        }
+
+        &.quotes {
+            display: none;
+        }
+    }
+
+    .board--9keys & {
+        &.zero {
+            grid-area: shift;
+        }
+    }
+
+    .numeric {
+        &.board--9keys &.shift {
+            display: none;
+        }
+
+        &.board--9keys & {
+
+            .comma,
+            .period {
+                display: none;
+            }
+        }
+
+    }
+
 }

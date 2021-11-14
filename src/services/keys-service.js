@@ -154,6 +154,11 @@ export class KeysService {
             className: 'small'
         },
         {
+            name: 'numeric',
+            display: 'abc',
+            className: 'small'
+        },
+        {
             name: 'symbols',
             display: '@',
             className: 'small'
@@ -166,7 +171,7 @@ export class KeysService {
         {
             name: 'quotes',
             display: '"',
-            className: 'small hide8'
+            className: 'small quotes'
         },
         {
             name: 'backspace',
@@ -182,7 +187,7 @@ export class KeysService {
 
     _nonAlpha = [
         {
-            name: 'dot',
+            name: 'period',
             display: '.',
             output: '.',
             className: 'small'
@@ -204,6 +209,51 @@ export class KeysService {
             display: ' ',
             output: ' ',
             position: 'p9'
+        },
+    ]
+
+    _numbers = [
+        {
+            name: '1',
+            output: '1'
+        },
+        {
+            name: '2',
+            output: '2'
+        },
+        {
+            name: '3',
+            output: '3'
+        },
+        {
+            name: '4',
+            output: '4'
+        },
+        {
+            name: '5',
+            output: '5',
+            className: 'five'
+        },
+        {
+            name: '6',
+            output: '6'
+        },
+        {
+            name: '7',
+            output: '7'
+        },
+        {
+            name: '8',
+            output: '8'
+        },
+        {
+            name: '9',
+            output: '9'
+        },
+        {
+            name: '0',
+            output: '0',
+            className: 'zero'
         },
     ]
 
@@ -285,6 +335,10 @@ export class KeysService {
             });
         };
         return JSON.parse(JSON.stringify([...probableKeys, ...completingKeys])) || [];
+    }
+
+    getNumbers() {
+        return this._numbers;
     }
 
     getModifiers() {

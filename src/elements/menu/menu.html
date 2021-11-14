@@ -2,7 +2,8 @@
     <require from="./menu.css"></require>
     <i class="fa fa-bars"
     class.bind="menuDisabled ? 'disabled' : ''"
-    click.delegate="showTheMenu($event)"></i>
+    mouseenter.trigger="showTheMenu($event)"
+    touchstart.trigger="showTheMenu($event)"></i>
 
     <ul class="menu"
         if.bind="settings.menuVisible">
@@ -13,25 +14,28 @@
         </li>
 
         <li mouseenter.trigger="toggleSubmenuBoards()"
-            mouseleave.trigger="toggleSubmenuBoards()">
+            mouseleave.trigger="toggleSubmenuBoards()"
+            touchstart.trigger="toggleSubmenuBoards()">
             Keyboards&nbsp;<i class="fa fa-angle-right"></i>
             <ul if.bind="settings.submenuBoardsVisible"
                 class="subMenu">
                 <li repeat.for="boardType of boardTypes"
-                    class="${boardType.keyAmount == currentBoardType ? 'active' : ''}"
-                    click.delegate="setKeyAmount(boardType.keyAmount)">${boardType.name}</li>
+                    class="${boardType.keyAmount == settings.currentBoardType ? 'active' : ''}"
+                    click.delegate="setKeyAmount(boardType.keyAmount)"
+                    touchstart.trigger="setKeyAmount(boardType.keyAmount)">${boardType.name}</li>
             </ul>
         </li>
 
         <li mouseenter.trigger="toggleSubmenuDepth()"
-            mouseleave.trigger="toggleSubmenuDepth()"
-            touchend.delegate="toggleSubmenuDepth()">
+            mouseleave.trigger="toggleSubmenutoggleSubmenuDepth()"
+            touchend.trigger="toggleSubmenuDepth()">
             Learning&nbsp;<i class="fa fa-angle-right"></i>
             <ul if.bind="settings.submenuDepthVisible"
                 class="subMenu">
                 <li repeat.for="depth of depths"
-                    class="${depth == currentDepth ? 'active' : ''}"
-                    click.delegate="setDepth(depth)">Depth: ${depth}</li>
+                    class="${depth == settings.currentDepth ? 'active' : ''}"
+                    click.delegate="setDepth(depth)"
+                    touchstart.trigger="setDepth(depth)">Depth: ${depth}</li>
             </ul>
         </li>
 
