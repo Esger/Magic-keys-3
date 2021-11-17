@@ -310,6 +310,45 @@ export class KeysService {
         },
     ]
 
+    _symbols = [
+        {
+            name: '±',
+            output: '±',
+        },
+        {
+            name: '@',
+            output: '@',
+        },
+        {
+            name: '#',
+            output: '#',
+        },
+        {
+            name: '$',
+            output: '$',
+        },
+        {
+            name: '%',
+            output: '%',
+        },
+        {
+            name: '^',
+            output: '^',
+        },
+        {
+            name: '&',
+            output: '&',
+        },
+        {
+            name: '*',
+            output: '*',
+        },
+        {
+            name: '~',
+            output: '~',
+        },
+    ]
+
     _keys = []; // simple copy of _knowledge to prevent passing lots of data around.
     _letters = [];
     _text = '';
