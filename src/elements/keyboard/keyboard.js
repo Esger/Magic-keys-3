@@ -10,10 +10,11 @@ export class KeyboardCustomElement {
         this.maxKeys = 9;
         this._keysService.setAlphaKeyCount(this.maxKeys);
         this.keys = this._keysService.getKeys();
-        this.modifiers = this._keysService.getModifiers();
+        this.modifiers = this._keysService.getKeys('modifiers');
         this._setBoardType(this.maxKeys);
         this.caps = false;
-        this.numeric = false;
+        this._resetKeysetType();
+        this._previousKeysetType = [];
     }
 
     attached() {
@@ -34,14 +35,22 @@ export class KeyboardCustomElement {
         this.boardType = 'board--' + amount + 'keys';
         this.keyHitCount = 0;
         this.keyMissedCount = 0;
-        this.numeric = false;
+        this._resetKeysetType();
         this._resetSubset();
     }
 
-    _resetSubset() {
-        this.firstKey = 0;
-        this.lastKey = this.maxKeys;
-        this.keySubset = this._getAlphaSubset();
+    _resetKeysetType() {
+        this.keysetType = 'alpha';
+    }
+
+    _setKeysetType(type) {
+        this._previousKeysetType.push(this.keysetType);
+        this.keysetType = type;
+    }
+
+
+    isKeysetOftype(type) {
+        return this.keysetType === type;
     }
 
     _getAlphaSubset() {
@@ -78,8 +87,19 @@ export class KeyboardCustomElement {
         return newSubset;
     }
 
-    _getNumberSubset() {
-        return this._keysService.getNumbers();
+    _resetSubset() {
+        this.firstKey = 0;
+        this.lastKey = this.maxKeys;
+        this.keySubset = this._getAlphaSubset();
+    }
+
+    _toggleKeysetType(type) {
+        if (type === this.keysetType) {
+            this.keysetType = this._previousKeysetType.pop();
+        } else {
+            this._previousKeysetType.push(this.keysetType);
+            this.keysetType = type;
+        }
     }
 
     _removeFromSet(set, key) {
@@ -116,24 +136,29 @@ export class KeyboardCustomElement {
                     this.capsLockPending = false;
                 }, 300);
                 break;
-            case key.name == 'numeric':
-                this.numeric = !this.numeric;
-                this.keySubset = this.numeric ? this._getNumberSubset() : this._getAlphaSubset();
-                break;
             case key.name == 'next':
+                this._resetKeysetType();
                 this._nextSubset();
                 this.keySubset = this._getAlphaSubset();
                 this.keyMissedCount++;
                 this._eventAggregator.publish('keyMissed', (this.keyMissedCount));
                 break;
+            case ['brackets', 'numeric', 'symbols'].indexOf(key.name) > -1:
+                this._toggleKeysetType(key.name);
+                if (this.keysetType == 'alpha') {
+                    this.keys = this._keysService.getKeys(this.keysetType);
+                    this._resetSubset();
+                } else {
+                    this.keySubset = this._keysService.getKeys(this.keysetType);
+                }
+                break;
             default:
                 this.caps = this.capsLock;
-                this.keys = this._keysService.getKeys();
+                this.keys = this._keysService.getKeys(this.keysetType);
                 this._resetSubset();
-                this.keySubset = this.numeric ? this._getNumberSubset() : this._getAlphaSubset();
                 key.output?.length && this.keyHitCount++;
                 this._eventAggregator.publish('keyHit', (this.keyHitCount));
-                // console.table(this.keys)
+                console.table(this.keys)
                 break;
         }
     }

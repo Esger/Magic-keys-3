@@ -10,14 +10,10 @@ keyboard {
         --gapSize: 6px;
         --keySize: calc(~"(100% - (5 * var(--gapSize))) / 6");
         grid-template-areas:
-            "shift numeric symbols brackets backspace next"
-            "comma dynamic dynamic dynamic  dynamic   enter"
-            "period   dynamic dynamic dynamic  dynamic   space";
+            "shift  numeric symbols brackets backspace next"
+            "comma  dynamic dynamic dynamic  dynamic   enter"
+            "period dynamic dynamic dynamic  dynamic   space";
         grid-template-columns: repeat(6, minmax(0, var(--keySize)));
-
-        .hide8 {
-            display: none;
-        }
     }
 
     &.board--9keys {
@@ -57,7 +53,7 @@ keyboard {
 
     &.small {
         // font-size: clamp(1.2rem, ~"-0.6rem + 9.6vw", 1.8rem);
-        font-size: clamp(1rem, ~"-0.2000rem + 6.4000vw", 1.4rem);
+        font-size: clamp(1rem, ~"-0.2rem + 6.4vw", 1.4rem);
     }
 
     &.highlight {
@@ -85,6 +81,14 @@ keyboard {
     .board--9keys & {
         &.zero {
             grid-area: shift;
+        }
+
+        &.parenthesis--open {
+            grid-area: shift;
+        }
+
+        &.curlyBraces--open {
+            grid-area: comma;
         }
     }
 

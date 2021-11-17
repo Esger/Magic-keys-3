@@ -151,12 +151,7 @@ export class KeysService {
         {
             name: 'numeric',
             display: '123',
-            className: 'small'
-        },
-        {
-            name: 'numeric',
-            display: 'abc',
-            className: 'small'
+            className: 'numeric small'
         },
         {
             name: 'symbols',
@@ -257,6 +252,64 @@ export class KeysService {
         },
     ]
 
+    _brackets = [
+        {
+            name: '(',
+            output: '(',
+            className: 'parenthesis--open small',
+        },
+        {
+            name: ')',
+            output: ')',
+            className: 'small'
+        },
+        {
+            name: '[',
+            output: '[',
+            className: 'small'
+        },
+        {
+            name: ']',
+            output: ']',
+            className: 'small'
+        },
+        {
+            name: '{',
+            output: '{',
+            className: 'curlyBraces--open small'
+        },
+        {
+            name: '}',
+            output: '}',
+            className: 'small'
+        },
+        {
+            name: '<',
+            output: '<',
+            className: 'small'
+        },
+        {
+            name: '>',
+            output: '>',
+            className: 'small'
+        },
+        {
+            name: '|',
+            output: '|',
+            className: 'small'
+        },
+        {
+            name: '/',
+            output: '/',
+            className: 'small'
+        },
+        {
+            name: '\\',
+            output: '\\',
+            className: 'small'
+        },
+    ]
+
     _keys = []; // simple copy of _knowledge to prevent passing lots of data around.
     _letters = [];
     _text = '';
@@ -308,7 +361,7 @@ export class KeysService {
         this._eventAggregator.publish('dataReady');
     }
 
-    getKeys() {
+    _getKeys() {
         const useTail = this._tail.length && this._letters.indexOf(this._tail.substr(-1)) > -1;
         let nameStr = useTail ? this._tail.slice(-(this._tailLength - 1)) : 'new_word';
         let probableKeys = [];
@@ -337,12 +390,14 @@ export class KeysService {
         return JSON.parse(JSON.stringify([...probableKeys, ...completingKeys])) || [];
     }
 
-    getNumbers() {
-        return this._numbers;
-    }
-
-    getModifiers() {
-        return [...this._modifiers, ...this._nonAlpha];
+    getKeys(setName) {
+        switch (setName) {
+            case 'numeric': return this._numbers; break;
+            case 'symbols': return this._symbols; break;
+            case 'brackets': return this._brackets; break;
+            case 'modifiers': return [...this._modifiers, ...this._nonAlpha]; break;
+            default: return this._getKeys(); break;
+        }
     }
 
     registerKeystroke(tail) {
