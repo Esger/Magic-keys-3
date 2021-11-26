@@ -160,7 +160,7 @@ export class KeyboardCustomElement {
                 }
                 key.output?.length && this.keyHitCount++;
                 this._eventAggregator.publish('keyHit', (this.keyHitCount));
-                console.table(this.keys)
+                // console.table(this.keys)
                 break;
         }
     }

@@ -576,7 +576,7 @@ export class KeysService {
             this._eventAggregator.publish('dataReady');
             this._saveKnowledge();
         }
-        console.table(this._keysKnowledge);
+        // console.table(this._keysKnowledge);
     }
 
     _loadKnowledge() {
