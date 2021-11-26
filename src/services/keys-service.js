@@ -151,12 +151,7 @@ export class KeysService {
         {
             name: 'numeric',
             display: '123',
-            className: 'small'
-        },
-        {
-            name: 'numeric',
-            display: 'abc',
-            className: 'small'
+            className: 'numeric small'
         },
         {
             name: 'symbols',
@@ -169,9 +164,9 @@ export class KeysService {
             className: 'small'
         },
         {
-            name: 'quotes',
+            name: 'punctuation',
             display: '"',
-            className: 'small quotes'
+            className: 'small punctuation'
         },
         {
             name: 'backspace',
@@ -255,6 +250,163 @@ export class KeysService {
             output: '0',
             className: 'zero'
         },
+        {
+            name: '+',
+            output: '+',
+            className: 'plus'
+        },
+        {
+            name: '-',
+            output: '-',
+            className: 'minus'
+        },
+        {
+            name: '*',
+            output: '*',
+            className: 'asterisk'
+        },
+        {
+            name: '/',
+            output: '/',
+            className: 'slash small'
+        },
+    ]
+
+    _punctuation = [
+        {
+            name: '`',
+            output: '\''
+        },
+        {
+            name: '\"',
+            output: '\"'
+        },
+        {
+            name: '\'',
+            output: '\''
+        },
+        {
+            name: '§',
+            output: '§'
+        },
+        {
+            name: ':',
+            output: ':'
+        },
+        {
+            name: ';',
+            output: ';'
+        },
+        {
+            name: '!',
+            output: '!'
+        },
+        {
+            name: '_',
+            output: '_'
+        },
+        {
+            name: '?',
+            output: '?'
+        },
+    ]
+
+    _brackets = [
+        {
+            name: '(',
+            output: '(',
+            className: 'parenthesis--open small',
+        },
+        {
+            name: ')',
+            output: ')',
+            className: 'small'
+        },
+        {
+            name: '[',
+            output: '[',
+            className: 'small'
+        },
+        {
+            name: ']',
+            output: ']',
+            className: 'small'
+        },
+        {
+            name: '/',
+            output: '/',
+            className: 'small'
+        },
+        {
+            name: '{',
+            output: '{',
+            className: 'curlyBraces--open small'
+        },
+        {
+            name: '}',
+            output: '}',
+            className: 'small'
+        },
+        {
+            name: '<',
+            output: '<',
+            className: 'small'
+        },
+        {
+            name: '>',
+            output: '>',
+            className: 'small'
+        },
+        {
+            name: '|',
+            output: '|',
+            className: 'pipe small'
+        },
+        {
+            name: '\\',
+            output: '\\',
+            className: 'small'
+        },
+    ]
+
+    _symbols = [
+        {
+            name: '±',
+            output: '±',
+        },
+        {
+            name: '@',
+            output: '@',
+        },
+        {
+            name: '#',
+            output: '#',
+        },
+        {
+            name: '$',
+            output: '$',
+        },
+        {
+            name: '%',
+            output: '%',
+        },
+        {
+            name: '^',
+            output: '^',
+        },
+        {
+            name: '&',
+            output: '&',
+        },
+        {
+            name: '*',
+            output: '*',
+        },
+        {
+            name: '~',
+            output: '~',
+            className: 'tilde'
+        },
     ]
 
     _keys = []; // simple copy of _knowledge to prevent passing lots of data around.
@@ -308,7 +460,7 @@ export class KeysService {
         this._eventAggregator.publish('dataReady');
     }
 
-    getKeys() {
+    _getKeys() {
         const useTail = this._tail.length && this._letters.indexOf(this._tail.substr(-1)) > -1;
         let nameStr = useTail ? this._tail.slice(-(this._tailLength - 1)) : 'new_word';
         let probableKeys = [];
@@ -337,12 +489,15 @@ export class KeysService {
         return JSON.parse(JSON.stringify([...probableKeys, ...completingKeys])) || [];
     }
 
-    getNumbers() {
-        return this._numbers;
-    }
-
-    getModifiers() {
-        return [...this._modifiers, ...this._nonAlpha];
+    getKeys(setName) {
+        switch (setName) {
+            case 'punctuation': return this._punctuation; break;
+            case 'numeric': return this._numbers; break;
+            case 'symbols': return this._symbols; break;
+            case 'brackets': return this._brackets; break;
+            case 'modifiers': return [...this._modifiers, ...this._nonAlpha]; break;
+            default: return this._getKeys(); break;
+        }
     }
 
     registerKeystroke(tail) {
