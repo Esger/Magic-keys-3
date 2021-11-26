@@ -42,8 +42,7 @@ keyboard {
     text-shadow     : 0px 1px 1px #ccc;
     background-color: #fff;
     border-radius   : 7px;
-    border          : 1px solid #666;
-    box-shadow      : 0 2px 3px #111;
+    box-shadow      : 0 2px 3px var(--black);
     overflow        : hidden;
     cursor          : pointer;
 
@@ -87,6 +86,22 @@ keyboard {
 
         &.slash {
             grid-area: brackets;
+        }
+
+        &.tilde {
+            grid-area: space;
+        }
+
+        &.parenthesis--open {
+            grid-area: comma;
+        }
+
+        &.curlyBraces--open {
+            grid-area: period;
+        }
+
+        &.pipe {
+            grid-area: space;
         }
 
         &.punctuation {

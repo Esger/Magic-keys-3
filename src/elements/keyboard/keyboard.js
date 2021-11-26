@@ -155,7 +155,9 @@ export class KeyboardCustomElement {
             default:
                 this.caps = this.capsLock;
                 this.keys = this._keysService.getKeys(this.keysetType);
-                this._resetSubset();
+                if (this.keysetType == 'alpha') {
+                    this._resetSubset();
+                }
                 key.output?.length && this.keyHitCount++;
                 this._eventAggregator.publish('keyHit', (this.keyHitCount));
                 console.table(this.keys)

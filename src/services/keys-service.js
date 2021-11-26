@@ -333,6 +333,11 @@ export class KeysService {
             className: 'small'
         },
         {
+            name: '/',
+            output: '/',
+            className: 'small'
+        },
+        {
             name: '{',
             output: '{',
             className: 'curlyBraces--open small'
@@ -355,12 +360,7 @@ export class KeysService {
         {
             name: '|',
             output: '|',
-            className: 'small'
-        },
-        {
-            name: '/',
-            output: '/',
-            className: 'small'
+            className: 'pipe small'
         },
         {
             name: '\\',
@@ -405,6 +405,7 @@ export class KeysService {
         {
             name: '~',
             output: '~',
+            className: 'tilde'
         },
     ]
 

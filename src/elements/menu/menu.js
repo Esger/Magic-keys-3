@@ -63,6 +63,7 @@ export class MenuCustomElement {
     setKeyAmount(amount) {
         this.settings.currentBoardType = amount;
         this._keyService.setAlphaKeyCount(amount);
+        this.hideTheMenu();
     }
 
     getAlphaKeyCount() {
@@ -72,6 +73,7 @@ export class MenuCustomElement {
     setDepth(depth) {
         this.settings.currentDepth = depth;
         this._keyService.setTailLength(depth);
+        this.hideTheMenu();
     }
 
     getDepth() {
