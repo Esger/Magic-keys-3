@@ -143,7 +143,7 @@ export class KeyboardCustomElement {
                 this.keyMissedCount++;
                 this._eventAggregator.publish('keyMissed', (this.keyMissedCount));
                 break;
-            case ['brackets', 'numeric', 'symbols'].indexOf(key.name) > -1:
+            case ['brackets', 'numeric', 'symbols', 'punctuation'].indexOf(key.name) > -1:
                 this._toggleKeysetType(key.name);
                 if (this.keysetType == 'alpha') {
                     this.keys = this._keysService.getKeys(this.keysetType);

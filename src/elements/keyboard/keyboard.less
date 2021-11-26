@@ -20,10 +20,10 @@ keyboard {
         --gapSize: 8px;
         --keySize: calc(~"(100% - (4 * var(--gapSize))) / 5");
         grid-template-areas:
-            "numeric symbols brackets quotes  next"
-            "shift   dynamic dynamic  dynamic backspace"
-            "comma   dynamic dynamic  dynamic enter"
-            "period  dynamic dynamic  dynamic space";
+            "numeric symbols brackets punctuation next"
+            "shift   dynamic dynamic  dynamic     backspace"
+            "comma   dynamic dynamic  dynamic     enter"
+            "period  dynamic dynamic  dynamic     space";
         grid-template-columns: repeat(5, minmax(0, var(--keySize)));
     }
 }
@@ -73,7 +73,23 @@ keyboard {
             grid-area: period;
         }
 
-        &.quotes {
+        &.plus {
+            grid-area: enter;
+        }
+
+        &.minus {
+            grid-area: space;
+        }
+
+        &.asterisk {
+            grid-area: symbols;
+        }
+
+        &.slash {
+            grid-area: brackets;
+        }
+
+        &.punctuation {
             display: none;
         }
     }
@@ -81,6 +97,22 @@ keyboard {
     .board--9keys & {
         &.zero {
             grid-area: shift;
+        }
+
+        &.plus {
+            grid-area: symbols;
+        }
+
+        &.minus {
+            grid-area: brackets;
+        }
+
+        &.asterisk {
+            grid-area: punctuation;
+        }
+
+        &.slash {
+            grid-area: space;
         }
 
         &.parenthesis--open {

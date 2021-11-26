@@ -164,9 +164,9 @@ export class KeysService {
             className: 'small'
         },
         {
-            name: 'quotes',
+            name: 'punctuation',
             display: '"',
-            className: 'small quotes'
+            className: 'small punctuation'
         },
         {
             name: 'backspace',
@@ -249,6 +249,65 @@ export class KeysService {
             name: '0',
             output: '0',
             className: 'zero'
+        },
+        {
+            name: '+',
+            output: '+',
+            className: 'plus'
+        },
+        {
+            name: '-',
+            output: '-',
+            className: 'minus'
+        },
+        {
+            name: '*',
+            output: '*',
+            className: 'asterisk'
+        },
+        {
+            name: '/',
+            output: '/',
+            className: 'slash small'
+        },
+    ]
+
+    _punctuation = [
+        {
+            name: '`',
+            output: '\''
+        },
+        {
+            name: '\"',
+            output: '\"'
+        },
+        {
+            name: '\'',
+            output: '\''
+        },
+        {
+            name: '§',
+            output: '§'
+        },
+        {
+            name: ':',
+            output: ':'
+        },
+        {
+            name: ';',
+            output: ';'
+        },
+        {
+            name: '!',
+            output: '!'
+        },
+        {
+            name: '_',
+            output: '_'
+        },
+        {
+            name: '?',
+            output: '?'
         },
     ]
 
@@ -431,6 +490,7 @@ export class KeysService {
 
     getKeys(setName) {
         switch (setName) {
+            case 'punctuation': return this._punctuation; break;
             case 'numeric': return this._numbers; break;
             case 'symbols': return this._symbols; break;
             case 'brackets': return this._brackets; break;

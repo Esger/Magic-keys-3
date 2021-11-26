@@ -7,7 +7,7 @@
                 ${keysetType == 'numeric' && key.name == 'numeric' ? 'active' : ''}
                 ${keysetType == 'brackets' && key.name == 'brackets' ? 'active' : ''}
                 ${keysetType == 'symbols' && key.name == 'symbols' ? 'active' : ''}
-                ${keysetType == 'quotes' && key.name == 'quotes' ? 'active' : ''}"
+                ${keysetType == 'punctuation' && key.name == 'punctuation' ? 'active' : ''}"
           css="grid-area: ${key.name}"
           click.delegate="keyIsPressed(key)"
           touchstard.delegate="keyIsPressed(key)"
