@@ -49,7 +49,7 @@ html {
         content              : '';
         position             : absolute;
         inset                : 0;
-        background-image     : url(assets/img/salamander.gif);
+        background-image     : url(../assets/img/salamander.gif);
         background-blend-mode: multiply;
         opacity              : 0.3;
     }
@@ -58,16 +58,20 @@ html {
 body {
     --bodyPadding   : 12px;
     --black         : #000000;
-    --highlightColor: #00ff00; /* Bright green for high contrast */
+    --highlightColor: #00ff00;
+    /* Bright green for high contrast */
     width           : 320px;
     height          : 380px;
     overflow        : hidden;
     background-color: var(--black);
-    background-image: none; /* Remove gradient for OLED black look */
-    box-shadow      : 0 0 0 10px #333, 0 20px 50px rgba(0,0,0,0.5); /* Watch bezel and shadow */
+    background-image: none;
+    /* Remove gradient for OLED black look */
+    box-shadow      : 0 0 0 10px #333, 0 20px 50px rgba(0, 0, 0, 0.5);
+    /* Watch bezel and shadow */
     position        : relative;
     padding         : var(--bodyPadding);
-    border-radius   : 48px; /* More rounded for watch look */
+    border-radius   : 48px;
+    /* More rounded for watch look */
     box-sizing      : border-box;
     font-family     : 'Source Code Pro', monospace;
     font-style      : normal;
