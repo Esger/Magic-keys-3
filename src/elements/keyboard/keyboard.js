@@ -15,8 +15,7 @@ export class KeyboardCustomElement {
         this.caps = false;
         this._resetKeysetType();
         this._previousKeysetType = [];
-        this.isMobile = this.isMobile();
-        this.swipeEnabled = false;
+        this.isMobile = this.getIsMobile();
     }
 
     attached() {
@@ -25,19 +24,15 @@ export class KeyboardCustomElement {
             this.keySubset = this._getAlphaSubset();
         });
         this._boardTypeSubscriber = this._eventAggregator.subscribe('boardType', dynamicKeysAmount => this._setBoardType(dynamicKeysAmount));
-        this._swipeEnabledSubscriber = this._eventAggregator.subscribe('swipeEnabled', enabled => {
-            this.swipeEnabled = enabled;
-        });
     }
 
     detached() {
         this._trainingReadySubscriber.dispose();
         this._boardTypeSubscriber.dispose();
-        this._swipeEnabledSubscriber.dispose();
     }
 
-    isMobile() {
-        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    getIsMobile() {
+        return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
     }
 
     swipeStart(e) {
@@ -46,7 +41,7 @@ export class KeyboardCustomElement {
     }
 
     swipeEnd(event) {
-        if (!this.swipeEnabled) return;
+        if (!this.isMobile) return;
 
         const endX = event.changedTouches[0].pageX;
         const diff = endX - this.startX;

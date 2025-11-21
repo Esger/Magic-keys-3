@@ -1,4 +1,4 @@
-<template class="${boardType} ${keysetType} ${swipeEnabled ? 'swipe' : 'noSwipe'}"
+<template class="${boardType} ${keysetType} ${isMobile ? 'swipe' : 'noSwipe'}"
           touchstart.delegate="swipeStart($event)"
           touchend.delegate="swipeEnd($event)">
     <require from="./keyboard.css"></require>
