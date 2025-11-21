@@ -2,6 +2,14 @@
     <require from="elements/menu/menu"></require>
     <require from="./header.css"></require>
 
+    <div class="swipe-switch ${swipeEnabled ? 'active' : ''}"
+         if.bind="isMobile"
+         touchstart.delegate="swipeStart($event)"
+         touchend.delegate="swipeEnd($event)">
+        <div class="slider"></div>
+        <span class="text">Swipe</span>
+    </div>
+
     <h1 click.delegate="clear()">${message}</h1>
 
     <menu></menu>
