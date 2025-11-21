@@ -4,7 +4,7 @@ import { EventAggregator } from 'aurelia-event-aggregator';
 @inject(EventAggregator)
 export class headerCustomElement {
 
-    message = 'Magic Keys';
+    message = 'SmartKeys';
 
     constructor(eventAggregator) {
         this._eventAggregator = eventAggregator;

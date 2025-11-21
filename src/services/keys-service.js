@@ -580,8 +580,8 @@ export class KeysService {
     }
 
     _loadKnowledge() {
-        if (localStorage.getItem("magic-keys-3")) {
-            this._keysKnowledge = JSON.parse(localStorage.getItem("magic-keys-3"));
+        if (localStorage.getItem("smart-keys")) {
+            this._keysKnowledge = JSON.parse(localStorage.getItem("smart-keys"));
         } else {
             this._getText();
         }
@@ -595,7 +595,7 @@ export class KeysService {
     }
 
     _saveKnowledge() {
-        localStorage.setItem("magic-keys-3", JSON.stringify(this._keysKnowledge));
+        localStorage.setItem("smart-keys", JSON.stringify(this._keysKnowledge));
     }
 
 }
