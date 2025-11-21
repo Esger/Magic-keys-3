@@ -14,13 +14,13 @@ keyboard {
     }
 
     &.board--mobile--8keys {
-        --gapSize: 4px;
+        --gapSize: var(--bodyPadding, 4px);
         --keySize: calc(~"(100% - (3 * var(--gapSize))) / 4");
         grid-template-areas:
             "shift   numeric symbols brackets"
             "dynamic dynamic dynamic dynamic"
             "dynamic dynamic dynamic dynamic"
-            "space   comma   period  enter";
+            "enter   comma   period  space";
         grid-template-columns: repeat(4, minmax(0, var(--keySize)));
     }
 
