@@ -1,24 +1,32 @@
-import { inject } from "aurelia-framework";
+import { inject, bindable } from "aurelia-framework";
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { KeysService } from "services/keys-service";
 
 @inject(EventAggregator, KeysService)
 export class KeyboardCustomElement {
+    @bindable isMobile;
     constructor(eventAggregator, keysService) {
         this._eventAggregator = eventAggregator;
         this._keysService = keysService;
-        this.maxKeys = 9;
+        this.maxKeys = 8;
         this._keysService.setAlphaKeyCount(this.maxKeys);
         this.keys = this._keysService.getKeys();
-        this.modifiers = this._keysService.getKeys('modifiers');
-        this._setBoardType(this.maxKeys);
         this.caps = false;
         this._resetKeysetType();
         this._previousKeysetType = [];
-        this.isMobile = this.getIsMobile();
+    }
+
+    bind() {
+        this._setBoardType(this.maxKeys);
+    }
+
+    isMobileChanged() {
+        this._setBoardType(this.maxKeys);
+        this.modifiers = this._keysService.getKeys('modifiers', this.isMobile);
     }
 
     attached() {
+        this.modifiers = this._keysService.getKeys('modifiers', this.isMobile);
         this._trainingReadySubscriber = this._eventAggregator.subscribe('dataReady', _ => {
             this.keys = this._keysService.getKeys()
             this.keySubset = this._getAlphaSubset();
@@ -29,10 +37,6 @@ export class KeyboardCustomElement {
     detached() {
         this._trainingReadySubscriber.dispose();
         this._boardTypeSubscriber.dispose();
-    }
-
-    getIsMobile() {
-        return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
     }
 
     swipeStart(e) {
@@ -80,7 +84,8 @@ export class KeyboardCustomElement {
 
     _setBoardType(amount) {
         this.maxKeys = parseInt(amount, 10);
-        this.boardType = 'board--' + amount + 'keys';
+        const mobile = this.isMobile && this.maxKeys == 8 ? 'mobile--' : '';
+        this.boardType = 'board--' + mobile + amount + 'keys';
         this.keyHitCount = 0;
         this.keyMissedCount = 0;
         this._resetKeysetType();
@@ -95,7 +100,6 @@ export class KeyboardCustomElement {
         this._previousKeysetType.push(this.keysetType);
         this.keysetType = type;
     }
-
 
     isKeysetOftype(type) {
         return this.keysetType === type;

@@ -13,6 +13,17 @@ keyboard {
         touch-action: none;
     }
 
+    &.board--mobile--8keys {
+        --gapSize: 4px;
+        --keySize: calc(~"(100% - (3 * var(--gapSize))) / 4");
+        grid-template-areas:
+            "shift   numeric symbols brackets"
+            "dynamic dynamic dynamic dynamic"
+            "dynamic dynamic dynamic dynamic"
+            "space   comma   period  enter";
+        grid-template-columns: repeat(4, minmax(0, var(--keySize)));
+    }
+
     &.board--8keys {
         --gapSize: 4px;
         --keySize: calc(~"(100% - (5 * var(--gapSize))) / 6");
@@ -74,6 +85,9 @@ keyboard {
     &.hide {
         display: none;
     }
+
+    // .board--mobile--8keys & {
+    // }
 
     .board--8keys & {
         &.zero {

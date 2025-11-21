@@ -40,7 +40,7 @@ export class TerminalCustomElement {
             case key.output?.length > 0:
                 this.value = this.caps ? this.value + key.output.toUpperCase() : this.value + key.output;
                 this.caps = this.capsLock;
-                const tail = this.value.substr(-this._tailLength);
+                const tail = this.value.slice(-this._tailLength);
                 this._keysService.registerKeystroke(tail.toLocaleLowerCase());
                 break;
             case key.name == 'backspace':

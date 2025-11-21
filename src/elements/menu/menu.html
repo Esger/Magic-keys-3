@@ -21,8 +21,7 @@
                 class="subMenu">
                 <li repeat.for="boardType of boardTypes"
                     class="${boardType.keyAmount == settings.currentBoardType ? 'active' : ''}"
-                    click.delegate="setKeyAmount(boardType.keyAmount)"
-                    touchstart.trigger="setKeyAmount(boardType.keyAmount)">${boardType.name}</li>
+                    click.delegate="setKeyAmount(boardType.keyAmount)">${boardType.name}</li>
             </ul>
         </li>
 
@@ -34,8 +33,7 @@
                 class="subMenu">
                 <li repeat.for="depth of depths"
                     class="${depth == settings.currentDepth ? 'active' : ''}"
-                    click.delegate="setDepth(depth)"
-                    touchstart.trigger="setDepth(depth)">Depth: ${depth}</li>
+                    click.delegate="setDepth(depth)">Depth: ${depth}</li>
             </ul>
         </li>
 

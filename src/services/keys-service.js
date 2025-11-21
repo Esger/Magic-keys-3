@@ -461,7 +461,7 @@ export class KeysService {
     }
 
     _getKeys() {
-        const useTail = this._tail.length && this._letters.indexOf(this._tail.substr(-1)) > -1;
+        const useTail = this._tail.length && this._letters.indexOf(this._tail.slice(-1)) > -1;
         let nameStr = useTail ? this._tail.slice(-(this._tailLength - 1)) : 'new_word';
         let probableKeys = [];
         let knowledgeObj = undefined;
@@ -489,13 +489,16 @@ export class KeysService {
         return JSON.parse(JSON.stringify([...probableKeys, ...completingKeys])) || [];
     }
 
-    getKeys(setName) {
+    getKeys(setName, isMobile) {
         switch (setName) {
             case 'punctuation': return this._punctuation; break;
             case 'numeric': return this._numbers; break;
             case 'symbols': return this._symbols; break;
             case 'brackets': return this._brackets; break;
-            case 'modifiers': return [...this._modifiers, ...this._nonAlpha]; break;
+            case 'modifiers':
+                const modifiers = isMobile ? this._modifiers.filter(key => key.name != 'next' && key.name != 'backspace' && key.name != 'punctuation') : this._modifiers;
+                return [...modifiers, ...this._nonAlpha];
+                break;
             default: return this._getKeys(); break;
         }
     }
@@ -505,7 +508,7 @@ export class KeysService {
         // TODO check better for more extended charactersets
         this._tail = tail;
         while (tail.length > 0) {
-            const lessonChar = tail.substr(-1); // the key
+            const lessonChar = tail.slice(-1); // the key
             // possible tail patterns
             // 'ab' -> learn 'a' is followed by 'b'
             // 'a.' -> skip learning
