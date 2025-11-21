@@ -15,6 +15,8 @@ export class KeyboardCustomElement {
         this.caps = false;
         this._resetKeysetType();
         this._previousKeysetType = [];
+        this.isMobile = this.isMobile();
+        this.swipeEnabled = false;
     }
 
     attached() {
@@ -23,11 +25,62 @@ export class KeyboardCustomElement {
             this.keySubset = this._getAlphaSubset();
         });
         this._boardTypeSubscriber = this._eventAggregator.subscribe('boardType', dynamicKeysAmount => this._setBoardType(dynamicKeysAmount));
+        this._swipeEnabledSubscriber = this._eventAggregator.subscribe('swipeEnabled', enabled => {
+            this.swipeEnabled = enabled;
+        });
     }
 
     detached() {
         this._trainingReadySubscriber.dispose();
         this._boardTypeSubscriber.dispose();
+        this._swipeEnabledSubscriber.dispose();
+    }
+
+    isMobile() {
+        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    }
+
+    swipeStart(e) {
+        this.startX = e.changedTouches[0].pageX;
+        return true;
+    }
+
+    swipeEnd(event) {
+        if (!this.swipeEnabled) return;
+
+        const endX = event.changedTouches[0].pageX;
+        const diff = endX - this.startX;
+        this.startX = endX;
+
+        switch (true) {
+            case (diff > 15):
+                this.keyIsPressed({ name: 'prev' });
+                break;
+            case (diff < -15):
+                this.keyIsPressed({ name: 'next' });
+                break;
+        }
+        return true;
+    }
+
+    _previousSubset() {
+        if (this.firstKey <= 0) {
+            this.lastKey = this.keys.length;
+            this.firstKey = this.lastKey - this.maxKeys;
+        } else {
+            this.lastKey = this.firstKey;
+            this.firstKey -= this.maxKeys;
+        }
+    }
+
+    _nextSubset() {
+        if (this.lastKey >= this.keys.length) {
+            this.firstKey = this.lastKey % this.keys.length;
+            this.lastKey = this.firstKey + this.maxKeys;
+        } else {
+            this.firstKey = this.lastKey;
+            this.lastKey += this.maxKeys;
+        }
     }
 
     _setBoardType(amount) {
@@ -111,16 +164,6 @@ export class KeyboardCustomElement {
         return newSet;
     }
 
-    _nextSubset() {
-        if (this.lastKey >= this.keys.length) {
-            this.firstKey = this.lastKey % this.keys.length;
-            this.lastKey = this.firstKey + this.maxKeys;
-        } else {
-            this.firstKey = this.lastKey;
-            this.lastKey += this.maxKeys;
-        }
-    }
-
     keyIsPressed(key) {
         this._eventAggregator.publish('keyIsPressed', key);
         this._handleKey(key)
@@ -135,6 +178,13 @@ export class KeyboardCustomElement {
                 setTimeout(() => {
                     this.capsLockPending = false;
                 }, 300);
+                break;
+            case key.name == 'prev':
+                this._resetKeysetType();
+                this._previousSubset();
+                this.keySubset = this._getAlphaSubset();
+                this.keyMissedCount++;
+                this._eventAggregator.publish('keyMissed', (this.keyMissedCount));
                 break;
             case key.name == 'next':
                 this._resetKeysetType();

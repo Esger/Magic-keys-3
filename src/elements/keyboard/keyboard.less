@@ -6,8 +6,11 @@ keyboard {
     margin-bottom : 0;
     width         : 100%;
     height        : 100%;
-    /* Fill remaining space */
     flex-grow     : 1;
+
+    &.noSwipe {
+        touch-action: none;
+    }
 
     &.board--8keys {
         --gapSize: 4px;
@@ -34,10 +37,8 @@ keyboard {
 .key {
     display         : flex;
     aspect-ratio    : unset;
-    /* Allow keys to stretch slightly if needed, or stick to 1 if square is preferred */
     justify-content : center;
     align-items     : center;
-    color           : var(--black);
     font-family     : "Source Code Pro";
     font-size       : 32px;
     font-weight     : 400;
@@ -45,13 +46,13 @@ keyboard {
     text-transform  : uppercase;
     text-shadow     : none;
     background-color: #333;
-    /* Darker keys */
     color           : #fff;
     border-radius   : 6px;
     box-shadow      : none;
     overflow        : hidden;
     cursor          : pointer;
     border          : 1px solid #444;
+    touch-action    : all;
 
     &.active {
         background : var(--highlightColor);
@@ -60,7 +61,7 @@ keyboard {
     }
 
     &.small {
-        font-size: 14px;
+        font-size: 21px;
     }
 
     &.highlight {

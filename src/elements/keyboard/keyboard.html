@@ -1,4 +1,6 @@
-<template class.bind="boardType + ' ' + keysetType">
+<template class="${boardType} ${keysetType} ${swipeEnabled ? 'swipe' : 'noSwipe'}"
+          touchstart.delegate="swipeStart($event)"
+          touchend.delegate="swipeEnd($event)">
     <require from="./keyboard.css"></require>
 
     <button repeat.for="key of modifiers"
@@ -10,12 +12,10 @@
                 ${keysetType == 'punctuation' && key.name == 'punctuation' ? 'active' : ''}"
           css="grid-area: ${key.name}"
           click.delegate="keyIsPressed(key)"
-          touchstard.delegate="keyIsPressed(key)"
           title.one-time="key.title || ''">${key.display}</button>
 
     <button repeat.for="key of keySubset"
-        class="key ${key.name} ${key.className}"
-        click.delegate="keyIsPressed(key)"
-        touchstard.delegate="keyIsPressed(key)">${key.name}</button>
+            class="key ${key.name} ${key.className}"
+            click.delegate="keyIsPressed(key)">${key.name}</button>
 
 </template>

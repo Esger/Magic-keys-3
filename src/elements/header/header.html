@@ -4,8 +4,8 @@
 
     <div class="swipe-switch ${swipeEnabled ? 'active' : ''}"
          if.bind="isMobile"
-         touchstart.delegate="swipeStart($event)"
-         touchend.delegate="swipeEnd($event)">
+         touchstart.trigger="swipeStart($event)"
+         touchend.trigger="swipeEnd($event)">
         <div class="slider"></div>
         <span class="text">Swipe</span>
     </div>

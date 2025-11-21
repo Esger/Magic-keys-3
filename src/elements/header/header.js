@@ -24,9 +24,7 @@ export class headerCustomElement {
 
     swipeEnd(e) {
         const endX = e.changedTouches[0].pageX;
-        if (endX - this.startX > 50) { // Swipe right
-            this.swipeEnabled = true;
-            this._eventAggregator.publish('swipeEnabled', true);
-        }
+        this.swipeEnabled = endX - this.startX > 50;
+        this._eventAggregator.publish('swipeEnabled', this.swipeEnabled);
     }
 }
