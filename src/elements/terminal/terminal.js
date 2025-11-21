@@ -15,7 +15,7 @@ export class TerminalCustomElement {
 
     attached() {
         this._keypressedSubscriber = this._eventAggregator.subscribe('keyIsPressed', key => this._handleKey(key));
-        this._clearOutputSubscriber = this._eventAggregator.subscribe('clearOutput', _ => this._clearOutput());
+        this._clearOutputSubscriber = this._eventAggregator.subscribe('clearOutput', _ => this.clearOutput());
     }
 
     detached() {
@@ -23,7 +23,7 @@ export class TerminalCustomElement {
         this._clearOutputSubscriber.dispose();
     }
 
-    _clearOutput() {
+    clearOutput() {
         this.value = '';
     }
 
@@ -48,7 +48,7 @@ export class TerminalCustomElement {
                 break;
             default: break;
         }
-        requestAnimationFrame(_ => this.terminalInput.scrollLeft = this.terminalInput.scrollWidth);
+        requestAnimationFrame(_ => this.terminal.scrollLeft = this.terminal.scrollWidth);
     }
 
 }

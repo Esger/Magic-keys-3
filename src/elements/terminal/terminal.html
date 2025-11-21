@@ -1,8 +1,12 @@
 <template>
     <require from="./terminal.css"></require>
     <textarea class="textArea"
-            ref="terminalInput"
+            name="terminal"
+            ref="terminal"
             value.two-way="value"
             inputmode="none"
             readonly></textarea>
+    <label class="fa fa-times"
+            for="terminal"
+            click.delegate="clearOutput()"></label>
 </template>
