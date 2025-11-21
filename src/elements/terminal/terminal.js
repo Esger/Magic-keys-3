@@ -48,6 +48,7 @@ export class TerminalCustomElement {
                 break;
             default: break;
         }
+        requestAnimationFrame(_ => this.terminalInput.scrollLeft = this.terminalInput.scrollWidth);
     }
 
 }
