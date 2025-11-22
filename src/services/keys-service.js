@@ -555,15 +555,15 @@ export class KeysService {
         } else {
             learningTailObj.successors.push(lessonChar);
         }
-        console.table([learningString, successors]);
+        // console.table([learningString, successors]);
         // console.table(this._keysKnowledge);
     };
 
     _getText(lang = 'nl') {
         const httpClient = new HttpClient();
         // httpClient.fetch('assets/aap-' + lang + '.txt')
-        // httpClient.fetch('De-Geschiedenis-van-Woutertje-Pieterse-Multatuli.txt')
-        httpClient.fetch('assets/lipsum-' + lang + '.txt')
+        // httpClient.fetch('assets/lipsum-' + lang + '.txt')
+        httpClient.fetch('assets/De-Geschiedenis-van-Woutertje-Pieterse-Multatuli.txt')
             .then(response => {
                 return response.text();
             }).then(data => {
@@ -575,15 +575,28 @@ export class KeysService {
     _train() {
         const lastPosition = this._text.length;
         if (lastPosition > 0) {
-            for (let startPos = 0; startPos < lastPosition; startPos++) {
-                const tail = this._text.substring(startPos - this._tailLength, startPos);
-                this.registerKeystroke(tail);
-            }
-            this._tail = '';
-            this._eventAggregator.publish('dataReady');
-            this._saveKnowledge();
+            let startPos = 0;
+            const chunkSize = 2000;
+
+            const processChunk = () => {
+                const endPos = Math.min(startPos + chunkSize, lastPosition);
+
+                for (; startPos < endPos; startPos++) {
+                    const tail = this._text.substring(startPos - this._tailLength, startPos);
+                    this.registerKeystroke(tail);
+                }
+
+                if (startPos < lastPosition) {
+                    setTimeout(processChunk, 0);
+                } else {
+                    this._tail = '';
+                    this._eventAggregator.publish('dataReady');
+                    this._saveKnowledge();
+                }
+            };
+
+            processChunk();
         }
-        // console.table(this._keysKnowledge);
     }
 
     _loadKnowledge() {
