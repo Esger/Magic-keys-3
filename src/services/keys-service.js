@@ -5,7 +5,7 @@ import { HttpClient } from 'aurelia-fetch-client';
 @inject(EventAggregator)
 export class KeysService {
 
-    _keysKnowledge = [
+    _defaultKeys = [
         {
             name: 'a',
             output: 'a',
@@ -409,6 +409,7 @@ export class KeysService {
         },
     ]
 
+    _keysKnowledge = {};
     _keys = []; // simple copy of _knowledge to prevent passing lots of data around.
     _letters = [];
     _text = '';
@@ -417,7 +418,10 @@ export class KeysService {
 
     constructor(eventAggregator) {
         this._eventAggregator = eventAggregator;
-        this._keysKnowledge.forEach(key => {
+        this._defaultKeys.forEach(key => {
+            // Populate the object structure
+            this._keysKnowledge[key.name] = { ...key };
+
             if (key.output?.length) {
                 this._keys.push({
                     name: key.name,
@@ -454,8 +458,13 @@ export class KeysService {
     }
 
     cleanData() {
-        const cleanKnowledge = this._keysKnowledge.filter(key => key.name.length == 1 || key.name == 'new_word');
-        cleanKnowledge.forEach(key => key.successors = []);
+        const cleanKnowledge = {};
+        Object.values(this._keysKnowledge).forEach(key => {
+            if (key.name.length == 1 || key.name == 'new_word') {
+                key.successors = [];
+                cleanKnowledge[key.name] = key;
+            }
+        });
         this._keysKnowledge = cleanKnowledge;
         this._eventAggregator.publish('dataReady');
     }
@@ -466,8 +475,8 @@ export class KeysService {
         let probableKeys = [];
         let knowledgeObj = undefined;
         while (nameStr.length > 0 && probableKeys.length < 26) {
-            knowledgeObj = this._keysKnowledge.find(key => key.name == nameStr);
-            const keys = knowledgeObj?.successors.map(char => this._keysKnowledge.find(key => key.name == char));
+            knowledgeObj = this._keysKnowledge[nameStr]; // Object lookup
+            const keys = knowledgeObj?.successors.map(char => this._keysKnowledge[char]); // Object lookup
             keys?.forEach(key => {
                 const keyIsUsedBefore = probableKeys?.some(k => k.name == key.name);
                 if (!keyIsUsedBefore) {
@@ -479,7 +488,7 @@ export class KeysService {
 
         let completingKeys = [];
         if (probableKeys.length < 26) {
-            this._keysKnowledge.filter(key => (key.name.length == 1) && (key.name != 'new_word')).forEach(key => {
+            Object.values(this._keysKnowledge).filter(key => (key.name.length == 1) && (key.name != 'new_word')).forEach(key => { // Iterate over values
                 const keyIsUsedBefore = probableKeys?.some(k => k.name == key.name);
                 if (!keyIsUsedBefore) {
                     completingKeys.push(key);
@@ -536,12 +545,12 @@ export class KeysService {
             name: name,
             successors: [],
         };
-        this._keysKnowledge.push(newItem);
+        this._keysKnowledge[name] = newItem;
         return newItem;
     }
 
     _addToKnowledge(learningString, lessonChar) {
-        const learningTailObj = this._keysKnowledge.find(key => key.name == learningString) ||
+        const learningTailObj = this._keysKnowledge[learningString] ||
             this._newKeyKnowledgeItem(learningString);
         const successors = learningTailObj.successors;
         const successorPos = successors.indexOf(lessonChar);
@@ -601,7 +610,16 @@ export class KeysService {
 
     _loadKnowledge() {
         if (localStorage.getItem("smart-keys")) {
-            this._keysKnowledge = JSON.parse(localStorage.getItem("smart-keys"));
+            const loadedData = JSON.parse(localStorage.getItem("smart-keys"));
+            if (Array.isArray(loadedData)) {
+                // Migrate old array data to object
+                this._keysKnowledge = {};
+                loadedData.forEach(item => {
+                    this._keysKnowledge[item.name] = item;
+                });
+            } else {
+                this._keysKnowledge = loadedData;
+            }
         } else {
             this._getText();
         }
