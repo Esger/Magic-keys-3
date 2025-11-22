@@ -1,9 +1,10 @@
-import { inject } from "aurelia-framework";
+import { inject, bindable } from "aurelia-framework";
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { KeysService } from "services/keys-service";
 
 @inject(Element, EventAggregator, KeysService)
 export class TerminalCustomElement {
+    @bindable isMobile;
 
     constructor(element, eventAggregator, keysService) {
         this._element = element;
@@ -23,8 +24,31 @@ export class TerminalCustomElement {
         this._clearOutputSubscriber.dispose();
     }
 
+    swipeStart(e) {
+        this.startX = e.changedTouches[0].pageX;
+        return true;
+    }
+
+    swipeEnd(event) {
+        if (!this.isMobile) return;
+
+        const endX = event.changedTouches[0].pageX;
+        const diff = endX - this.startX;
+        this.startX = endX;
+
+        if (diff < -15) {
+            this.backspace();
+        }
+        return true;
+    }
+
     clearOutput() {
         this.value = '';
+    }
+
+    backspace() {
+        this.value = this.value.slice(0, -1);
+        this._scrollToEnd();
     }
 
     _handleKey(key) {
@@ -44,11 +68,15 @@ export class TerminalCustomElement {
                 this._keysService.registerKeystroke(tail.toLocaleLowerCase());
                 break;
             case key.name == 'backspace':
-                this.value = this.value.slice(0, -1);
+                this.backspace();
                 break;
             default: break;
         }
-        requestAnimationFrame(_ => this.terminal.scrollLeft = this.terminal.scrollWidth);
+        this._scrollToEnd();
     }
 
+
+    _scrollToEnd() {
+        requestAnimationFrame(_ => this.terminal.scrollLeft = this.terminal.scrollWidth);
+    }
 }
