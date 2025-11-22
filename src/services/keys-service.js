@@ -461,7 +461,7 @@ export class KeysService {
     }
 
     _getKeys() {
-        const useTail = this._tail.length && this._letters.indexOf(this._tail.slice(-1)) > -1;
+        const useTail = this._tail.length && this._letters.includes(this._tail.slice(-1));
         let nameStr = useTail ? this._tail.slice(-(this._tailLength - 1)) : 'new_word';
         let probableKeys = [];
         let knowledgeObj = undefined;
@@ -486,7 +486,7 @@ export class KeysService {
                 }
             });
         };
-        return JSON.parse(JSON.stringify([...probableKeys, ...completingKeys])) || [];
+        return structuredClone([...probableKeys, ...completingKeys]) || [];
     }
 
     getKeys(setName, isMobile) {
@@ -517,13 +517,13 @@ export class KeysService {
             // ' a' -> skip learning
             // => all chars are part of _knowledge and and of type alpha
             const splitTail = tail.split('');
-            const allAlpha = splitTail.every(key => this._letters.indexOf(key) > -1);
+            const allAlpha = splitTail.every(key => this._letters.includes(key));
             if (allAlpha && tail.length > 1) {
                 const learningString = tail.slice(0, -1);
                 this._addToKnowledge(learningString, lessonChar);
             } else {
                 // build successors for start new word
-                (this._letters.indexOf(lessonChar) > -1) && this._addToKnowledge('new_word', lessonChar);
+                this._letters.includes(lessonChar) && this._addToKnowledge('new_word', lessonChar);
             }
             tail = tail.slice(1);
             this._saveWhenIdle();
@@ -554,11 +554,14 @@ export class KeysService {
         } else {
             learningTailObj.successors.push(lessonChar);
         }
-        // console.table([learningCharObj.name, ...learningCharObj.successors]);
+        console.table([learningString, successors]);
+        // console.table(this._keysKnowledge);
     };
 
     _getText(lang = 'nl') {
         const httpClient = new HttpClient();
+        // httpClient.fetch('assets/aap-' + lang + '.txt')
+        // httpClient.fetch('De-Geschiedenis-van-Woutertje-Pieterse-Multatuli.txt')
         httpClient.fetch('assets/lipsum-' + lang + '.txt')
             .then(response => {
                 return response.text();
