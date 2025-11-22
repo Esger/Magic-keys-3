@@ -504,6 +504,7 @@ export class KeysService {
     }
 
     registerKeystroke(tail) {
+        tail = tail.toLowerCase();
         // For the typed key (last char of Tail) register preceding characters of Tail
         // TODO check better for more extended charactersets
         this._tail = tail;
