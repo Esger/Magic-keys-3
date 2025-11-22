@@ -48,6 +48,8 @@ export class TerminalCustomElement {
 
     backspace() {
         this.value = this.value.slice(0, -1);
+        const tail = this.value.slice(-this._tailLength);
+        this._keysService.setTail(tail.toLocaleLowerCase());
         this._scrollToEnd();
     }
 

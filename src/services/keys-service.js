@@ -512,6 +512,11 @@ export class KeysService {
         }
     }
 
+    setTail(tail) {
+        this._tail = tail;
+        this._eventAggregator.publish('dataReady');
+    }
+
     registerKeystroke(tail) {
         tail = tail.toLowerCase();
         // For the typed key (last char of Tail) register preceding characters of Tail

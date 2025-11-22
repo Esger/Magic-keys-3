@@ -1,6 +1,4 @@
-<template class="${boardType} ${keysetType} ${isMobile ? 'swipe' : 'noSwipe'}"
-          touchstart.delegate="swipeStart($event)"
-          touchend.delegate="swipeEnd($event)">
+<template class="${boardType} ${keysetType} ${isMobile ? 'swipe' : 'noSwipe'}">
     <require from="./keyboard.css"></require>
 
     <button repeat.for="key of modifiers"
@@ -14,8 +12,14 @@
           click.delegate="keyIsPressed(key)"
           title.one-time="key.title || ''">${key.display}</button>
 
-    <button repeat.for="key of keySubset"
-            class="key ${key.name} ${key.className}"
-            click.delegate="keyIsPressed(key)">${key.name}</button>
+    <div class="keys-scroll-container"
+         ref="scrollContainer">
+        <div repeat.for="page of pages"
+             class="keys-page">
+            <button repeat.for="key of page"
+                    class="key ${key.name} ${key.className}"
+                    click.delegate="keyIsPressed(key)">${key.name}</button>
+        </div>
+    </div>
 
 </template>

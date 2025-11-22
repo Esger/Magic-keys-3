@@ -14,6 +14,9 @@ export class KeyboardCustomElement {
         this.caps = false;
         this._resetKeysetType();
         this._previousKeysetType = [];
+        this.pages = [];
+        this.currentPage = 0;
+        this.isResetting = false;
     }
 
     bind() {
@@ -29,56 +32,97 @@ export class KeyboardCustomElement {
         this.modifiers = this._keysService.getKeys('modifiers', this.isMobile);
         this._trainingReadySubscriber = this._eventAggregator.subscribe('dataReady', _ => {
             this.keys = this._keysService.getKeys()
-            this.keySubset = this._getAlphaSubset();
+            this._updatePages();
         });
         this._boardTypeSubscriber = this._eventAggregator.subscribe('boardType', dynamicKeysAmount => this._setBoardType(dynamicKeysAmount));
+
+        // Attach scroll listener if container is ready, or wait?
+        // Aurelia's attached() is the place.
+        if (this.scrollContainer) {
+            this.scrollContainer.addEventListener('scroll', this._onScroll.bind(this));
+        }
     }
 
     detached() {
         this._trainingReadySubscriber.dispose();
         this._boardTypeSubscriber.dispose();
-    }
-
-    swipeStart(e) {
-        this.startX = e.changedTouches[0].pageX;
-        return true;
-    }
-
-    swipeEnd(event) {
-        if (!this.isMobile) return;
-
-        const endX = event.changedTouches[0].pageX;
-        const diff = endX - this.startX;
-        this.startX = endX;
-
-        switch (true) {
-            case (diff > 15):
-                this.keyIsPressed({ name: 'prev' });
-                break;
-            case (diff < -15):
-                this.keyIsPressed({ name: 'next' });
-                break;
-        }
-        return true;
-    }
-
-    _previousSubset() {
-        if (this.firstKey <= 0) {
-            this.lastKey = this.keys.length;
-            this.firstKey = this.lastKey - this.maxKeys;
-        } else {
-            this.lastKey = this.firstKey;
-            this.firstKey -= this.maxKeys;
+        if (this.scrollContainer) {
+            this.scrollContainer.removeEventListener('scroll', this._onScroll.bind(this));
         }
     }
 
-    _nextSubset() {
-        if (this.lastKey >= this.keys.length) {
-            this.firstKey = this.lastKey % this.keys.length;
-            this.lastKey = this.firstKey + this.maxKeys;
+    _onScroll() {
+        if (this.isResetting) return;
+
+        const width = this.scrollContainer.offsetWidth;
+        const scrollLeft = this.scrollContainer.scrollLeft;
+        // Use Math.round to handle potential sub-pixel scrolling or snap behavior
+        const newPage = Math.round(scrollLeft / width);
+
+        if (newPage !== this.currentPage) {
+            this.currentPage = newPage;
+            this.keyMissedCount++;
+            this._eventAggregator.publish('keyMissed', (this.keyMissedCount));
+        }
+    }
+
+
+
+    // swipeEnd(event) {
+    //     if (!this.isMobile) return;
+
+    //     const endX = event.changedTouches[0].pageX;
+    //     const diff = endX - this.startX;
+    //     this.startX = endX;
+
+    //     switch (true) {
+    //         case (diff > 15):
+    //             this.keyIsPressed({ name: 'prev' });
+    //             break;
+    //         case (diff < -15):
+    //             this.keyIsPressed({ name: 'next' });
+    //             break;
+    //     }
+    //     return true;
+    // }
+
+    _updatePages() {
+        this.pages = [];
+        const keys = [...this.keys];
+        // Ensure we have enough keys to fill pages if needed, or just display what we have
+        // For alpha keys, we might want to show all available predictions
+
+        // If we are in alpha mode, we want to show all predictions.
+        // If we are in other modes, we just show the keys.
+
+        const pageSize = this.maxKeys;
+        for (let i = 0; i < keys.length; i += pageSize) {
+            this.pages.push(keys.slice(i, i + pageSize));
+        }
+
+        if (this.pages.length > 0) {
+            const lastPage = this.pages[this.pages.length - 1];
+            let needed = pageSize - lastPage.length;
+            let sourceIndex = 0;
+            while (needed > 0 && keys.length > 0) {
+                lastPage.push(keys[sourceIndex % keys.length]);
+                sourceIndex++;
+                needed--;
+            }
         } else {
-            this.firstKey = this.lastKey;
-            this.lastKey += this.maxKeys;
+            this.pages.push([]);
+        }
+
+        if (this.scrollContainer) {
+            this.isResetting = true;
+            this.scrollContainer.scrollLeft = 0;
+            // Use setTimeout to allow the scroll event to fire (if it does synchronously) or just clear flag after a tick
+            // Actually scrollLeft assignment is synchronous but the event might be async. 
+            // RequestAnimationFrame is safer to clear the flag.
+            requestAnimationFrame(() => {
+                this.isResetting = false;
+                this.currentPage = 0;
+            });
         }
     }
 
@@ -89,7 +133,7 @@ export class KeyboardCustomElement {
         this.keyHitCount = 0;
         this.keyMissedCount = 0;
         this._resetKeysetType();
-        this._resetSubset();
+        this._updatePages();
     }
 
     _resetKeysetType() {
@@ -105,44 +149,8 @@ export class KeyboardCustomElement {
         return this.keysetType === type;
     }
 
-    _getAlphaSubset() {
-        const keys = [...this.keys, ...this.keys];
-        let newSubset = keys.slice(this.firstKey, this.lastKey);
-
-        // there's no keySubset the first time
-        if (this.keySubset) {
-
-            let currentSubset = JSON.parse(JSON.stringify(this.keySubset)) || []; // deep copy to mark items to be replaced.
-
-            // remove keys when switched to smaller keyboard
-            if (currentSubset.length && currentSubset.length > newSubset.length) {
-                currentSubset.length = newSubset.length;
-            }
-
-            // replace only unneeded keys in currentSubset
-            newSubset.forEach((key, index, subset) => {
-                key.needed = !currentSubset.some(k => k.name == key.name);
-                if (key.needed) {
-                    let replaceKeyIndex = currentSubset.findIndex(k => !subset.some(kk => kk.name == k.name));
-                    if (replaceKeyIndex > -1) {
-                        currentSubset[replaceKeyIndex] = key;
-                    } else
-                        // add key when switched to larger keyboard
-                        if (currentSubset.length && currentSubset.length < subset.length) {
-                            currentSubset.push(key);
-                        }
-                }
-            });
-
-            return currentSubset;
-        }
-        return newSubset;
-    }
-
     _resetSubset() {
-        this.firstKey = 0;
-        this.lastKey = this.maxKeys;
-        this.keySubset = this._getAlphaSubset();
+        this._updatePages();
     }
 
     _toggleKeysetType(type) {
@@ -196,9 +204,10 @@ export class KeyboardCustomElement {
                 this._toggleKeysetType(key.name);
                 if (this.keysetType == 'alpha') {
                     this.keys = this._keysService.getKeys(this.keysetType);
-                    this._resetSubset();
+                    this._updatePages();
                 } else {
-                    this.keySubset = this._keysService.getKeys(this.keysetType);
+                    this.keys = this._keysService.getKeys(this.keysetType);
+                    this._updatePages();
                 }
                 break;
             default:
