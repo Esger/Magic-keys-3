@@ -13,7 +13,7 @@ export class KeyboardCustomElement {
         this.keys = this._keysService.getKeys();
         this.caps = false;
         this._resetKeysetType();
-        this._previousKeysetType = [];
+        this._previousKeysetTypes = [];
         this.pages = [];
         this.currentPage = 0;
         this.isResetting = false;
@@ -25,11 +25,15 @@ export class KeyboardCustomElement {
 
     isMobileChanged() {
         this._setBoardType(this.maxKeys);
-        this.modifiers = this._keysService.getKeys('modifiers', this.isMobile);
     }
 
     attached() {
-        this.modifiers = this._keysService.getKeys('modifiers', this.isMobile);
+        this.modifiers = this._keysService.getKeys('modifiers');
+        this.nonAlpha = this._keysService.getKeys('nonAlpha');
+        this.numbers = this._keysService.getKeys('numbers');
+        this.brackets = this._keysService.getKeys('brackets');
+        this.symbols = this._keysService.getKeys('symbols');
+        this.punctuation = this._keysService.getKeys('punctuation');
         this._trainingReadySubscriber = this._eventAggregator.subscribe('dataReady', _ => {
             this.keys = this._keysService.getKeys()
             this._updatePages();
@@ -65,26 +69,6 @@ export class KeyboardCustomElement {
             this._eventAggregator.publish('keyMissed', (this.keyMissedCount));
         }
     }
-
-
-
-    // swipeEnd(event) {
-    //     if (!this.isMobile) return;
-
-    //     const endX = event.changedTouches[0].pageX;
-    //     const diff = endX - this.startX;
-    //     this.startX = endX;
-
-    //     switch (true) {
-    //         case (diff > 15):
-    //             this.keyIsPressed({ name: 'prev' });
-    //             break;
-    //         case (diff < -15):
-    //             this.keyIsPressed({ name: 'next' });
-    //             break;
-    //     }
-    //     return true;
-    // }
 
     _updatePages() {
         this.pages = [];
@@ -141,7 +125,7 @@ export class KeyboardCustomElement {
     }
 
     _setKeysetType(type) {
-        this._previousKeysetType.push(this.keysetType);
+        this._previousKeysetTypes.push(this.keysetType);
         this.keysetType = type;
     }
 
@@ -155,9 +139,9 @@ export class KeyboardCustomElement {
 
     _toggleKeysetType(type) {
         if (type === this.keysetType) {
-            this.keysetType = this._previousKeysetType.pop();
+            this.keysetType = this._previousKeysetTypes.pop();
         } else {
-            this._previousKeysetType.push(this.keysetType);
+            this._previousKeysetTypes.push(this.keysetType);
             this.keysetType = type;
         }
     }
@@ -202,13 +186,6 @@ export class KeyboardCustomElement {
                 break;
             case ['brackets', 'numeric', 'symbols', 'punctuation'].includes(key.name):
                 this._toggleKeysetType(key.name);
-                if (this.keysetType == 'alpha') {
-                    this.keys = this._keysService.getKeys(this.keysetType);
-                    this._updatePages();
-                } else {
-                    this.keys = this._keysService.getKeys(this.keysetType);
-                    this._updatePages();
-                }
                 break;
             default:
                 this.caps = this.capsLock;

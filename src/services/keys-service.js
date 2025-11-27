@@ -168,16 +168,6 @@ export class KeysService {
             display: '"',
             className: 'small punctuation'
         },
-        {
-            name: 'backspace',
-            display: '⇦',
-        },
-        {
-            name: 'next',
-            display: '⇨',
-            className: 'highlight',
-            title: 'More keys…'
-        },
     ];
 
     _nonAlpha = [
@@ -203,209 +193,248 @@ export class KeysService {
             name: 'space',
             display: ' ',
             output: ' ',
-            position: 'p9'
+        },
+        {
+            name: 'plus',
+            display: '+',
+            output: '+',
+            className: 'plus'
+        },
+        {
+            name: 'minus',
+            display: '-',
+            output: '-',
+            className: 'minus'
+        },
+        {
+            name: 'asterisk',
+            display: '*',
+            output: '*',
+        },
+        {
+            name: 'backspace',
+            display: '⇦',
+        },
+        {
+            name: 'next',
+            display: '⇨',
+            className: 'highlight',
+            title: 'More keys…'
         },
     ]
 
     _numbers = [
         {
-            name: '1',
+            name: 'one',
+            display: '1',
             output: '1'
         },
         {
-            name: '2',
+            name: 'two',
+            display: '2',
             output: '2'
         },
         {
-            name: '3',
+            name: 'three',
+            display: '3',
             output: '3'
         },
         {
-            name: '4',
+            name: 'four',
+            display: '4',
             output: '4'
         },
         {
-            name: '5',
+            name: 'five',
+            display: '5',
             output: '5',
             className: 'five'
         },
         {
-            name: '6',
+            name: 'six',
+            display: '6',
             output: '6'
         },
         {
-            name: '7',
+            name: 'seven',
+            display: '7',
             output: '7'
         },
         {
-            name: '8',
+            name: 'eight',
+            display: '8',
             output: '8'
         },
         {
-            name: '9',
+            name: 'nine',
+            display: '9',
             output: '9'
         },
         {
-            name: '0',
+            name: 'zero',
+            display: '0',
             output: '0',
             className: 'zero'
-        },
-        {
-            name: '+',
-            output: '+',
-            className: 'plus'
-        },
-        {
-            name: '-',
-            output: '-',
-            className: 'minus'
-        },
-        {
-            name: '*',
-            output: '*',
-            className: 'asterisk'
-        },
-        {
-            name: '/',
-            output: '/',
-            className: 'slash small'
         },
     ]
 
     _punctuation = [
         {
-            name: '`',
+            name: 'backtick',
+            display: '\`',
             output: '\''
         },
         {
-            name: '\"',
+            name: 'double_quote',
+            display: '\"',
             output: '\"'
         },
         {
-            name: '\'',
+            name: 'single_quote',
+            display: '\'',
             output: '\''
         },
         {
-            name: '§',
+            name: 'paragraph',
+            display: '§',
             output: '§'
         },
         {
-            name: ':',
+            name: 'colon',
+            display: ':',
             output: ':'
         },
         {
-            name: ';',
+            name: 'semicolon',
+            display: ';',
             output: ';'
         },
         {
-            name: '!',
+            name: 'exclamation',
+            display: '!',
             output: '!'
         },
         {
-            name: '_',
+            name: 'underscore',
+            display: '_',
             output: '_'
         },
         {
-            name: '?',
+            name: 'question_mark',
+            display: '?',
             output: '?'
         },
     ]
 
     _brackets = [
         {
-            name: '(',
+            name: 'parenthesisopen',
             output: '(',
-            className: 'parenthesis--open small',
+            display: '(',
+            className: 'small',
         },
         {
-            name: ')',
+            name: 'parenthesisclose',
             output: ')',
+            display: ')',
             className: 'small'
         },
         {
-            name: '[',
+            name: 'bracketopen',
             output: '[',
+            display: '[',
             className: 'small'
         },
         {
-            name: ']',
+            name: 'bracketclose',
             output: ']',
+            display: ']',
             className: 'small'
         },
         {
-            name: '/',
-            output: '/',
-            className: 'small'
-        },
-        {
-            name: '{',
+            name: 'curlybracesopen',
             output: '{',
-            className: 'curlyBraces--open small'
+            display: '{',
+            className: 'small'
         },
         {
-            name: '}',
+            name: 'curlybracesclose',
             output: '}',
+            display: '}',
             className: 'small'
         },
         {
-            name: '<',
+            name: 'lessthan',
             output: '<',
+            display: '<',
             className: 'small'
         },
         {
-            name: '>',
+            name: 'greaterthan',
             output: '>',
+            display: '>',
             className: 'small'
         },
         {
-            name: '|',
+            name: 'pipe',
             output: '|',
+            display: '|',
             className: 'pipe small'
         },
         {
-            name: '\\',
+            name: 'slash',
+            output: '/',
+            display: '/',
+            className: 'small'
+        },
+        {
+            name: 'backslash',
             output: '\\',
+            display: '\\',
             className: 'small'
         },
     ]
 
     _symbols = [
         {
-            name: '±',
+            name: 'plusminus',
+            display: '±',
             output: '±',
         },
         {
-            name: '@',
+            name: 'at',
+            display: '@',
             output: '@',
         },
         {
-            name: '#',
+            name: 'hash',
+            display: '#',
             output: '#',
         },
         {
-            name: '$',
+            name: 'dollar',
+            display: '$',
             output: '$',
         },
         {
-            name: '%',
+            name: 'percent',
+            display: '%',
             output: '%',
         },
         {
-            name: '^',
+            name: 'caret',
+            display: '^',
             output: '^',
         },
         {
-            name: '&',
+            name: 'ampersand',
+            display: '&',
             output: '&',
         },
         {
-            name: '*',
-            output: '*',
-        },
-        {
-            name: '~',
+            name: 'tilde',
+            display: '~',
             output: '~',
-            className: 'tilde'
         },
     ]
 
@@ -498,18 +527,32 @@ export class KeysService {
         return structuredClone([...probableKeys, ...completingKeys]) || [];
     }
 
-    getKeys(setName, isMobile) {
+    getKeys(setName) {
+        let keys;
         switch (setName) {
-            case 'punctuation': return this._punctuation; break;
-            case 'numeric': return this._numbers; break;
-            case 'symbols': return this._symbols; break;
-            case 'brackets': return this._brackets; break;
-            case 'modifiers':
-                const modifiers = isMobile ? this._modifiers.filter(key => key.name != 'next' && key.name != 'backspace' && key.name != 'punctuation') : this._modifiers;
-                return [...modifiers, ...this._nonAlpha];
+            case 'punctuation':
+                keys = this._punctuation;
                 break;
-            default: return this._getKeys(); break;
+            case 'numbers':
+                keys = this._numbers;
+                break;
+            case 'symbols':
+                keys = this._symbols;
+                break;
+            case 'brackets':
+                keys = this._brackets;
+                break;
+            case 'modifiers':
+                keys = this._modifiers;
+                break;
+            case 'nonAlpha':
+                keys = this._nonAlpha;
+                break;
+            default:
+                keys = this._getKeys();
+                break;
         }
+        return keys;
     }
 
     setTail(tail) {
@@ -632,9 +675,7 @@ export class KeysService {
 
     _saveWhenIdle() {
         clearTimeout(this._saveTimeoutId);
-        this._saveTimeoutId = setTimeout(() => {
-            this._saveKnowledge();
-        }, 5000);
+        this._saveTimeoutId = setTimeout(_ => this._saveKnowledge(), 10000);
     }
 
     _saveKnowledge() {

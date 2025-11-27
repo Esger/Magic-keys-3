@@ -2,7 +2,7 @@
     <require from="./keyboard.css"></require>
 
     <button repeat.for="key of modifiers"
-          class="key ${key.className} 
+          class="key modifier ${key.className} ${key.name}
                 ${caps && key.name == 'shift' ? 'active' : ''}
                 ${keysetType == 'numeric' && key.name == 'numeric' ? 'active' : ''}
                 ${keysetType == 'brackets' && key.name == 'brackets' ? 'active' : ''}
@@ -12,14 +12,53 @@
           click.delegate="keyIsPressed(key)"
           title.one-time="key.title || ''">${key.display}</button>
 
-    <div class="keys-scroll-container"
-         ref="scrollContainer">
-        <div repeat.for="page of pages"
-             class="keys-page">
-            <button repeat.for="key of page"
-                    class="key ${key.name} ${key.className}"
-                    click.delegate="keyIsPressed(key)">${key.name}</button>
-        </div>
-    </div>
+    <button repeat.for="key of nonAlpha"
+      class="key nonAlpha ${key.className} ${key.name}"
+      css="grid-area: ${key.name}"
+      click.delegate="keyIsPressed(key)"
+      title.one-time="key.title || ''">${key.display}</button>
 
+    <template if.bind="keysetType == 'numeric'">
+        <button repeat.for="key of numbers"
+          class="key numbers ${key.className} ${key.name}"
+          css="grid-area: ${key.name}"
+          click.delegate="keyIsPressed(key)"
+          title.one-time="key.title || ''">${key.display}</button>
+    </template>
+
+    <template if.bind="keysetType == 'brackets'">
+        <button repeat.for="key of brackets"
+          class="key brackets ${key.className} ${key.name}"
+          css="grid-area: ${key.name}"
+          click.delegate="keyIsPressed(key)"
+          title.one-time="key.title || ''">${key.display}</button>
+    </template>
+
+    <template if.bind="keysetType == 'symbols'">
+        <button repeat.for="key of symbols"
+          class="key symbols ${key.className} ${key.name}"
+          css="grid-area: ${key.name}"
+          click.delegate="keyIsPressed(key)"
+          title.one-time="key.title || ''">${key.display}</button>
+    </template>
+
+    <template if.bind="keysetType == 'punctuation'">
+        <button repeat.for="key of punctuation"
+          class="key punctuation ${key.className} ${key.name}"
+          css="grid-area: ${key.name}"
+          click.delegate="keyIsPressed(key)"
+          title.one-time="key.title || ''">${key.display}</button>
+    </template>
+
+    <template if.bind="keysetType == 'alpha'">
+        <div class="keys-scroll-container"
+             ref="scrollContainer">
+            <div repeat.for="page of pages"
+                 class="keys-page">
+                <button repeat.for="key of page"
+                        class="key ${key.name} ${key.className}"
+                        click.delegate="keyIsPressed(key)">${key.name}</button>
+            </div>
+        </div>
+    </template>
 </template>
