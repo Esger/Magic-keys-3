@@ -94,15 +94,23 @@ keyboard {
     &.board--8keys {
         --gapSize: 4px;
         --keySize: calc(~"(100% - (5 * var(--gapSize))) / 6");
-        grid-template-areas:
-            "shift  numeric symbols brackets backspace -"
-            "comma  dynamic dynamic dynamic  dynamic   enter"
-            "period dynamic dynamic dynamic  dynamic   space";
-        grid-template-columns: repeat(6, minmax(0, var(--keySize)));
+
+        &.alpha {
+            grid-template-areas:
+                "shift  numeric symbols brackets backspace next"
+                "comma  dynamic dynamic dynamic  dynamic   enter"
+                "period dynamic dynamic dynamic  dynamic   space";
+            grid-template-columns: repeat(6, minmax(0, var(--keySize)));
+
+            .asterisk,
+            .plus {
+                display: none;
+            }
+        }
 
         &.numeric {
             grid-template-areas:
-                "shift   numeric symbols brackets backspace -"
+                "shift   numeric symbols brackets backspace next"
                 "zero    one     two     three    four      five"
                 "six     seven   eight   nine     comma     period";
         }
@@ -155,7 +163,11 @@ keyboard {
     }
 
     &.small {
-        font-size: 24px;
+        font-size: 21px;
+
+        .swipe & {
+            font-size: 24px;
+        }
     }
 
     &.highlight {
@@ -261,20 +273,19 @@ keyboard {
     grid-area: dynamic;
     display: flex;
     gap: var(--gapSize);
-    margin: 0 calc(-2 * var(--bodyPadding, 12px));
-    padding: 0 calc(2 * var(--bodyPadding, 12px));
     scroll-padding: 0 calc(2 * var(--bodyPadding, 12px));
     overflow-x: scroll;
     overflow-y: hidden;
     scroll-snap-type: x mandatory;
     scrollbar-width: none;
-    /* Firefox */
-    -ms-overflow-style: none;
-    /* IE 10+ */
+
+    .board--mobile--8keys & {
+        margin: 0 calc(-2 * var(--bodyPadding, 12px));
+        padding: 0 calc(2 * var(--bodyPadding, 12px));
+    }
 
     &::-webkit-scrollbar {
         display: none;
-        /* Chrome/Safari/Webkit */
     }
 
     .numbers &,
