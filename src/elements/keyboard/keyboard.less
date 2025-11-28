@@ -113,6 +113,7 @@ keyboard {
                 "shift   numeric symbols brackets backspace next"
                 "zero    one     two     three    four      five"
                 "six     seven   eight   nine     comma     period";
+            grid-template-columns: repeat(6, minmax(0, var(--keySize)));
 
             .asterisk,
             .enter,
@@ -147,6 +148,7 @@ keyboard {
                 "zero    one     two      three     four    five"
                 "six     seven   eight    nine      comma   period"
                 "plus    minus   asterisk slash     period  space";
+            grid-template-columns: repeat(5, minmax(0, var(--keySize)));
         }
     }
 }
