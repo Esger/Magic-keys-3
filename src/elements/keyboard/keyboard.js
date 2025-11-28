@@ -110,16 +110,6 @@ export class KeyboardCustomElement {
         }
     }
 
-    _nextSubset() {
-        if (this._lastKey >= this.keys.length) {
-            this._firstKey = this._lastKey % this.keys.length;
-            this._lastKey = this._firstKey + this._maxKeys;
-        } else {
-            this._firstKey = this._lastKey;
-            this._lastKey += this._maxKeys;
-        }
-    }
-
     _setBoardType(amount) {
         this._maxKeys = parseInt(amount, 10);
         const mobile = this.isMobile && this._maxKeys == 8 ? 'mobile--' : '';
@@ -137,12 +127,6 @@ export class KeyboardCustomElement {
     _setKeysetType(type) {
         this._previousKeysetTypes.push(this.keysetType);
         this.keysetType = type;
-    }
-
-    _resetSubset() {
-        this._firstKey = 0;
-        this._lastKey = this._maxKeys;
-        this._updatePages();
     }
 
     _toggleKeysetType(type) {
@@ -208,19 +192,15 @@ export class KeyboardCustomElement {
                     this._capsLockPending = false;
                 }, 300);
                 break;
-            case key.name == 'prev':
-                this._resetKeysetType();
-                this._previousSubset();
-                this.keySubset = this._getAlphaSubset();
-                this.keyMissedCount++;
-                this._eventAggregator.publish('keyMissed', (this.keyMissedCount));
-                break;
             case key.name == 'next':
-                this._resetKeysetType();
-                this._nextSubset();
-                this.keySubset = this._getAlphaSubset();
-                this.keyMissedCount++;
-                this._eventAggregator.publish('keyMissed', (this.keyMissedCount));
+                let next = this.currentPage + 1;
+                if (next >= this.pages.length) {
+                    next = 0;
+                }
+                const pages = this.scrollContainer.querySelectorAll('.keys-page');
+                if (pages[next]) {
+                    pages[next].scrollIntoView();
+                }
                 break;
             case ['brackets', 'numeric', 'symbols', 'punctuation'].includes(key.name):
                 this._toggleKeysetType(key.name);
@@ -229,7 +209,7 @@ export class KeyboardCustomElement {
                 this.caps = this._capsLock;
                 this.keys = this._keysService.getKeys(this.keysetType);
                 if (this.keysetType == 'alpha') {
-                    this._resetSubset();
+                    this._updatePages();
                 }
                 key.output?.length && this.keyHitCount++;
                 this._eventAggregator.publish('keyHit', (this.keyHitCount));
