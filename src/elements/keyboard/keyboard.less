@@ -18,20 +18,24 @@ keyboard {
         --keySize: calc(~"(100% - (3 * var(--gapSize))) / 4");
         grid-template-columns: repeat(4, minmax(0, var(--keySize)));
 
+        .shift {
+            display: none;
+        }
+
         &.alpha {
             grid-template-areas:
-                "shift   numeric symbols brackets"
-                "dynamic dynamic dynamic dynamic"
-                "dynamic dynamic dynamic dynamic"
-                "enter   comma   period  space";
+                "punctuation numeric symbols brackets"
+                "dynamic     dynamic dynamic dynamic"
+                "dynamic     dynamic dynamic dynamic"
+                "enter       comma   period  space";
         }
 
         &.numeric {
             grid-template-areas:
-                "shift   numeric symbols brackets"
-                "zero    one     two    three"
-                "four    five    six    seven"
-                "eight   nine    comma  period";
+                "punctuation numeric symbols brackets"
+                "zero        one     two     three"
+                "four        five    six     seven"
+                "eight       nine    comma   period";
 
             .space,
             .enter {
@@ -41,19 +45,21 @@ keyboard {
 
         &.symbols {
             grid-template-areas:
-                "shift      numeric symbols   brackets"
-                "plusminus  at      hash      dollar"
-                "percent    caret   ampersand tilde"
-                "enter      comma   period    space";
+                "punctuation numeric symbols   brackets"
+                "plusminus   at      hash      dollar"
+                "percent     caret   ampersand tilde"
+                "enter       comma   period    space";
         }
 
         &.brackets {
             grid-template-areas:
-                "pipe            numeric          symbols     brackets"
+                "punctuation     numeric          symbols     brackets"
                 "parenthesisopen parenthesisclose bracketopen bracketclose"
                 "curlybracesopen curlybracesclose lessthan    greaterthan"
-                "enter           comma            slash       backslash";
+                "enter           pipe             slash       backslash";
 
+
+            .comma,
             .period,
             .shift,
             .space {
@@ -67,7 +73,6 @@ keyboard {
             .backspace,
             .minus,
             .next,
-            .punctuation,
             .plus {
                 display: none;
             }
