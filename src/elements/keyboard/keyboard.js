@@ -110,6 +110,16 @@ export class KeyboardCustomElement {
         }
     }
 
+    _nextSubset() {
+        if (this._lastKey >= this.keys.length) {
+            this._firstKey = this._lastKey % this.keys.length;
+            this._lastKey = this._firstKey + this._maxKeys;
+        } else {
+            this._firstKey = this._lastKey;
+            this._lastKey += this._maxKeys;
+        }
+    }
+
     _setBoardType(amount) {
         this._maxKeys = parseInt(amount, 10);
         const mobile = this.isMobile && this._maxKeys == 8 ? 'mobile--' : '';
@@ -129,11 +139,9 @@ export class KeyboardCustomElement {
         this.keysetType = type;
     }
 
-    isKeysetOftype(type) {
-        return this.keysetType === type;
-    }
-
     _resetSubset() {
+        this._firstKey = 0;
+        this._lastKey = this._maxKeys;
         this._updatePages();
     }
 
@@ -194,7 +202,7 @@ export class KeyboardCustomElement {
         switch (true) {
             case key.name == 'shift':
                 this._capsLock = this._capsLockPending;
-                this._caps = !this._caps || this._capsLock;
+                this.caps = !this.caps || this._capsLock;
                 this._capsLockPending = true;
                 setTimeout(() => {
                     this._capsLockPending = false;
