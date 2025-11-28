@@ -201,12 +201,6 @@ export class KeysService {
             className: 'plus'
         },
         {
-            name: 'minus',
-            display: '-',
-            output: '-',
-            className: 'minus'
-        },
-        {
             name: 'asterisk',
             display: '*',
             output: '*',
@@ -285,12 +279,12 @@ export class KeysService {
             output: '\''
         },
         {
-            name: 'double_quote',
+            name: 'doublequote',
             display: '\"',
             output: '\"'
         },
         {
-            name: 'single_quote',
+            name: 'singlequote',
             display: '\'',
             output: '\''
         },
@@ -315,12 +309,17 @@ export class KeysService {
             output: '!'
         },
         {
+            name: 'minus',
+            display: '-',
+            output: '-',
+        },
+        {
             name: 'underscore',
             display: '_',
             output: '_'
         },
         {
-            name: 'question_mark',
+            name: 'questionmark',
             display: '?',
             output: '?'
         },

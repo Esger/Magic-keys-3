@@ -30,6 +30,19 @@ keyboard {
                 "enter       comma   period  space";
         }
 
+        &.punctuation {
+            grid-template-areas:
+                "punctuation numeric      symbols     brackets"
+                "backtick    doublequote  singlequote paragraph"
+                "colon       semicolon    minus       underscore"
+                "enter       questionmark exclamation space";
+
+            .comma,
+            .period {
+                display: none;
+            }
+        }
+
         &.numeric {
             grid-template-areas:
                 "punctuation numeric symbols brackets"
@@ -71,7 +84,6 @@ keyboard {
 
             .asterisk,
             .backspace,
-            .minus,
             .next,
             .plus {
                 display: none;
