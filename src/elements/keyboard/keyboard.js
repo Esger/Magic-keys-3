@@ -74,25 +74,78 @@ export class KeyboardCustomElement {
     }
 
     _updatePages() {
-        this.pages = [];
-        const keys = [...this.keys];
-        // Ensure we have enough keys to fill pages if needed, or just display what we have
-        // For alpha keys, we might want to show all available predictions
-
-        // If we are in alpha mode, we want to show all predictions.
-        // If we are in other modes, we just show the keys.
-
+        const oldPage0 = this.pages[0] || [];
+        const newKeys = [...this.keys];
         const pageSize = this._maxKeys;
-        for (let i = 0; i < keys.length; i += pageSize) {
-            this.pages.push(keys.slice(i, i + pageSize));
+
+        // Initialize newPage0 with nulls
+        const newPage0 = new Array(pageSize).fill(null);
+        const remainingKeys = [];
+
+        // Preserve Phase: Keep existing keys in their spots
+        // We need to match by name to ensure identity
+        // We iterate through newKeys to see which ones can be placed
+        const placedIndices = new Set();
+
+        // First pass: Place keys that were already on page 0
+        newKeys.forEach(key => {
+            const oldIndex = oldPage0.findIndex(k => k.name === key.name);
+            if (oldIndex !== -1 && oldIndex < pageSize) {
+                newPage0[oldIndex] = key;
+                placedIndices.add(key.name);
+            } else {
+                remainingKeys.push(key);
+            }
+        });
+
+        // Fill Phase: Fill empty spots with remaining keys
+        let remainingIndex = 0;
+        for (let i = 0; i < pageSize; i++) {
+            if (newPage0[i] === null) {
+                if (remainingIndex < remainingKeys.length) {
+                    newPage0[i] = remainingKeys[remainingIndex++];
+                } else {
+                    // No more keys to fill, leave as null or handle later?
+                    // Actually we should filter out nulls if we don't want empty gaps at the end 
+                    // but the grid expects a full page or at least contiguous items.
+                    // However, the logic below handles "needed" keys for looping.
+                    // Let's just break here, the array will have empty slots which we might need to clean up
+                    // or fill with looped keys immediately.
+                    break;
+                }
+            }
         }
 
+        // If we have more remaining keys, they go to next pages
+        const overflowKeys = remainingKeys.slice(remainingIndex);
+
+        // Clean up newPage0 (remove nulls if any, though we usually fill it up)
+        // But wait, if we have fewer keys than pageSize, we might have nulls at the end.
+        // We should filter them out for now, and let the loop logic fill them.
+        const cleanPage0 = newPage0.filter(k => k !== null);
+
+        this.pages = [cleanPage0];
+
+        // Handle overflow pages
+        for (let i = 0; i < overflowKeys.length; i += pageSize) {
+            this.pages.push(overflowKeys.slice(i, i + pageSize));
+        }
+
+        // Fill the last page (could be page 0) with looped keys if needed
         if (this.pages.length > 0) {
             const lastPage = this.pages[this.pages.length - 1];
             let needed = pageSize - lastPage.length;
+
+            // We need a source of keys to loop from. 
+            // The original implementation used 'keys' (all keys).
+            // We should use the full list of newKeys for looping content.
             let sourceIndex = 0;
-            while (needed > 0 && keys.length > 0) {
-                lastPage.push(keys[sourceIndex % keys.length]);
+            while (needed > 0 && newKeys.length > 0) {
+                // We want to add keys that are NOT already on this page if possible?
+                // Or just loop through all keys? Standard behavior is loop through all.
+                // But we must ensure we don't duplicate keys on the same page visually if we can avoid it?
+                // The original logic just took keys[sourceIndex % keys.length].
+                lastPage.push(newKeys[sourceIndex % newKeys.length]);
                 sourceIndex++;
                 needed--;
             }
@@ -103,9 +156,6 @@ export class KeyboardCustomElement {
         if (this.scrollContainer) {
             this._isResetting = true;
             this.scrollContainer.scrollLeft = 0;
-            // Use setTimeout to allow the scroll event to fire (if it does synchronously) or just clear flag after a tick
-            // Actually scrollLeft assignment is synchronous but the event might be async. 
-            // RequestAnimationFrame is safer to clear the flag.
             requestAnimationFrame(() => {
                 this._isResetting = false;
                 this.currentPage = 0;
