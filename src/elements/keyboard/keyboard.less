@@ -113,18 +113,33 @@ keyboard {
                 "shift   numeric symbols brackets backspace next"
                 "zero    one     two     three    four      five"
                 "six     seven   eight   nine     comma     period";
+
+            .asterisk,
+            .enter,
+            .plus,
+            .space {
+                display: none;
+            }
         }
     }
 
     &.board--9keys {
         --gapSize: 4px;
         --keySize: calc(~"(100% - (4 * var(--gapSize))) / 5");
-        grid-template-areas:
-            "numeric symbols brackets punctuation backspace"
-            "shift   dynamic dynamic  dynamic     next"
-            "comma   dynamic dynamic  dynamic     enter"
-            "period  dynamic dynamic  dynamic     space";
-        grid-template-columns: repeat(5, minmax(0, var(--keySize)));
+
+        &.alpha {
+            grid-template-areas:
+                "numeric symbols brackets punctuation backspace"
+                "shift   dynamic dynamic  dynamic     next"
+                "comma   dynamic dynamic  dynamic     enter"
+                "period  dynamic dynamic  dynamic     space";
+            grid-template-columns: repeat(5, minmax(0, var(--keySize)));
+
+            .asterisk,
+            .plus {
+                display: none;
+            }
+        }
 
         &.numeric {
             grid-template-areas:
