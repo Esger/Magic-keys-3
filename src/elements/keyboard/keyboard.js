@@ -2,13 +2,16 @@ import { inject, bindable } from "aurelia-framework";
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { KeysService } from "services/keys-service";
 
-@inject(EventAggregator, KeysService)
+import { SettingsService } from "services/settings-service";
+
+@inject(EventAggregator, KeysService, SettingsService)
 export class KeyboardCustomElement {
     @bindable isMobile;
-    constructor(eventAggregator, keysService) {
+    constructor(eventAggregator, keysService, settingsService) {
         this._eventAggregator = eventAggregator;
         this._keysService = keysService;
-        this._maxKeys = 8;
+        this._settingsService = settingsService;
+        this._maxKeys = this._settingsService.getSetting('boardType', 8);
         this._keysService.setAlphaKeyCount(this._maxKeys);
         this.keys = this._keysService.getKeys();
         this.caps = false;

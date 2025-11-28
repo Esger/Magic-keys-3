@@ -2,7 +2,9 @@ import { inject } from "aurelia-framework";
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { HttpClient } from 'aurelia-fetch-client';
 
-@inject(EventAggregator)
+import { SettingsService } from "services/settings-service";
+
+@inject(EventAggregator, SettingsService)
 export class KeysService {
 
     _defaultKeys = [
@@ -444,8 +446,9 @@ export class KeysService {
     _tail = '';
     _tailLength = 4;
 
-    constructor(eventAggregator) {
+    constructor(eventAggregator, settingsService) {
         this._eventAggregator = eventAggregator;
+        this._settingsService = settingsService;
         this._defaultKeys.forEach(key => {
             // Populate the object structure
             this._keysKnowledge[key.name] = { ...key };
@@ -459,10 +462,15 @@ export class KeysService {
             }
         });
         this._loadKnowledge();
+
+        // Load settings
+        this._alphaKeyCount = this._settingsService.getSetting('boardType', 8);
+        this._tailLength = this._settingsService.getSetting('depth', 4);
     }
 
     setAlphaKeyCount(count) {
         this._alphaKeyCount = count;
+        this._settingsService.setSetting('boardType', count);
         this._eventAggregator.publish('boardType', count);
     }
 
@@ -472,6 +480,7 @@ export class KeysService {
 
     setTailLength(value = 4) {
         this._tailLength = value;
+        this._settingsService.setSetting('depth', value);
         this.resetData();
     }
 
