@@ -665,16 +665,16 @@ export class KeysService {
     }
 
     _loadKnowledge() {
-        if (localStorage.getItem('smart-keys')) {
-            const loadedData = JSON.parse(localStorage.getItem('smart-keys'));
-            if (Array.isArray(loadedData)) {
+        const data = this._settingsService.loadKnowledge();
+        if (data) {
+            if (Array.isArray(data)) {
                 // Migrate old array data to object
                 this._keysKnowledge = {};
-                loadedData.forEach(item => {
+                data.forEach(item => {
                     this._keysKnowledge[item.name] = item;
                 });
             } else {
-                this._keysKnowledge = loadedData;
+                this._keysKnowledge = data;
             }
         } else {
             this._getText();
@@ -687,7 +687,7 @@ export class KeysService {
     }
 
     _saveKnowledge() {
-        localStorage.setItem('smart-keys', JSON.stringify(this._keysKnowledge));
+        this._settingsService.saveKnowledge(this._keysKnowledge);
     }
 
 }

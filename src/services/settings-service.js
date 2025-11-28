@@ -21,4 +21,13 @@ export class SettingsService {
         this._settings[key] = value;
         this.saveSettings();
     }
+
+    loadKnowledge() {
+        const knowledge = localStorage.getItem('smart-keys');
+        return knowledge ? JSON.parse(knowledge) : null;
+    }
+
+    saveKnowledge(knowledge) {
+        localStorage.setItem('smart-keys', JSON.stringify(knowledge));
+    }
 }
