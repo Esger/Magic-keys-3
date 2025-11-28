@@ -156,8 +156,38 @@ export class KeyboardCustomElement {
     }
 
     keyIsPressed(key) {
+        if (this._isSwiping) {
+            this._isSwiping = false;
+            return;
+        }
         this._eventAggregator.publish('keyIsPressed', key);
         this._handleKey(key)
+    }
+
+    swipeStart(event, key) {
+        if (!this.isMobile) return true;
+        this._startY = event.changedTouches[0].pageY;
+        this._startX = event.changedTouches[0].pageX;
+        this._isSwiping = false;
+        return true;
+    }
+
+    swipeEnd(event, key) {
+        if (!this.isMobile) return true;
+        const endY = event.changedTouches[0].pageY;
+        const endX = event.changedTouches[0].pageX;
+        const diffY = this._startY - endY;
+        const diffX = Math.abs(this._startX - endX);
+
+        if (diffY > 30 && diffY > diffX) {
+            this._isSwiping = true;
+            if (this.keysetType === 'alpha' && key.output && key.output.match(/[a-z]/)) {
+                const upperKey = { ...key, output: key.output.toUpperCase() };
+                this._eventAggregator.publish('keyIsPressed', upperKey);
+                this._handleKey(upperKey);
+            }
+        }
+        return true;
     }
 
     _handleKey(key) {
@@ -195,7 +225,6 @@ export class KeyboardCustomElement {
                 }
                 key.output?.length && this.keyHitCount++;
                 this._eventAggregator.publish('keyHit', (this.keyHitCount));
-                // console.table(this.keys)
                 break;
         }
     }

@@ -57,6 +57,8 @@
                  class="keys-page">
                 <button repeat.for="key of page"
                         class="key ${key.name} ${key.className}"
+                        touchstart.delegate="swipeStart($event, key)"
+                        touchend.delegate="swipeEnd($event, key)"
                         click.delegate="keyIsPressed(key)">${key.name}</button>
             </div>
         </div>
