@@ -665,8 +665,8 @@ export class KeysService {
     }
 
     _loadKnowledge() {
-        if (localStorage.getItem("smart-keys")) {
-            const loadedData = JSON.parse(localStorage.getItem("smart-keys"));
+        if (localStorage.getItem('smart-keys')) {
+            const loadedData = JSON.parse(localStorage.getItem('smart-keys'));
             if (Array.isArray(loadedData)) {
                 // Migrate old array data to object
                 this._keysKnowledge = {};
@@ -687,7 +687,7 @@ export class KeysService {
     }
 
     _saveKnowledge() {
-        localStorage.setItem("smart-keys", JSON.stringify(this._keysKnowledge));
+        localStorage.setItem('smart-keys', JSON.stringify(this._keysKnowledge));
     }
 
 }
