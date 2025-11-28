@@ -25,7 +25,7 @@ export class TerminalCustomElement {
     }
 
     swipeStart(e) {
-        this.startX = e.changedTouches[0].pageX;
+        this._startX = e.changedTouches[0].pageX;
         return true;
     }
 
@@ -33,8 +33,8 @@ export class TerminalCustomElement {
         if (!this.isMobile) return;
 
         const endX = event.changedTouches[0].pageX;
-        const diff = endX - this.startX;
-        this.startX = endX;
+        const diff = endX - this._startX;
+        this._startX = endX;
 
         if (diff < -15) {
             this.backspace();
@@ -56,16 +56,16 @@ export class TerminalCustomElement {
     _handleKey(key) {
         switch (true) {
             case key.name == 'shift':
-                this.capsLock = this.capsLockPending;
-                this.caps = !this.caps || this.capsLock;
-                this.capsLockPending = true;
+                this._capsLock = this._capsLockPending;
+                this._caps = !this._caps || this._capsLock;
+                this._capsLockPending = true;
                 setTimeout(() => {
-                    this.capsLockPending = false;
+                    this._capsLockPending = false;
                 }, 300);
                 break;
             case key.output?.length > 0:
-                this.value = this.caps ? this.value + key.output.toUpperCase() : this.value + key.output;
-                this.caps = this.capsLock;
+                this.value = this._caps ? this.value + key.output.toUpperCase() : this.value + key.output;
+                this._caps = this._capsLock;
                 const tail = this.value.slice(-this._tailLength);
                 this._keysService.registerKeystroke(tail.toLocaleLowerCase());
                 break;

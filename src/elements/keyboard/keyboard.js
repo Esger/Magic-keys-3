@@ -8,23 +8,23 @@ export class KeyboardCustomElement {
     constructor(eventAggregator, keysService) {
         this._eventAggregator = eventAggregator;
         this._keysService = keysService;
-        this.maxKeys = 8;
-        this._keysService.setAlphaKeyCount(this.maxKeys);
+        this._maxKeys = 8;
+        this._keysService.setAlphaKeyCount(this._maxKeys);
         this.keys = this._keysService.getKeys();
         this.caps = false;
         this._resetKeysetType();
         this._previousKeysetTypes = [];
         this.pages = [];
         this.currentPage = 0;
-        this.isResetting = false;
+        this._isResetting = false;
     }
 
     bind() {
-        this._setBoardType(this.maxKeys);
+        this._setBoardType(this._maxKeys);
     }
 
     isMobileChanged() {
-        this._setBoardType(this.maxKeys);
+        this._setBoardType(this._maxKeys);
     }
 
     attached() {
@@ -56,7 +56,7 @@ export class KeyboardCustomElement {
     }
 
     _onScroll() {
-        if (this.isResetting) return;
+        if (this._isResetting) return;
 
         const width = this.scrollContainer.offsetWidth;
         const scrollLeft = this.scrollContainer.scrollLeft;
@@ -79,7 +79,7 @@ export class KeyboardCustomElement {
         // If we are in alpha mode, we want to show all predictions.
         // If we are in other modes, we just show the keys.
 
-        const pageSize = this.maxKeys;
+        const pageSize = this._maxKeys;
         for (let i = 0; i < keys.length; i += pageSize) {
             this.pages.push(keys.slice(i, i + pageSize));
         }
@@ -98,21 +98,21 @@ export class KeyboardCustomElement {
         }
 
         if (this.scrollContainer) {
-            this.isResetting = true;
+            this._isResetting = true;
             this.scrollContainer.scrollLeft = 0;
             // Use setTimeout to allow the scroll event to fire (if it does synchronously) or just clear flag after a tick
             // Actually scrollLeft assignment is synchronous but the event might be async. 
             // RequestAnimationFrame is safer to clear the flag.
             requestAnimationFrame(() => {
-                this.isResetting = false;
+                this._isResetting = false;
                 this.currentPage = 0;
             });
         }
     }
 
     _setBoardType(amount) {
-        this.maxKeys = parseInt(amount, 10);
-        const mobile = this.isMobile && this.maxKeys == 8 ? 'mobile--' : '';
+        this._maxKeys = parseInt(amount, 10);
+        const mobile = this.isMobile && this._maxKeys == 8 ? 'mobile--' : '';
         this.boardType = 'board--' + mobile + amount + 'keys';
         this.keyHitCount = 0;
         this.keyMissedCount = 0;
@@ -163,11 +163,11 @@ export class KeyboardCustomElement {
     _handleKey(key) {
         switch (true) {
             case key.name == 'shift':
-                this.capsLock = this.capsLockPending;
-                this.caps = !this.caps || this.capsLock;
-                this.capsLockPending = true;
+                this._capsLock = this._capsLockPending;
+                this._caps = !this._caps || this._capsLock;
+                this._capsLockPending = true;
                 setTimeout(() => {
-                    this.capsLockPending = false;
+                    this._capsLockPending = false;
                 }, 300);
                 break;
             case key.name == 'prev':
@@ -188,7 +188,7 @@ export class KeyboardCustomElement {
                 this._toggleKeysetType(key.name);
                 break;
             default:
-                this.caps = this.capsLock;
+                this.caps = this._capsLock;
                 this.keys = this._keysService.getKeys(this.keysetType);
                 if (this.keysetType == 'alpha') {
                     this._resetSubset();
