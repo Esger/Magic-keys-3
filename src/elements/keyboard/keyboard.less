@@ -1,21 +1,21 @@
 keyboard {
-    display: grid;
-    column-gap: var(--gapSize);
-    row-gap: var(--gapSize);
+    display       : grid;
+    column-gap    : var(--gapSize);
+    row-gap       : var(--gapSize);
     grid-auto-rows: 1fr;
-    margin-bottom: 0;
-    width: 100%;
-    height: 100%;
-    flex-grow: 1;
-    user-select: none;
+    margin-bottom : 0;
+    width         : 100%;
+    height        : 100%;
+    flex-grow     : 1;
+    user-select   : none;
 
     &.noSwipe {
         touch-action: none;
     }
 
     &.board--mobile--8keys {
-        --gapSize: var(--bodyPadding, 4px);
-        --keySize: calc(~"(100% - (3 * var(--gapSize))) / 4");
+        --gapSize            : var(--bodyPadding, 4px);
+        --keySize            : calc(~"(100% - (3 * var(--gapSize))) / 4");
         grid-template-columns: repeat(4, minmax(0, var(--keySize)));
 
         .shift {
@@ -154,33 +154,33 @@ keyboard {
 }
 
 .key {
-    display: flex;
-    aspect-ratio: unset;
-    justify-content: center;
-    align-items: center;
-    font-family: "Source Code Pro";
-    font-size: 32px;
-    font-weight: 400;
-    line-height: 1;
-    text-transform: uppercase;
-    text-shadow: none;
+    display         : flex;
+    aspect-ratio    : unset;
+    justify-content : center;
+    align-items     : center;
+    font-family     : "Source Code Pro";
+    font-size       : 32px;
+    font-weight     : 400;
+    line-height     : 1;
+    text-transform  : uppercase;
+    text-shadow     : none;
     background-color: #333;
-    color: #fff;
-    border-radius: calc(var(--bodyPadding) / 2);
-    box-shadow: none;
-    overflow: hidden;
-    cursor: pointer;
-    border: 1px solid #444;
-    touch-action: auto;
+    color           : #fff;
+    border-radius   : calc(var(--bodyPadding) / 2);
+    box-shadow      : none;
+    overflow        : hidden;
+    cursor          : pointer;
+    border          : 1px solid #444;
+    touch-action    : auto;
 
     &.active {
-        background: var(--highlightColor);
-        color: var(--black);
+        background : var(--highlightColor);
+        color      : var(--black);
         font-weight: 700;
     }
 
     &.flash {
-        animation: flashIn 0.25s linear forwards;
+        animation       : flashIn 0.25s linear forwards;
         background-image: radial-gradient(circle at center, var(--highlightColor) var(--colorStop, 50%), transparent 100%);
     }
 
@@ -193,8 +193,8 @@ keyboard {
     }
 
     &.highlight {
-        background: #444;
-        color: var(--highlightColor);
+        background  : #444;
+        color       : var(--highlightColor);
         border-color: var(--highlightColor);
     }
 
@@ -292,17 +292,17 @@ keyboard {
 }
 
 .keys-scroll-container {
-    grid-area: dynamic;
-    display: flex;
-    gap: var(--gapSize);
-    overflow-x: scroll;
-    overflow-y: hidden;
+    grid-area       : dynamic;
+    display         : flex;
+    gap             : var(--gapSize);
+    overflow-x      : scroll;
+    overflow-y      : hidden;
     scroll-snap-type: x mandatory;
-    scrollbar-width: none;
+    scrollbar-width : none;
 
     .board--mobile--8keys & {
-        margin: 0 calc(-2 * var(--bodyPadding, 12px));
-        padding: 0 calc(2 * var(--bodyPadding, 12px));
+        margin        : 0 calc(-2 * var(--bodyPadding, 12px));
+        padding       : 0 calc(2 * var(--bodyPadding, 12px));
         scroll-padding: 0 calc(2 * var(--bodyPadding, 12px));
     }
 
@@ -318,14 +318,14 @@ keyboard {
 }
 
 .keys-page {
-    flex: 0 0 100%;
-    display: grid;
-    column-gap: var(--gapSize);
-    row-gap: var(--gapSize);
-    grid-auto-rows: 1fr;
+    flex             : 0 0 100%;
+    display          : grid;
+    column-gap       : var(--gapSize);
+    row-gap          : var(--gapSize);
+    grid-auto-rows   : 1fr;
     scroll-snap-align: start;
-    width: 100%;
-    height: 100%;
+    width            : 100%;
+    height           : 100%;
 
     /* Inherit columns from parent logic, but we need to be explicit because we are inside a flex item */
     /* The parent grid defines columns, but we are breaking out of the direct grid placement for individual keys */
@@ -333,29 +333,29 @@ keyboard {
 
     .board--mobile--8keys & {
         grid-template-columns: repeat(4, minmax(0, 1fr));
-        grid-template-rows: repeat(2, 1fr);
+        grid-template-rows   : repeat(2, 1fr);
     }
 
     .board--8keys & {
         grid-template-columns: repeat(4, minmax(0, 1fr));
-        grid-template-rows: repeat(2, 1fr);
+        grid-template-rows   : repeat(2, 1fr);
     }
 
     .board--9keys & {
         /* In 9keys, dynamic area is 3 columns wide */
         grid-template-columns: repeat(3, minmax(0, 1fr));
-        grid-template-rows: repeat(3, 1fr);
+        grid-template-rows   : repeat(3, 1fr);
     }
 }
 
 @keyframes flashIn {
     0% {
         transform: scale(0);
-        opacity: 0.5;
+        opacity  : 0.5;
     }
 
     100% {
         transform: scale(2);
-        opacity: 0;
+        opacity  : 0;
     }
 }

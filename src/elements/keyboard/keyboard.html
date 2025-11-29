@@ -1,6 +1,20 @@
 <template class="${boardType} ${keysetType} ${isMobile ? 'swipe' : 'noSwipe'}">
     <require from="./keyboard.css"></require>
 
+    <template if.bind="keysetType == 'alpha'">
+        <div class="keys-scroll-container"
+             ref="scrollContainer">
+            <div repeat.for="page of pages"
+                 class="keys-page">
+                <button repeat.for="key of page"
+                            class="key ${key.name} ${key.className}"
+                            touchstart.delegate="swipeStart($event, key)"
+                            touchend.delegate="swipeEnd($event, key)"
+                            click.delegate="keyIsPressed(key, $event)">${key.name}</button>
+            </div>
+        </div>
+    </template>
+
     <button repeat.for="key of modifiers"
           class="key modifier ${key.className} ${key.name}
                 ${caps && key.name == 'shift' ? 'active' : ''}
@@ -50,17 +64,4 @@
           title.one-time="key.title || ''">${key.display}</button>
     </template>
 
-    <template if.bind="keysetType == 'alpha'">
-        <div class="keys-scroll-container"
-             ref="scrollContainer">
-            <div repeat.for="page of pages"
-                 class="keys-page">
-                <button repeat.for="key of page"
-                        class="key ${key.name} ${key.className}"
-                        touchstart.delegate="swipeStart($event, key)"
-                        touchend.delegate="swipeEnd($event, key)"
-                        click.delegate="keyIsPressed(key, $event)">${key.name}</button>
-            </div>
-        </div>
-    </template>
 </template>
