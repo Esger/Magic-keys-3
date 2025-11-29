@@ -79,6 +79,6 @@ export class TerminalCustomElement {
 
 
     _scrollToEnd() {
-        requestAnimationFrame(_ => this.terminal.scrollLeft = this.terminal.scrollWidth);
+        requestAnimationFrame(_ => this.terminal.scrollTop = this.terminal.scrollHeight);
     }
 }
