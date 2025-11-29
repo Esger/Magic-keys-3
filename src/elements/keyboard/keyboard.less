@@ -166,7 +166,7 @@ keyboard {
     text-shadow: none;
     background-color: #333;
     color: #fff;
-    border-radius: 6px;
+    border-radius: calc(var(--bodyPadding) / 2);
     box-shadow: none;
     overflow: hidden;
     cursor: pointer;
@@ -177,6 +177,11 @@ keyboard {
         background: var(--highlightColor);
         color: var(--black);
         font-weight: 700;
+    }
+
+    &.flash {
+        animation: flashIn 0.25s linear forwards;
+        background-image: radial-gradient(circle at center, var(--highlightColor) var(--colorStop, 50%), transparent 100%);
     }
 
     &.small {
@@ -340,5 +345,17 @@ keyboard {
         /* In 9keys, dynamic area is 3 columns wide */
         grid-template-columns: repeat(3, minmax(0, 1fr));
         grid-template-rows: repeat(3, 1fr);
+    }
+}
+
+@keyframes flashIn {
+    0% {
+        transform: scale(0);
+        opacity: 0.5;
+    }
+
+    100% {
+        transform: scale(2);
+        opacity: 0;
     }
 }
