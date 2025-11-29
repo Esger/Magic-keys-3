@@ -43,16 +43,39 @@ export class KeyboardCustomElement {
         });
         this._boardTypeSubscriber = this._eventAggregator.subscribe('boardType', dynamicKeysAmount => this._setBoardType(dynamicKeysAmount));
 
-        // Attach scroll listener if container is ready, or wait?
-        // Aurelia's attached() is the place.
         if (this.scrollContainer) {
             this.scrollContainer.addEventListener('scroll', this._onScroll.bind(this));
         }
+
+        const updatePageHighlights = () => {
+            const containerRect = this.scrollContainer.getBoundingClientRect();
+            const threshold = 100;
+
+            this.scrollContainer.querySelectorAll('.keys-page').forEach(page => {
+                const rect = page.getBoundingClientRect();
+                const outside = rect.right - threshold <= containerRect.left ||
+                    rect.left + threshold >= containerRect.right;
+                page.classList.toggle('highlight', outside);
+            });
+        };
+
+        let rafId = null;
+        this.scrollContainer.addEventListener('scroll', () => {
+            if (rafId) return;
+            rafId = requestAnimationFrame(() => {
+                updatePageHighlights();
+                rafId = null;
+            });
+        });
+
+        // Initial check
+        updatePageHighlights();
     }
 
     detached() {
         this._trainingReadySubscriber.dispose();
         this._boardTypeSubscriber.dispose();
+
         if (this.scrollContainer) {
             this.scrollContainer.removeEventListener('scroll', this._onScroll.bind(this));
         }

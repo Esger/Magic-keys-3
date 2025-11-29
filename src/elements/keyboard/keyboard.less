@@ -178,8 +178,7 @@ keyboard {
     touch-action    : auto;
 
     &.active {
-        background : var(--highlightColor);
-        color      : var(--black);
+        box-shadow : inset 0 0 30px -10px var(--highlightColor);
         font-weight: 700;
     }
 
@@ -308,6 +307,7 @@ keyboard {
         margin        : 0 calc(-2 * var(--bodyPadding, 12px));
         padding       : 0 calc(2 * var(--bodyPadding, 12px));
         scroll-padding: 0 calc(2 * var(--bodyPadding, 12px));
+
     }
 
     &::-webkit-scrollbar {
@@ -330,6 +330,12 @@ keyboard {
     scroll-snap-align: start;
     width            : 100%;
     height           : 100%;
+
+    &.highlight {
+        .key {
+            box-shadow: inset 0 0 30px -10px var(--highlightColor)
+        }
+    }
 
     /* Inherit columns from parent logic, but we need to be explicit because we are inside a flex item */
     /* The parent grid defines columns, but we are breaking out of the direct grid placement for individual keys */
