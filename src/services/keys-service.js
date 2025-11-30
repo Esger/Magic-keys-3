@@ -582,8 +582,7 @@ export class KeysService {
             // '  ' -> skip learning
             // ' a' -> skip learning
             // => all chars are part of _knowledge and and of type alpha
-            const splitTail = tail.split('');
-            const allAlpha = splitTail.every(key => this._letters.includes(key));
+            const allAlpha = /^[a-z]+$/.test(tail);
             if (allAlpha && tail.length > 1) {
                 const learningString = tail.slice(0, -1);
                 this._addToKnowledge(learningString, lessonChar);
