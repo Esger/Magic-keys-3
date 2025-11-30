@@ -98,64 +98,61 @@ export class KeyboardCustomElement {
     }
 
     _updatePages() {
-        const currentPages = this.pages;
-        this.pages = [];
-        const keys = [...this.keys];
         const pageSize = this._maxKeys;
+        const keys = this.keys;
 
-        // Split keys into chunks corresponding to pages
+        // 1. Chunk the new predictions into pages
         const chunks = [];
         for (let i = 0; i < keys.length; i += pageSize) {
             chunks.push(keys.slice(i, i + pageSize));
         }
 
-        chunks.forEach((chunk, pageIndex) => {
-            const oldPage = currentPages[pageIndex] || [];
-            const newPage = new Array(pageSize).fill(null);
-            const remainingInChunk = [];
-
-            // Preserve Phase: Keep existing keys in their spots
-            chunk.forEach(key => {
-                const oldIndex = oldPage.findIndex(k => k.name === key.name);
-                if (oldIndex !== -1 && oldIndex < pageSize) {
-                    newPage[oldIndex] = key;
-                } else {
-                    remainingInChunk.push(key);
-                }
-            });
-
-            // Fill Phase: Fill empty spots with remaining keys
-            let remainingIndex = 0;
-            for (let i = 0; i < pageSize; i++) {
-                if (newPage[i] === null) {
-                    if (remainingIndex < remainingInChunk.length) {
-                        newPage[i] = remainingInChunk[remainingIndex++];
-                    } else {
-                        break;
-                    }
-                }
-            }
-
-            // Clean up newPage (remove nulls if any)
-            const cleanPage = newPage.filter(k => k !== null);
-            this.pages.push(cleanPage);
-        });
-
-        // Fill the last page with looped keys if needed
-        if (this.pages.length > 0) {
-            const lastPage = this.pages[this.pages.length - 1];
-            let needed = pageSize - lastPage.length;
-
-            let sourceIndex = 0;
-            while (needed > 0 && keys.length > 0) {
-                lastPage.push(keys[sourceIndex % keys.length]);
-                sourceIndex++;
-                needed--;
-            }
-        } else {
-            this.pages.push([]);
+        if (chunks.length === 0) {
+            this.pages = [[]];
+            return;
         }
 
+        // 2. Reorder keys in page 0 based on clicked page
+        const clickedPage = this.pages[this.currentPage] || [];
+        const clickedPositions = new Map();
+        clickedPage.forEach((k, i) => clickedPositions.set(k.name, i));
+        const page0 = chunks[0];
+        const stabilizedPage0 = new Array(pageSize).fill(null);
+        const remaining = [];
+
+        for (const key of page0) {
+            const oldIndex = clickedPositions.get(key.name);
+            if (oldIndex !== undefined && oldIndex < pageSize) {
+                stabilizedPage0[oldIndex] = key;
+            } else {
+                remaining.push(key);
+            }
+        }
+
+        // 3. Fill remaining spots
+        let rIndex = 0;
+        for (let i = 0; i < pageSize; i++) {
+            if (stabilizedPage0[i] === null && rIndex < remaining.length) {
+                stabilizedPage0[i] = remaining[rIndex++];
+            }
+        }
+        chunks[0] = stabilizedPage0.filter(k => k !== null);
+
+        // 4. Fill the last page (loop around)
+        const lastPage = chunks[chunks.length - 1];
+        let needed = pageSize - lastPage.length;
+        let i = 0;
+        while (needed > 0 && keys.length > 0) {
+            lastPage.push(keys[i % keys.length]);
+            i++;
+            needed--;
+        }
+
+        this.pages = chunks;
+
+    }
+
+    _resetScrollContainer() {
         if (this.scrollContainer) {
             this._isResetting = true;
             this.scrollContainer.scrollLeft = 0;
@@ -259,6 +256,7 @@ export class KeyboardCustomElement {
     }
 
     _handleKey(key) {
+        this._lastKeyTyped = key;
         switch (true) {
             case key.name == 'shift':
                 this._capsLock = this._capsLockPending;
@@ -284,14 +282,15 @@ export class KeyboardCustomElement {
             default:
                 this.caps = this._capsLock;
                 const newKeys = this._keysService.getKeys(this.keysetType);
-                this._element.querySelectorAll('.' + key.name)[0].addEventListener('animationend', () => {
+                this._element.querySelectorAll('.' + key.name)[0].addEventListener('animationend', _ => {
                     this.keys = newKeys;
                     if (this.keysetType == 'alpha') {
                         this._updatePages();
+                        this._resetScrollContainer();
                     }
                     key.output?.length && this.keyHitCount++;
                     this._eventAggregator.publish('keyHit', (this.keyHitCount));
-                });
+                }, { once: true });
                 break;
         }
     }
