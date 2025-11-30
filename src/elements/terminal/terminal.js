@@ -44,6 +44,7 @@ export class TerminalCustomElement {
 
     clearOutput() {
         this.value = '';
+        this._keysService.setTail('');
     }
 
     backspace() {
