@@ -4,10 +4,11 @@ import { KeysService } from "services/keys-service";
 
 import { SettingsService } from "services/settings-service";
 
-@inject(EventAggregator, KeysService, SettingsService)
+@inject(Element, EventAggregator, KeysService, SettingsService)
 export class KeyboardCustomElement {
     @bindable isMobile;
-    constructor(eventAggregator, keysService, settingsService) {
+    constructor(element, eventAggregator, keysService, settingsService) {
+        this._element = element;
         this._eventAggregator = eventAggregator;
         this._keysService = keysService;
         this._settingsService = settingsService;
@@ -211,8 +212,6 @@ export class KeyboardCustomElement {
         if (event && event.target) {
             const keyElement = event.target.closest('.key');
             if (keyElement) {
-                keyElement.classList.remove('flash');
-                void keyElement.offsetWidth; // trigger reflow
                 keyElement.classList.add('flash');
                 keyElement.addEventListener('animationend', () => keyElement.classList.remove('flash'), { once: true });
             }
@@ -285,14 +284,14 @@ export class KeyboardCustomElement {
             default:
                 this.caps = this._capsLock;
                 const newKeys = this._keysService.getKeys(this.keysetType);
-                setTimeout(() => {
+                this._element.querySelectorAll('.' + key.name)[0].addEventListener('animationend', () => {
                     this.keys = newKeys;
                     if (this.keysetType == 'alpha') {
                         this._updatePages();
                     }
                     key.output?.length && this.keyHitCount++;
                     this._eventAggregator.publish('keyHit', (this.keyHitCount));
-                }, 200);
+                });
                 break;
         }
     }

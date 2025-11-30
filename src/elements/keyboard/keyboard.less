@@ -183,7 +183,7 @@ keyboard {
     }
 
     &.flash {
-        animation       : flashIn 0.25s linear forwards;
+        animation       : flashIn 0.15s linear forwards;
         background-image: radial-gradient(circle at center, var(--highlightColor) var(--colorStop, 50%), transparent 100%);
     }
 
@@ -360,12 +360,12 @@ keyboard {
 
 @keyframes flashIn {
     0% {
-        transform: scale(0);
-        opacity  : 0.5;
+        transform: scale(.1);
+        opacity  : 0.4;
     }
 
     100% {
-        transform: scale(2);
+        transform: scale(1.4);
         opacity  : 0;
     }
 }
