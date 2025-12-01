@@ -286,17 +286,6 @@ export class KeyboardCustomElement {
 
         if (diffY > 30 && diffY > diffX) {
             this._isSwiping = true;
-
-            if (event && event.target) {
-                const keyElement = event.target.closest('.key');
-                if (keyElement) {
-                    keyElement.classList.remove('flash');
-                    void keyElement.offsetWidth; // trigger reflow
-                    keyElement.classList.add('flash');
-                    keyElement.addEventListener('animationend', () => keyElement.classList.remove('flash'), { once: true });
-                }
-            }
-
             if (this.keysetType === 'alpha' && key.output && key.output.match(/[a-z]/)) {
                 const upperKey = { ...key, output: key.output.toUpperCase() };
                 this._eventAggregator.publish('keyIsPressed', upperKey);
