@@ -437,6 +437,11 @@ export class KeysService {
             display: '~',
             output: '~',
         },
+        {
+            name: 'equals',
+            display: '=',
+            output: '=',
+        },
     ]
 
     _keysKnowledge = {};
