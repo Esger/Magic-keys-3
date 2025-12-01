@@ -23,12 +23,16 @@
                 ${keysetType == 'symbols' && key.name == 'symbols' ? 'active' : ''}
                 ${keysetType == 'punctuation' && key.name == 'punctuation' ? 'active' : ''}"
           css="grid-area: ${key.name}"
+          touchstart.delegate="swipeStart($event, key)"
+          touchend.delegate="swipeEnd($event, key)"
           click.delegate="keyIsPressed(key, $event)"
           title.one-time="key.title || ''">${key.display}</button>
 
     <button repeat.for="key of nonAlpha"
       class="key nonAlpha ${key.className} ${key.name}"
       css="grid-area: ${key.name}"
+      touchstart.delegate="swipeStart($event, key)"
+      touchend.delegate="swipeEnd($event, key)"
       click.delegate="keyIsPressed(key, $event)"
       title.one-time="key.title || ''">${key.display}</button>
 
@@ -36,6 +40,8 @@
         <button repeat.for="key of numbers"
           class="key numbers ${key.className} ${key.name}"
           css="grid-area: ${key.name}"
+          touchstart.delegate="swipeStart($event, key)"
+          touchend.delegate="swipeEnd($event, key)"
           click.delegate="keyIsPressed(key, $event)"
           title.one-time="key.title || ''">${key.display}</button>
     </template>
@@ -44,6 +50,8 @@
         <button repeat.for="key of brackets"
           class="key brackets ${key.className} ${key.name}"
           css="grid-area: ${key.name}"
+          touchstart.delegate="swipeStart($event, key)"
+          touchend.delegate="swipeEnd($event, key)"
           click.delegate="keyIsPressed(key, $event)"
           title.one-time="key.title || ''">${key.display}</button>
     </template>
@@ -52,6 +60,8 @@
         <button repeat.for="key of symbols"
           class="key symbols ${key.className} ${key.name}"
           css="grid-area: ${key.name}"
+          touchstart.delegate="swipeStart($event, key)"
+          touchend.delegate="swipeEnd($event, key)"
           click.delegate="keyIsPressed(key, $event)"
           title.one-time="key.title || ''">${key.display}</button>
     </template>
@@ -60,6 +70,8 @@
         <button repeat.for="key of punctuation"
           class="key punctuation ${key.className} ${key.name}"
           css="grid-area: ${key.name}"
+          touchstart.delegate="swipeStart($event, key)"
+          touchend.delegate="swipeEnd($event, key)"
           click.delegate="keyIsPressed(key, $event)"
           title.one-time="key.title || ''">${key.display}</button>
     </template>

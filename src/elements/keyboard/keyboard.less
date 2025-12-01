@@ -1,21 +1,21 @@
 keyboard {
-    display       : grid;
-    column-gap    : var(--gapSize);
-    row-gap       : var(--gapSize);
+    display: grid;
+    column-gap: var(--gapSize);
+    row-gap: var(--gapSize);
     grid-auto-rows: 1fr;
-    margin-bottom : 0;
-    width         : 100%;
-    height        : 100%;
-    flex-grow     : 1;
-    user-select   : none;
+    margin-bottom: 0;
+    width: 100%;
+    height: 100%;
+    flex-grow: 1;
+    user-select: none;
 
     &.noSwipe {
         touch-action: none;
     }
 
     &.board--mobile--8keys {
-        --gapSize            : var(--bodyPadding, 4px);
-        --keySize            : calc(~"(100% - (3 * var(--gapSize))) / 4");
+        --gapSize: var(--bodyPadding, 4px);
+        --keySize: calc(~"(100% - (3 * var(--gapSize))) / 4");
         grid-template-columns: repeat(4, minmax(0, var(--keySize)));
 
         .shift {
@@ -92,8 +92,8 @@ keyboard {
     }
 
     &.board--8keys {
-        --gapSize            : 4px;
-        --keySize            : calc(~"(100% - (5 * var(--gapSize))) / 6");
+        --gapSize: 4px;
+        --keySize: calc(~"(100% - (5 * var(--gapSize))) / 6");
         grid-template-columns: repeat(6, minmax(0, var(--keySize)));
 
         &.alpha {
@@ -130,8 +130,8 @@ keyboard {
     }
 
     &.board--9keys {
-        --gapSize            : 4px;
-        --keySize            : calc(~"(100% - (4 * var(--gapSize))) / 5");
+        --gapSize: 4px;
+        --keySize: calc(~"(100% - (4 * var(--gapSize))) / 5");
         grid-template-columns: repeat(5, minmax(0, var(--keySize)));
 
         &.alpha {
@@ -158,32 +158,32 @@ keyboard {
 }
 
 .key {
-    display         : flex;
-    aspect-ratio    : unset;
-    justify-content : center;
-    align-items     : center;
-    font-family     : "Source Code Pro";
-    font-size       : 32px;
-    font-weight     : 400;
-    line-height     : 1;
-    text-transform  : uppercase;
-    text-shadow     : none;
+    display: flex;
+    aspect-ratio: unset;
+    justify-content: center;
+    align-items: center;
+    font-family: "Source Code Pro";
+    font-size: 32px;
+    font-weight: 400;
+    line-height: 1;
+    text-transform: uppercase;
+    text-shadow: none;
     background-color: #333;
-    color           : #fff;
-    border-radius   : calc(var(--bodyPadding) / 2);
-    box-shadow      : none;
-    overflow        : hidden;
-    cursor          : pointer;
-    border          : 1px solid #444;
-    touch-action    : auto;
+    color: #fff;
+    border-radius: calc(var(--bodyPadding) / 2);
+    box-shadow: none;
+    overflow: hidden;
+    cursor: pointer;
+    border: 1px solid #444;
+    touch-action: manipulation;
 
     &.active {
-        box-shadow : inset 0 0 30px -10px var(--highlightColor);
+        box-shadow: inset 0 0 30px -10px var(--highlightColor);
         font-weight: 700;
     }
 
     &.flash {
-        animation       : flashIn 0.15s linear forwards;
+        animation: flashIn 0.15s linear forwards;
         background-image: radial-gradient(circle at center, var(--highlightColor) var(--colorStop, 50%), transparent 100%);
     }
 
@@ -196,8 +196,8 @@ keyboard {
     }
 
     &.highlight {
-        background  : #444;
-        color       : var(--highlightColor);
+        background: #444;
+        color: var(--highlightColor);
         border-color: var(--highlightColor);
     }
 
@@ -295,17 +295,17 @@ keyboard {
 }
 
 .keys-scroll-container {
-    grid-area       : dynamic;
-    display         : flex;
-    gap             : var(--gapSize);
-    overflow-x      : scroll;
-    overflow-y      : hidden;
+    grid-area: dynamic;
+    display: flex;
+    gap: var(--gapSize);
+    overflow-x: scroll;
+    overflow-y: hidden;
     scroll-snap-type: x mandatory;
-    scrollbar-width : none;
+    scrollbar-width: none;
 
     .board--mobile--8keys & {
-        margin        : 0 calc(-2 * var(--bodyPadding, 12px));
-        padding       : 0 calc(2 * var(--bodyPadding, 12px));
+        margin: 0 calc(-2 * var(--bodyPadding, 12px));
+        padding: 0 calc(2 * var(--bodyPadding, 12px));
         scroll-padding: 0 calc(2 * var(--bodyPadding, 12px));
 
     }
@@ -322,14 +322,14 @@ keyboard {
 }
 
 .keys-page {
-    flex             : 0 0 100%;
-    display          : grid;
-    column-gap       : var(--gapSize);
-    row-gap          : var(--gapSize);
-    grid-auto-rows   : 1fr;
+    flex: 0 0 100%;
+    display: grid;
+    column-gap: var(--gapSize);
+    row-gap: var(--gapSize);
+    grid-auto-rows: 1fr;
     scroll-snap-align: start;
-    width            : 100%;
-    height           : 100%;
+    width: 100%;
+    height: 100%;
 
     &.highlight {
         .key {
@@ -343,29 +343,29 @@ keyboard {
 
     .board--mobile--8keys & {
         grid-template-columns: repeat(4, minmax(0, 1fr));
-        grid-template-rows   : repeat(2, 1fr);
+        grid-template-rows: repeat(2, 1fr);
     }
 
     .board--8keys & {
         grid-template-columns: repeat(4, minmax(0, 1fr));
-        grid-template-rows   : repeat(2, 1fr);
+        grid-template-rows: repeat(2, 1fr);
     }
 
     .board--9keys & {
         /* In 9keys, dynamic area is 3 columns wide */
         grid-template-columns: repeat(3, minmax(0, 1fr));
-        grid-template-rows   : repeat(3, 1fr);
+        grid-template-rows: repeat(3, 1fr);
     }
 }
 
 @keyframes flashIn {
     0% {
         transform: scale(.1);
-        opacity  : 0.4;
+        opacity: 0.4;
     }
 
     100% {
         transform: scale(1.4);
-        opacity  : 0;
+        opacity: 0;
     }
 }

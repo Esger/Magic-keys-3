@@ -266,6 +266,14 @@ export class KeyboardCustomElement {
         this._startY = event.changedTouches[0].pageY;
         this._startX = event.changedTouches[0].pageX;
         this._isSwiping = false;
+
+        if (event && event.target) {
+            const keyElement = event.target.closest('.key');
+            if (keyElement) {
+                keyElement.classList.add('flash');
+                keyElement.addEventListener('animationend', () => keyElement.classList.remove('flash'), { once: true });
+            }
+        }
         return true;
     }
 
@@ -294,6 +302,12 @@ export class KeyboardCustomElement {
                 this._eventAggregator.publish('keyIsPressed', upperKey);
                 this._handleKey(upperKey);
             }
+            if (event.cancelable) event.preventDefault();
+        } else if (Math.abs(diffY) < 10 && diffX < 10) {
+            // It's a tap
+            this._eventAggregator.publish('keyIsPressed', key);
+            this._handleKey(key);
+            if (event.cancelable) event.preventDefault();
         }
         return true;
     }
