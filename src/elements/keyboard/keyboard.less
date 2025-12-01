@@ -149,10 +149,29 @@ keyboard {
 
         &.numeric {
             grid-template-areas:
-                "numeric symbols brackets backspace -       -"
-                "zero    one     two      three     four    five"
-                "six     seven   eight    nine      comma   period"
-                "plus    minus   asterisk slash     period  space";
+                "numeric symbols brackets punctuation backspace"
+                "zero    one     two      three       plus"
+                "comma   four    five     six         enter"
+                "period  seven   eight    nine        space";
+
+            .asterisk,
+            .shift,
+            .next {
+                display: none;
+            }
+        }
+
+        &.symbols {
+            grid-template-areas:
+                "numeric   symbols   brackets punctuation backspace"
+                "plusminus at        hash     dollar      percent"
+                "comma     ampersand tilde    asterisk    enter"
+                "period    caret     .        plus        space";
+
+            .next,
+            .shift {
+                display: none;
+            }
         }
     }
 }
