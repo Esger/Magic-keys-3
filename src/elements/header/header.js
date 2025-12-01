@@ -1,8 +1,9 @@
-import { inject } from "aurelia-framework";
+import { inject, bindable } from "aurelia-framework";
 import { EventAggregator } from 'aurelia-event-aggregator';
 
 @inject(EventAggregator)
 export class headerCustomElement {
+    @bindable isMobile;
 
     message = 'SmartKeys';
 
@@ -16,6 +17,5 @@ export class headerCustomElement {
 
     attached() {
     }
-
 
 }

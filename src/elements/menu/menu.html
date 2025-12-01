@@ -19,7 +19,13 @@
             Keyboards&nbsp;<i class="fa fa-angle-right"></i>
             <ul if.bind="settings.submenuBoardsVisible"
                 class="subMenu">
-                <li repeat.for="boardType of boardTypes"
+                <li if.bind="isMobile"
+                    repeat.for="boardType of boardTypes.mobile"
+                    class="${boardType.keyAmount == settings.currentBoardType ? 'active' : ''}"
+                    click.delegate="setKeyAmount(boardType.keyAmount, $event)"
+                    touchstart.trigger="setKeyAmount(boardType.keyAmount, $event)">${boardType.name}</li>
+                <li else
+                    repeat.for="boardType of boardTypes.desktop"
                     class="${boardType.keyAmount == settings.currentBoardType ? 'active' : ''}"
                     click.delegate="setKeyAmount(boardType.keyAmount, $event)"
                     touchstart.trigger="setKeyAmount(boardType.keyAmount, $event)">${boardType.name}</li>

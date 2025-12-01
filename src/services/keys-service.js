@@ -166,9 +166,9 @@ export class KeysService {
             className: 'small'
         },
         {
-            name: 'punctuation',
+            name: 'interpunction',
             display: '"',
-            className: 'small punctuation'
+            className: 'small interpunction'
         },
     ];
 
@@ -201,6 +201,11 @@ export class KeysService {
             display: '+',
             output: '+',
             className: 'plus'
+        },
+        {
+            name: 'minus',
+            display: '-',
+            output: '-',
         },
         {
             name: 'asterisk',
@@ -274,7 +279,7 @@ export class KeysService {
         },
     ]
 
-    _punctuation = [
+    _interpunction = [
         {
             name: 'backtick',
             display: '\`',
@@ -309,11 +314,6 @@ export class KeysService {
             name: 'exclamation',
             display: '!',
             output: '!'
-        },
-        {
-            name: 'minus',
-            display: '-',
-            output: '-',
         },
         {
             name: 'underscore',
@@ -538,8 +538,8 @@ export class KeysService {
     getKeys(setName) {
         let keys;
         switch (setName) {
-            case 'punctuation':
-                keys = this._punctuation;
+            case 'interpunction':
+                keys = this._interpunction;
                 break;
             case 'numbers':
                 keys = this._numbers;

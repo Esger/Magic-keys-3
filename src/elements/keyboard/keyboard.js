@@ -38,7 +38,7 @@ export class KeyboardCustomElement {
         this.numbers = this._keysService.getKeys('numbers');
         this.brackets = this._keysService.getKeys('brackets');
         this.symbols = this._keysService.getKeys('symbols');
-        this.punctuation = this._keysService.getKeys('punctuation');
+        this.interpunction = this._keysService.getKeys('interpunction');
         this._trainingReadySubscriber = this._eventAggregator.subscribe('dataReady', _ => {
             this.keys = this._keysService.getKeys()
             this._updatePages();
@@ -207,7 +207,7 @@ export class KeyboardCustomElement {
 
     _setBoardType(amount) {
         this._maxKeys = parseInt(amount, 10);
-        const mobile = this.isMobile && this._maxKeys == 8 ? 'mobile--' : '';
+        const mobile = this.isMobile ? 'mobile--' : '';
         this.boardType = 'board--' + mobile + amount + 'keys';
         this.keyHitCount = 0;
         this.keyMissedCount = 0;
@@ -322,7 +322,7 @@ export class KeyboardCustomElement {
                     pages[next].scrollIntoView();
                 }
                 break;
-            case ['brackets', 'numeric', 'symbols', 'punctuation'].includes(key.name):
+            case ['brackets', 'numeric', 'symbols', 'interpunction'].includes(key.name):
                 this._toggleKeysetType(key.name);
                 break;
             default:

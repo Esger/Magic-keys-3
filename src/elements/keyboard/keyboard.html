@@ -21,7 +21,7 @@
                 ${keysetType == 'numeric' && key.name == 'numeric' ? 'active' : ''}
                 ${keysetType == 'brackets' && key.name == 'brackets' ? 'active' : ''}
                 ${keysetType == 'symbols' && key.name == 'symbols' ? 'active' : ''}
-                ${keysetType == 'punctuation' && key.name == 'punctuation' ? 'active' : ''}"
+                ${keysetType == 'interpunction' && key.name == 'interpunction' ? 'active' : ''}"
           css="grid-area: ${key.name}"
           touchstart.delegate="swipeStart($event, key)"
           touchend.delegate="swipeEnd($event, key)"
@@ -66,9 +66,9 @@
           title.one-time="key.title || ''">${key.display}</button>
     </template>
 
-    <template if.bind="keysetType == 'punctuation'">
-        <button repeat.for="key of punctuation"
-          class="key punctuation ${key.className} ${key.name}"
+    <template if.bind="keysetType == 'interpunction'">
+        <button repeat.for="key of interpunction"
+          class="key interpunction ${key.className} ${key.name}"
           css="grid-area: ${key.name}"
           touchstart.delegate="swipeStart($event, key)"
           touchend.delegate="swipeEnd($event, key)"

@@ -24,15 +24,15 @@ keyboard {
 
         &.alpha {
             grid-template-areas:
-                "punctuation numeric symbols brackets"
+                "interpunction numeric symbols brackets"
                 "dynamic     dynamic dynamic dynamic"
                 "dynamic     dynamic dynamic dynamic"
                 "enter       comma   period  space";
         }
 
-        &.punctuation {
+        &.interpunction {
             grid-template-areas:
-                "punctuation numeric      symbols     brackets"
+                "interpunction numeric      symbols     brackets"
                 "backtick    doublequote  singlequote paragraph"
                 "colon       semicolon    minus       underscore"
                 "enter       questionmark exclamation space";
@@ -45,7 +45,7 @@ keyboard {
 
         &.numeric {
             grid-template-areas:
-                "punctuation numeric symbols brackets"
+                "interpunction numeric symbols brackets"
                 "zero        one     two     three"
                 "four        five    six     seven"
                 "eight       nine    comma   period";
@@ -58,7 +58,7 @@ keyboard {
 
         &.symbols {
             grid-template-areas:
-                "punctuation numeric symbols   brackets"
+                "interpunction numeric symbols   brackets"
                 "plusminus   at      hash      dollar"
                 "percent     caret   ampersand tilde"
                 "enter       comma   period    space";
@@ -66,11 +66,10 @@ keyboard {
 
         &.brackets {
             grid-template-areas:
-                "punctuation     numeric          symbols     brackets"
+                "interpunction     numeric          symbols     brackets"
                 "parenthesisopen parenthesisclose bracketopen bracketclose"
                 "curlybracesopen curlybracesclose lessthan    greaterthan"
                 "enter           pipe             slash       backslash";
-
 
             .comma,
             .period,
@@ -86,6 +85,86 @@ keyboard {
             .backspace,
             .next,
             .plus {
+                display: none;
+            }
+        }
+    }
+
+    &.board--mobile--10keys {
+        --gapSize: var(--bodyPadding, 4px);
+        --keySize: calc(~"(100% - (4 * var(--gapSize))) / 5");
+        grid-template-columns: repeat(5, minmax(0, var(--keySize)));
+
+        &.alpha {
+            grid-template-areas:
+                "shift   numeric symbols brackets interpunction"
+                "dynamic dynamic dynamic dynamic  dynamic"
+                "dynamic dynamic dynamic dynamic  dynamic"
+                "comma   period  space   space    enter";
+
+            .asterisk,
+            .backspace,
+            .next,
+            .minus,
+            .plus {
+                display: none;
+            }
+        }
+
+        &.interpunction {
+            grid-template-areas:
+                "asterisk   numeric     symbols      brackets     interpunction"
+                "backtick   doublequote singlequote  paragraph    colon"
+                "underscore minus       questionmark exclamation  semicolon"
+                "comma      plus        period       space        enter";
+
+            .backspace,
+            .next {
+                display: none;
+            }
+        }
+
+        &.numeric {
+            grid-template-areas:
+                "asterisk numeric symbols brackets interpunction"
+                "zero     one     two     three    four"
+                "five     six     seven   eight    nine"
+                "comma    period  space   minus    plus";
+
+            .shift,
+            .enter,
+            .backspace,
+            .next {
+                display: none;
+            }
+        }
+
+        &.symbols {
+            grid-template-areas:
+                "shift     numeric   symbols brackets interpunction"
+                "plusminus at        hash    dollar   percent"
+                "caret     ampersand tilde   asterisk plus"
+                "comma     period    space   space    minus";
+
+            .backspace,
+            .enter,
+            .next {
+                display: none;
+            }
+        }
+
+        &.brackets {
+            grid-template-areas:
+                "shift           numeric          symbols     brackets     interpunction"
+                "parenthesisopen parenthesisclose bracketopen bracketclose ."
+                "curlybracesopen curlybracesclose lessthan    greaterthan  plus"
+                "pipe            slash            backslash   asterisk     enter";
+
+            .comma,
+            .backspace,
+            .minus,
+            .next,
+            .period {
                 display: none;
             }
         }
@@ -136,7 +215,7 @@ keyboard {
 
         &.alpha {
             grid-template-areas:
-                "numeric symbols brackets punctuation backspace"
+                "numeric symbols brackets interpunction backspace"
                 "shift   dynamic dynamic  dynamic     next"
                 "comma   dynamic dynamic  dynamic     enter"
                 "period  dynamic dynamic  dynamic     space";
@@ -147,9 +226,9 @@ keyboard {
             }
         }
 
-        &.punctuation {
+        &.interpunction {
             grid-template-areas:
-                "numeric   symbols     brackets     punctuation  backspace"
+                "numeric   symbols     brackets     interpunction  backspace"
                 "backtick  doublequote singlequote  paragraph    asterisk"
                 "comma     semicolon   exclamation  minus        underscore"
                 "period    colon       questionmark plus         space";
@@ -163,7 +242,7 @@ keyboard {
 
         &.numeric {
             grid-template-areas:
-                "numeric symbols brackets punctuation backspace"
+                "numeric symbols brackets interpunction backspace"
                 "zero    one     two      three       plus"
                 "comma   four    five     six         enter"
                 "period  seven   eight    nine        space";
@@ -177,7 +256,7 @@ keyboard {
 
         &.symbols {
             grid-template-areas:
-                "numeric   symbols   brackets  punctuation backspace"
+                "numeric   symbols   brackets  interpunction backspace"
                 "plusminus at        hash      dollar      percent"
                 "comma     caret     ampersand asterisk    enter"
                 "period    tilde     plus      space       space";
@@ -190,7 +269,7 @@ keyboard {
 
         &.brackets {
             grid-template-areas:
-                "numeric         symbols          brackets    punctuation  backspace"
+                "numeric         symbols          brackets    interpunction  backspace"
                 "parenthesisopen parenthesisclose bracketopen bracketclose asterisk"
                 "curlybracesopen curlybracesclose lessthan    greaterthan  enter"
                 "comma           pipe             slash       backslash    space";
@@ -202,7 +281,6 @@ keyboard {
                 display: none;
             }
         }
-
     }
 }
 
@@ -294,7 +372,7 @@ keyboard {
             grid-area: space;
         }
 
-        &.punctuation {
+        &.interpunction {
             display: none;
         }
     }
@@ -313,7 +391,7 @@ keyboard {
         }
 
         &.asterisk {
-            grid-area: punctuation;
+            grid-area: interpunction;
         }
 
         &.slash {
@@ -355,11 +433,11 @@ keyboard {
     scroll-snap-type: x mandatory;
     scrollbar-width: none;
 
-    .board--mobile--8keys & {
+    .board--mobile--8keys,
+    .board--mobile--10keys & {
         margin: 0 calc(-2 * var(--bodyPadding, 12px));
         padding: 0 calc(2 * var(--bodyPadding, 12px));
         scroll-padding: 0 calc(2 * var(--bodyPadding, 12px));
-
     }
 
     &::-webkit-scrollbar {
@@ -395,6 +473,11 @@ keyboard {
 
     .board--mobile--8keys & {
         grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-template-rows: repeat(2, 1fr);
+    }
+
+    .board--mobile--10keys & {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
         grid-template-rows: repeat(2, 1fr);
     }
 

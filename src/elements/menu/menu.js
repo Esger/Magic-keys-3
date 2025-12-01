@@ -1,10 +1,10 @@
-import { inject } from 'aurelia-framework';
+import { inject, bindable } from 'aurelia-framework';
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { KeysService } from "services/keys-service";
 
 @inject(EventAggregator, KeysService)
-
 export class MenuCustomElement {
+    @bindable isMobile;
 
     constructor(eventAggregator, keysService) {
         this._eventAggregator = eventAggregator;
@@ -17,10 +17,16 @@ export class MenuCustomElement {
             currentBoardType: undefined,
             currentDepth: undefined
         };
-        this.boardTypes = [
-            { name: '8 keys', keyAmount: '8' },
-            { name: '9 keys', keyAmount: '9' },
-        ];
+        this.boardTypes = {
+            desktop: [
+                { name: '8 keys', keyAmount: '8' },
+                { name: '9 keys', keyAmount: '9' },
+            ],
+            mobile: [
+                { name: '8 keys', keyAmount: '8' },
+                { name: '10 keys', keyAmount: '10' },
+            ]
+        };
         this.depths = [1, 2, 3, 4, 5];
     }
 
