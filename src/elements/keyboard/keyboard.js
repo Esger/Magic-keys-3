@@ -21,6 +21,7 @@ export class KeyboardCustomElement {
         this.pages = [];
         this.currentPage = 0;
         this._isResetting = false;
+        this._keyPositionHistory = new Map();
     }
 
     bind() {
@@ -101,53 +102,72 @@ export class KeyboardCustomElement {
         const pageSize = this._maxKeys;
         const keys = this.keys;
 
+        // 0. Update history with current page positions (before clearing)
+        this.pages.forEach((page, index) => {
+            if (index > 0) return;
+            page.forEach((key, index) => {
+                this._keyPositionHistory.set(key.name, index);
+            });
+        });
+
         // 1. Chunk the new predictions into pages
         const chunks = [];
         for (let i = 0; i < keys.length; i += pageSize) {
             chunks.push(keys.slice(i, i + pageSize));
         }
 
-        if (chunks.length === 0) {
-            this.pages = [[]];
-            return;
-        }
+        // 1a. Fill the last page (loop around)
+        const lastPage = chunks[chunks.length - 1];
+        let needed = pageSize - lastPage.length;
+        lastPage.push(...keys.slice(0, needed));
 
-        // 2. Reorder keys in page 0 based on clicked page
+        // 2. Reorder keys in page 0 based on clicked page AND history
         const clickedPage = this.pages[this.currentPage] || [];
-        const clickedPositions = new Map();
-        clickedPage.forEach((k, i) => clickedPositions.set(k.name, i));
+        const viewedPositions = new Map();
+        clickedPage.forEach((k, i) => viewedPositions.set(k.name, i));
+
         const page0 = chunks[0];
         const stabilizedPage0 = new Array(pageSize).fill(null);
-        const remaining = [];
+        const usedKeys = new Set();
 
+        // Pass 1: Priority 1 - Clicked Page (Absolute Priority)
         for (const key of page0) {
-            const oldIndex = clickedPositions.get(key.name);
-            if (oldIndex !== undefined && oldIndex < pageSize) {
-                stabilizedPage0[oldIndex] = key;
-            } else {
+            const clickedIndex = viewedPositions.get(key.name);
+            if (clickedIndex !== undefined && clickedIndex < pageSize) {
+                stabilizedPage0[clickedIndex] = key;
+                usedKeys.add(key);
+            }
+        }
+
+        // Pass 2: Priority 2 - History (Mental Note)
+        for (const key of page0) {
+            if (usedKeys.has(key)) continue; // Already placed
+
+            const historyIndex = this._keyPositionHistory.get(key.name);
+            if (historyIndex !== undefined && historyIndex < pageSize && stabilizedPage0[historyIndex] === null) {
+                stabilizedPage0[historyIndex] = key;
+                usedKeys.add(key);
+            }
+        }
+
+        // Pass 3: Collect Remaining
+        const remaining = [];
+        for (const key of page0) {
+            if (!usedKeys.has(key)) {
                 remaining.push(key);
             }
         }
 
-        // 3. Fill remaining spots
+        // Pass 4: Fill holes
         let rIndex = 0;
-        for (let i = 0; i < pageSize; i++) {
-            if (stabilizedPage0[i] === null && rIndex < remaining.length) {
-                stabilizedPage0[i] = remaining[rIndex++];
+        for (let j = 0; j < pageSize; j++) {
+            if (stabilizedPage0[j] === null && rIndex < remaining.length) {
+                stabilizedPage0[j] = remaining[rIndex++];
             }
         }
-        chunks[0] = stabilizedPage0.filter(k => k !== null);
 
-        // 4. Fill the last page (loop around)
-        const lastPage = chunks[chunks.length - 1];
-        let needed = pageSize - lastPage.length;
-        let i = 0;
-        while (needed > 0 && keys.length > 0) {
-            lastPage.push(keys[i % keys.length]);
-            i++;
-            needed--;
-        }
-
+        // 3. Update chunks
+        chunks[0] = stabilizedPage0;
         this.pages = chunks;
 
     }
@@ -169,6 +189,7 @@ export class KeyboardCustomElement {
         this.boardType = 'board--' + mobile + amount + 'keys';
         this.keyHitCount = 0;
         this.keyMissedCount = 0;
+        this._keyPositionHistory.clear();
         this._resetKeysetType();
         this._updatePages();
     }
