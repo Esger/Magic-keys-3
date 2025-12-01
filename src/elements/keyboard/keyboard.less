@@ -147,6 +147,20 @@ keyboard {
             }
         }
 
+        &.punctuation {
+            grid-template-areas:
+                "numeric   symbols     brackets     punctuation  backspace"
+                "backtick  doublequote singlequote  paragraph    asterisk"
+                "comma     semicolon   exclamation  minus        underscore"
+                "period    colon       questionmark plus         space";
+
+            .next,
+            .enter,
+            .shift {
+                display: none;
+            }
+        }
+
         &.numeric {
             grid-template-areas:
                 "numeric symbols brackets punctuation backspace"
@@ -163,16 +177,32 @@ keyboard {
 
         &.symbols {
             grid-template-areas:
-                "numeric   symbols   brackets punctuation backspace"
-                "plusminus at        hash     dollar      percent"
-                "comma     ampersand tilde    asterisk    enter"
-                "period    caret     .        plus        space";
+                "numeric   symbols   brackets  punctuation backspace"
+                "plusminus at        hash      dollar      percent"
+                "comma     caret     ampersand asterisk    enter"
+                "period    tilde     plus      space       space";
 
             .next,
             .shift {
                 display: none;
             }
         }
+
+        &.brackets {
+            grid-template-areas:
+                "numeric         symbols          brackets    punctuation  backspace"
+                "parenthesisopen parenthesisclose bracketopen bracketclose asterisk"
+                "curlybracesopen curlybracesclose lessthan    greaterthan  enter"
+                "comma           pipe             slash       backslash    space";
+
+            .next,
+            .period,
+            .plus,
+            .shift {
+                display: none;
+            }
+        }
+
     }
 }
 
