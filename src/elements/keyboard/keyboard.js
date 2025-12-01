@@ -103,12 +103,18 @@ export class KeyboardCustomElement {
         const keys = this.keys;
 
         // 0. Update history with current page positions (before clearing)
-        this.pages.forEach((page, index) => {
-            if (index > 0) return;
-            page.forEach((key, index) => {
-                this._keyPositionHistory.set(key.name, index);
+        // Only learn from the clicked page as it's the one the user was focused on
+        const page = this.pages[this.currentPage];
+        if (page) {
+            page.forEach((key, keyIndex) => {
+                if (!this._keyPositionHistory.has(key.name)) {
+                    this._keyPositionHistory.set(key.name, new Map());
+                }
+                const keyHistory = this._keyPositionHistory.get(key.name);
+                const currentCount = keyHistory.get(keyIndex) || 0;
+                keyHistory.set(keyIndex, currentCount + 1);
             });
-        });
+        }
 
         // 1. Chunk the new predictions into pages
         const chunks = [];
@@ -139,14 +145,30 @@ export class KeyboardCustomElement {
             }
         }
 
-        // Pass 2: Priority 2 - History (Mental Note)
+        // Pass 2: Priority 2 - History (Weighted Preference)
         for (const key of page0) {
             if (usedKeys.has(key)) continue; // Already placed
 
-            const historyIndex = this._keyPositionHistory.get(key.name);
-            if (historyIndex !== undefined && historyIndex < pageSize && stabilizedPage0[historyIndex] === null) {
-                stabilizedPage0[historyIndex] = key;
-                usedKeys.add(key);
+            const keyHistory = this._keyPositionHistory.get(key.name);
+            if (keyHistory) {
+                // Find the index with the highest frequency
+                let bestIndex = -1;
+                let maxCount = -1;
+
+                for (const [index, count] of keyHistory.entries()) {
+                    if (index < pageSize && count > maxCount) {
+                        // Only consider if slot is empty
+                        if (stabilizedPage0[index] === null) {
+                            maxCount = count;
+                            bestIndex = index;
+                        }
+                    }
+                }
+
+                if (bestIndex !== -1) {
+                    stabilizedPage0[bestIndex] = key;
+                    usedKeys.add(key);
+                }
             }
         }
 
