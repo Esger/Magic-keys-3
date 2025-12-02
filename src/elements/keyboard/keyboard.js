@@ -17,7 +17,7 @@ export class KeyboardCustomElement {
         this.keys = this._keysService.getKeys();
         this.caps = false;
         this._resetKeysetType();
-        this._previousKeysetTypes = [];
+        this._previousKeysetType = '';
         this.pages = [];
         this.currentPage = 0;
         this._isResetting = false;
@@ -221,19 +221,17 @@ export class KeyboardCustomElement {
     }
 
     _resetKeysetType() {
-        this.keysetType = 'alpha';
-    }
+        const reset = this.keysetType !== 'numeric';
+        if (!reset) return;
 
-    _setKeysetType(type) {
-        this._previousKeysetTypes.push(this.keysetType);
-        this.keysetType = type;
+        this.keysetType = 'alpha';
     }
 
     _toggleKeysetType(type) {
         if (type === this.keysetType) {
-            this.keysetType = this._previousKeysetTypes.pop();
+            this.keysetType = 'alpha';
         } else {
-            this._previousKeysetTypes.push(this.keysetType);
+            this._previousKeysetType = this.keysetType;
             this.keysetType = type;
         }
     }
@@ -338,6 +336,7 @@ export class KeyboardCustomElement {
                         this._updatePages();
                         this._resetScrollContainer();
                     }
+                    this._resetKeysetType();
                     key.output?.length && this.keyHitCount++;
                     this._eventAggregator.publish('keyHit', (this.keyHitCount));
                 }, { once: true });
