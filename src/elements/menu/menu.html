@@ -13,6 +13,21 @@
             <i class="fa fa-times"></i>
         </li>
 
+        <li mouseenter.trigger="toggleSubmenuLanguage()"
+            mouseleave.trigger="toggleSubmenuLanguage()"
+            touchstart.trigger="toggleSubmenuLanguage()">
+            Language&nbsp;<i class="fa fa-angle-right"></i>
+            <ul if.bind="settings.submenuLanguageVisible"
+                class="subMenu">
+                <li class="${settings.currentLanguage == 'en' ? 'active' : ''}"
+                    click.delegate="setLanguage('en')"
+                    touchstart.trigger="setLanguage('en')">English</li>
+                <li class="${settings.currentLanguage == 'nl' ? 'active' : ''}"
+                    click.delegate="setLanguage('nl')"
+                    touchstart.trigger="setLanguage('nl')">Dutch</li>
+            </ul>
+        </li>
+
         <li mouseenter.trigger="toggleSubmenuBoards()"
             mouseleave.trigger="toggleSubmenuBoards()"
             touchstart.trigger="toggleSubmenuBoards()">

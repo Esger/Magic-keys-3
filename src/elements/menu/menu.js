@@ -1,19 +1,22 @@
 import { inject, bindable } from 'aurelia-framework';
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { KeysService } from "services/keys-service";
+import { SettingsService } from "services/settings-service";
 
-@inject(EventAggregator, KeysService)
+@inject(EventAggregator, KeysService, SettingsService)
 export class MenuCustomElement {
     @bindable isMobile;
 
-    constructor(eventAggregator, keysService) {
+    constructor(eventAggregator, keysService, settingsService) {
         this._eventAggregator = eventAggregator;
         this._keyService = keysService;
+        this._settingsService = settingsService;
         this.settings = {
             menuVisible: false,
             menuDisabled: false,
             submenuBoardsVisible: false,
             submenuDepthVisible: false,
+            submenuLanguageVisible: false,
             currentDepth: undefined
         };
         this.boardTypes = this._keyService.getBoardTypes();
@@ -24,6 +27,7 @@ export class MenuCustomElement {
         this._$html = $('html');
         this.getDepth();
         this.getAlphaKeyCount();
+        this.getLanguage();
         this._boardTypeSubscription = this._eventAggregator.subscribe('boardType', count => {
             this.settings.currentBoardType = count;
         });
@@ -35,11 +39,12 @@ export class MenuCustomElement {
 
     showTheMenu(event) {
         this._$html.on('click.closeMenu', event => {
-            const clickInside = event.target.closest('menu')?.length > 0;
+            const clickInside = $(event.target).closest('.menu').length > 0;
             !clickInside && this.hideTheMenu();
         });
         this.settings.menuVisible = true;
         this.settings.submenuBoardsVisible = false;
+        this.settings.submenuLanguageVisible = false;
     }
 
     hideTheMenu() {
@@ -48,18 +53,28 @@ export class MenuCustomElement {
             this.settings.menuVisible = false;
             this.settings.submenuBoardsVisible = false;
             this.settings.submenuDepthVisible = false;
+            this.settings.submenuLanguageVisible = false;
         });
     }
 
     toggleSubmenuBoards() {
         this.settings.submenuBoardsVisible = !this.settings.submenuBoardsVisible;
         this.settings.submenuDepthVisible = false;
+        this.settings.submenuLanguageVisible = false;
         return false;
     }
 
     toggleSubmenuDepth() {
         this.settings.submenuDepthVisible = !this.settings.submenuDepthVisible;
         this.settings.submenuBoardsVisible = false;
+        this.settings.submenuLanguageVisible = false;
+        return false;
+    }
+
+    toggleSubmenuLanguage() {
+        this.settings.submenuLanguageVisible = !this.settings.submenuLanguageVisible;
+        this.settings.submenuBoardsVisible = false;
+        this.settings.submenuDepthVisible = false;
         return false;
     }
 
@@ -76,6 +91,16 @@ export class MenuCustomElement {
     setDepth(depth) {
         this.settings.currentDepth = depth;
         this._keyService.setTailLength(depth);
+        this.hideTheMenu();
+    }
+
+    getLanguage() {
+        this.settings.currentLanguage = this._settingsService.getSetting('language');
+    }
+
+    setLanguage(lang) {
+        this.settings.currentLanguage = lang;
+        this._keyService.setLanguage(lang);
         this.hideTheMenu();
     }
 
