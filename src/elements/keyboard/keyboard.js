@@ -206,6 +206,10 @@ export class KeyboardCustomElement {
     }
 
     _setBoardType(amount) {
+        if (!this._keysService.isValidBoardType(this.isMobile, amount)) {
+            this._keysService.setAlphaKeyCount(8);
+            amount = 8;
+        }
         this._maxKeys = parseInt(amount, 10);
         const mobile = this.isMobile ? 'mobile--' : '';
         this.boardType = 'board--' + mobile + amount + 'keys';

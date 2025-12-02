@@ -442,7 +442,18 @@ export class KeysService {
             display: '=',
             output: '=',
         },
-    ]
+    ];
+
+    _boardTypes = {
+        desktop: [
+            { name: '8 keys', keyAmount: '8' },
+            { name: '9 keys', keyAmount: '9' },
+        ],
+        mobile: [
+            { name: '8 keys', keyAmount: '8' },
+            { name: '10 keys', keyAmount: '10' },
+        ]
+    };
 
     _keysKnowledge = {};
     _keys = []; // simple copy of _knowledge to prevent passing lots of data around.
@@ -481,6 +492,15 @@ export class KeysService {
 
     getAlphaKeyCount() {
         return this._alphaKeyCount;
+    }
+
+    getBoardTypes() {
+        return this._boardTypes;
+    }
+
+    isValidBoardType(isMobile, amount) {
+        const type = isMobile ? 'mobile' : 'desktop';
+        return this._boardTypes[type].some(b => b.keyAmount == amount);
     }
 
     setTailLength(value = 4) {

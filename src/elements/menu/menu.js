@@ -14,19 +14,9 @@ export class MenuCustomElement {
             menuDisabled: false,
             submenuBoardsVisible: false,
             submenuDepthVisible: false,
-            currentBoardType: undefined,
             currentDepth: undefined
         };
-        this.boardTypes = {
-            desktop: [
-                { name: '8 keys', keyAmount: '8' },
-                { name: '9 keys', keyAmount: '9' },
-            ],
-            mobile: [
-                { name: '8 keys', keyAmount: '8' },
-                { name: '10 keys', keyAmount: '10' },
-            ]
-        };
+        this.boardTypes = this._keyService.getBoardTypes();
         this.depths = [1, 2, 3, 4, 5];
     }
 
@@ -34,6 +24,13 @@ export class MenuCustomElement {
         this._$html = $('html');
         this.getDepth();
         this.getAlphaKeyCount();
+        this._boardTypeSubscription = this._eventAggregator.subscribe('boardType', count => {
+            this.settings.currentBoardType = count;
+        });
+    }
+
+    detached() {
+        this._boardTypeSubscription.dispose();
     }
 
     showTheMenu(event) {
