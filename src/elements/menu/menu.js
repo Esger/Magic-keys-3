@@ -1,14 +1,16 @@
 import { inject, bindable } from 'aurelia-framework';
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { KeysService } from "services/keys-service";
+import { SettingsService } from "services/settings-service";
 
-@inject(EventAggregator, KeysService)
+@inject(EventAggregator, KeysService, SettingsService)
 export class MenuCustomElement {
     @bindable isMobile;
 
-    constructor(eventAggregator, keysService) {
+    constructor(eventAggregator, keysService, settingsService) {
         this._eventAggregator = eventAggregator;
         this._keyService = keysService;
+        this._settingsService = settingsService;
         this.settings = {
             menuVisible: false,
             menuDisabled: false,
@@ -25,6 +27,7 @@ export class MenuCustomElement {
         this._$html = $('html');
         this.getDepth();
         this.getAlphaKeyCount();
+        this.getLanguage();
         this._boardTypeSubscription = this._eventAggregator.subscribe('boardType', count => {
             this.settings.currentBoardType = count;
         });
@@ -91,7 +94,12 @@ export class MenuCustomElement {
         this.hideTheMenu();
     }
 
+    getLanguage() {
+        this.settings.currentLanguage = this._settingsService.getSetting('language');
+    }
+
     setLanguage(lang) {
+        this.settings.currentLanguage = lang;
         this._keyService.setLanguage(lang);
         this.hideTheMenu();
     }

@@ -19,9 +19,11 @@
             Language&nbsp;<i class="fa fa-angle-right"></i>
             <ul if.bind="settings.submenuLanguageVisible"
                 class="subMenu">
-                <li click.delegate="setLanguage('en')"
+                <li class="${settings.currentLanguage == 'en' ? 'active' : ''}"
+                    click.delegate="setLanguage('en')"
                     touchstart.trigger="setLanguage('en')">English</li>
-                <li click.delegate="setLanguage('nl')"
+                <li class="${settings.currentLanguage == 'nl' ? 'active' : ''}"
+                    click.delegate="setLanguage('nl')"
                     touchstart.trigger="setLanguage('nl')">Dutch</li>
             </ul>
         </li>
