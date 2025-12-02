@@ -461,10 +461,21 @@ export class KeysService {
     _text = '';
     _tail = '';
     _tailLength = 4;
+    _language = 'en';
 
     constructor(eventAggregator, settingsService) {
         this._eventAggregator = eventAggregator;
         this._settingsService = settingsService;
+
+        // Detect language
+        const savedLang = this._settingsService.getSetting('language');
+        if (savedLang) {
+            this._language = savedLang;
+        } else {
+            const browserLang = navigator.language || navigator.userLanguage;
+            this._language = browserLang.startsWith('nl') ? 'nl' : 'en';
+        }
+
         this._defaultKeys.forEach(key => {
             // Populate the object structure
             this._keysKnowledge[key.name] = { ...key };
@@ -506,6 +517,12 @@ export class KeysService {
     setTailLength(value = 4) {
         this._tailLength = value;
         this._settingsService.setSetting('depth', value);
+        this.resetData();
+    }
+
+    setLanguage(lang) {
+        this._language = lang;
+        this._settingsService.setSetting('language', lang);
         this.resetData();
     }
 
@@ -648,11 +665,13 @@ export class KeysService {
         // console.table(this._keysKnowledge);
     };
 
-    _getText(lang = 'nl') {
+    _getText() {
         const httpClient = new HttpClient();
-        // httpClient.fetch('assets/aap-' + lang + '.txt')
-        // httpClient.fetch('assets/lipsum-' + lang + '.txt')
-        httpClient.fetch('assets/De-Geschiedenis-van-Woutertje-Pieterse-Multatuli.txt')
+        const file = this._language === 'nl'
+            ? 'assets/De-Geschiedenis-van-Woutertje-Pieterse-Multatuli.txt'
+            : 'assets/alice-en.txt';
+
+        httpClient.fetch(file)
             .then(response => {
                 return response.text();
             }).then(data => {
@@ -689,7 +708,7 @@ export class KeysService {
     }
 
     _loadKnowledge() {
-        const data = this._settingsService.loadKnowledge();
+        const data = this._settingsService.loadKnowledge(this._language);
         if (data) {
             if (Array.isArray(data)) {
                 // Migrate old array data to object
@@ -711,7 +730,7 @@ export class KeysService {
     }
 
     _saveKnowledge() {
-        this._settingsService.saveKnowledge(this._keysKnowledge);
+        this._settingsService.saveKnowledge(this._language, this._keysKnowledge);
     }
 
 }

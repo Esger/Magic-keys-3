@@ -22,12 +22,12 @@ export class SettingsService {
         this.saveSettings();
     }
 
-    loadKnowledge() {
-        const knowledge = localStorage.getItem('smart-keys');
+    loadKnowledge(language = 'en') {
+        const knowledge = localStorage.getItem('smart-keys-' + language);
         return knowledge ? JSON.parse(knowledge) : null;
     }
 
-    saveKnowledge(knowledge) {
-        localStorage.setItem('smart-keys', JSON.stringify(knowledge));
+    saveKnowledge(language, knowledge) {
+        localStorage.setItem('smart-keys-' + language, JSON.stringify(knowledge));
     }
 }
