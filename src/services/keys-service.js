@@ -2,10 +2,12 @@ import { inject } from "aurelia-framework";
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { HttpClient } from 'aurelia-fetch-client';
 
-@inject(EventAggregator)
+import { SettingsService } from "services/settings-service";
+
+@inject(EventAggregator, SettingsService)
 export class KeysService {
 
-    _keysKnowledge = [
+    _defaultKeys = [
         {
             name: 'a',
             output: 'a',
@@ -164,19 +166,9 @@ export class KeysService {
             className: 'small'
         },
         {
-            name: 'punctuation',
+            name: 'interpunction',
             display: '"',
-            className: 'small punctuation'
-        },
-        {
-            name: 'backspace',
-            display: '⇦',
-        },
-        {
-            name: 'next',
-            display: '⇨',
-            className: 'highlight',
-            title: 'More keys…'
+            className: 'small interpunction'
         },
     ];
 
@@ -203,221 +195,280 @@ export class KeysService {
             name: 'space',
             display: ' ',
             output: ' ',
-            position: 'p9'
+        },
+        {
+            name: 'plus',
+            display: '+',
+            output: '+',
+            className: 'plus'
+        },
+        {
+            name: 'minus',
+            display: '-',
+            output: '-',
+        },
+        {
+            name: 'asterisk',
+            display: '*',
+            output: '*',
+        },
+        {
+            name: 'backspace',
+            display: '⇦',
+        },
+        {
+            name: 'next',
+            display: '⇨',
+            className: 'highlight',
+            title: 'More keys…'
         },
     ]
 
     _numbers = [
         {
-            name: '1',
+            name: 'one',
+            display: '1',
             output: '1'
         },
         {
-            name: '2',
+            name: 'two',
+            display: '2',
             output: '2'
         },
         {
-            name: '3',
+            name: 'three',
+            display: '3',
             output: '3'
         },
         {
-            name: '4',
+            name: 'four',
+            display: '4',
             output: '4'
         },
         {
-            name: '5',
+            name: 'five',
+            display: '5',
             output: '5',
             className: 'five'
         },
         {
-            name: '6',
+            name: 'six',
+            display: '6',
             output: '6'
         },
         {
-            name: '7',
+            name: 'seven',
+            display: '7',
             output: '7'
         },
         {
-            name: '8',
+            name: 'eight',
+            display: '8',
             output: '8'
         },
         {
-            name: '9',
+            name: 'nine',
+            display: '9',
             output: '9'
         },
         {
-            name: '0',
+            name: 'zero',
+            display: '0',
             output: '0',
             className: 'zero'
         },
-        {
-            name: '+',
-            output: '+',
-            className: 'plus'
-        },
-        {
-            name: '-',
-            output: '-',
-            className: 'minus'
-        },
-        {
-            name: '*',
-            output: '*',
-            className: 'asterisk'
-        },
-        {
-            name: '/',
-            output: '/',
-            className: 'slash small'
-        },
     ]
 
-    _punctuation = [
+    _interpunction = [
         {
-            name: '`',
+            name: 'backtick',
+            display: '\`',
             output: '\''
         },
         {
-            name: '\"',
+            name: 'doublequote',
+            display: '\"',
             output: '\"'
         },
         {
-            name: '\'',
+            name: 'singlequote',
+            display: '\'',
             output: '\''
         },
         {
-            name: '§',
+            name: 'paragraph',
+            display: '§',
             output: '§'
         },
         {
-            name: ':',
+            name: 'colon',
+            display: ':',
             output: ':'
         },
         {
-            name: ';',
+            name: 'semicolon',
+            display: ';',
             output: ';'
         },
         {
-            name: '!',
+            name: 'exclamation',
+            display: '!',
             output: '!'
         },
         {
-            name: '_',
+            name: 'underscore',
+            display: '_',
             output: '_'
         },
         {
-            name: '?',
+            name: 'questionmark',
+            display: '?',
             output: '?'
         },
     ]
 
     _brackets = [
         {
-            name: '(',
+            name: 'parenthesisopen',
             output: '(',
-            className: 'parenthesis--open small',
+            display: '(',
+            className: 'small',
         },
         {
-            name: ')',
+            name: 'parenthesisclose',
             output: ')',
+            display: ')',
             className: 'small'
         },
         {
-            name: '[',
+            name: 'bracketopen',
             output: '[',
+            display: '[',
             className: 'small'
         },
         {
-            name: ']',
+            name: 'bracketclose',
             output: ']',
+            display: ']',
             className: 'small'
         },
         {
-            name: '/',
-            output: '/',
-            className: 'small'
-        },
-        {
-            name: '{',
+            name: 'curlybracesopen',
             output: '{',
-            className: 'curlyBraces--open small'
+            display: '{',
+            className: 'small'
         },
         {
-            name: '}',
+            name: 'curlybracesclose',
             output: '}',
+            display: '}',
             className: 'small'
         },
         {
-            name: '<',
+            name: 'lessthan',
             output: '<',
+            display: '<',
             className: 'small'
         },
         {
-            name: '>',
+            name: 'greaterthan',
             output: '>',
+            display: '>',
             className: 'small'
         },
         {
-            name: '|',
+            name: 'pipe',
             output: '|',
+            display: '|',
             className: 'pipe small'
         },
         {
-            name: '\\',
+            name: 'slash',
+            output: '/',
+            display: '/',
+            className: 'small'
+        },
+        {
+            name: 'backslash',
             output: '\\',
+            display: '\\',
             className: 'small'
         },
     ]
 
     _symbols = [
         {
-            name: '±',
+            name: 'plusminus',
+            display: '±',
             output: '±',
         },
         {
-            name: '@',
+            name: 'at',
+            display: '@',
             output: '@',
         },
         {
-            name: '#',
+            name: 'hash',
+            display: '#',
             output: '#',
         },
         {
-            name: '$',
+            name: 'dollar',
+            display: '$',
             output: '$',
         },
         {
-            name: '%',
+            name: 'percent',
+            display: '%',
             output: '%',
         },
         {
-            name: '^',
+            name: 'caret',
+            display: '^',
             output: '^',
         },
         {
-            name: '&',
+            name: 'ampersand',
+            display: '&',
             output: '&',
         },
         {
-            name: '*',
-            output: '*',
+            name: 'tilde',
+            display: '~',
+            output: '~',
         },
         {
-            name: '~',
-            output: '~',
-            className: 'tilde'
+            name: 'equals',
+            display: '=',
+            output: '=',
         },
-    ]
+    ];
 
+    _boardTypes = {
+        desktop: [
+            { name: '8 keys', keyAmount: '8' },
+            { name: '9 keys', keyAmount: '9' },
+        ],
+        mobile: [
+            { name: '8 keys', keyAmount: '8' },
+            { name: '10 keys', keyAmount: '10' },
+        ]
+    };
+
+    _keysKnowledge = {};
     _keys = []; // simple copy of _knowledge to prevent passing lots of data around.
     _letters = [];
     _text = '';
     _tail = '';
     _tailLength = 4;
 
-    constructor(eventAggregator) {
+    constructor(eventAggregator, settingsService) {
         this._eventAggregator = eventAggregator;
-        this._keysKnowledge.forEach(key => {
+        this._settingsService = settingsService;
+        this._defaultKeys.forEach(key => {
+            // Populate the object structure
+            this._keysKnowledge[key.name] = { ...key };
+
             if (key.output?.length) {
                 this._keys.push({
                     name: key.name,
@@ -427,10 +478,15 @@ export class KeysService {
             }
         });
         this._loadKnowledge();
+
+        // Load settings
+        this._alphaKeyCount = this._settingsService.getSetting('boardType', 8);
+        this._tailLength = this._settingsService.getSetting('depth', 4);
     }
 
     setAlphaKeyCount(count) {
         this._alphaKeyCount = count;
+        this._settingsService.setSetting('boardType', count);
         this._eventAggregator.publish('boardType', count);
     }
 
@@ -438,8 +494,18 @@ export class KeysService {
         return this._alphaKeyCount;
     }
 
+    getBoardTypes() {
+        return this._boardTypes;
+    }
+
+    isValidBoardType(isMobile, amount) {
+        const type = isMobile ? 'mobile' : 'desktop';
+        return this._boardTypes[type].some(b => b.keyAmount == amount);
+    }
+
     setTailLength(value = 4) {
         this._tailLength = value;
+        this._settingsService.setSetting('depth', value);
         this.resetData();
     }
 
@@ -454,20 +520,25 @@ export class KeysService {
     }
 
     cleanData() {
-        const cleanKnowledge = this._keysKnowledge.filter(key => key.name.length == 1 || key.name == 'new_word');
-        cleanKnowledge.forEach(key => key.successors = []);
+        const cleanKnowledge = {};
+        Object.values(this._keysKnowledge).forEach(key => {
+            if (key.name.length == 1 || key.name == 'new_word') {
+                key.successors = [];
+                cleanKnowledge[key.name] = key;
+            }
+        });
         this._keysKnowledge = cleanKnowledge;
         this._eventAggregator.publish('dataReady');
     }
 
     _getKeys() {
-        const useTail = this._tail.length && this._letters.indexOf(this._tail.substr(-1)) > -1;
+        const useTail = this._tail.length && this._letters.includes(this._tail.slice(-1));
         let nameStr = useTail ? this._tail.slice(-(this._tailLength - 1)) : 'new_word';
         let probableKeys = [];
         let knowledgeObj = undefined;
         while (nameStr.length > 0 && probableKeys.length < 26) {
-            knowledgeObj = this._keysKnowledge.find(key => key.name == nameStr);
-            const keys = knowledgeObj?.successors.map(char => this._keysKnowledge.find(key => key.name == char));
+            knowledgeObj = this._keysKnowledge[nameStr]; // Object lookup
+            const keys = knowledgeObj?.successors.map(char => this._keysKnowledge[char]); // Object lookup
             keys?.forEach(key => {
                 const keyIsUsedBefore = probableKeys?.some(k => k.name == key.name);
                 if (!keyIsUsedBefore) {
@@ -479,33 +550,56 @@ export class KeysService {
 
         let completingKeys = [];
         if (probableKeys.length < 26) {
-            this._keysKnowledge.filter(key => (key.name.length == 1) && (key.name != 'new_word')).forEach(key => {
+            Object.values(this._keysKnowledge).filter(key => (key.name.length == 1) && (key.name != 'new_word')).forEach(key => { // Iterate over values
                 const keyIsUsedBefore = probableKeys?.some(k => k.name == key.name);
                 if (!keyIsUsedBefore) {
                     completingKeys.push(key);
                 }
             });
         };
-        return JSON.parse(JSON.stringify([...probableKeys, ...completingKeys])) || [];
+        return structuredClone([...probableKeys, ...completingKeys]) || [];
     }
 
     getKeys(setName) {
+        let keys;
         switch (setName) {
-            case 'punctuation': return this._punctuation; break;
-            case 'numeric': return this._numbers; break;
-            case 'symbols': return this._symbols; break;
-            case 'brackets': return this._brackets; break;
-            case 'modifiers': return [...this._modifiers, ...this._nonAlpha]; break;
-            default: return this._getKeys(); break;
+            case 'interpunction':
+                keys = this._interpunction;
+                break;
+            case 'numbers':
+                keys = this._numbers;
+                break;
+            case 'symbols':
+                keys = this._symbols;
+                break;
+            case 'brackets':
+                keys = this._brackets;
+                break;
+            case 'modifiers':
+                keys = this._modifiers;
+                break;
+            case 'nonAlpha':
+                keys = this._nonAlpha;
+                break;
+            default:
+                keys = this._getKeys();
+                break;
         }
+        return keys;
+    }
+
+    setTail(tail) {
+        this._tail = tail;
+        this._eventAggregator.publish('dataReady');
     }
 
     registerKeystroke(tail) {
+        tail = tail.toLowerCase();
         // For the typed key (last char of Tail) register preceding characters of Tail
         // TODO check better for more extended charactersets
         this._tail = tail;
         while (tail.length > 0) {
-            const lessonChar = tail.substr(-1); // the key
+            const lessonChar = tail.slice(-1); // the key
             // possible tail patterns
             // 'ab' -> learn 'a' is followed by 'b'
             // 'a.' -> skip learning
@@ -513,14 +607,13 @@ export class KeysService {
             // '  ' -> skip learning
             // ' a' -> skip learning
             // => all chars are part of _knowledge and and of type alpha
-            const splitTail = tail.split('');
-            const allAlpha = splitTail.every(key => this._letters.indexOf(key) > -1);
+            const allAlpha = /^[a-z]+$/.test(tail);
             if (allAlpha && tail.length > 1) {
                 const learningString = tail.slice(0, -1);
                 this._addToKnowledge(learningString, lessonChar);
             } else {
                 // build successors for start new word
-                (this._letters.indexOf(lessonChar) > -1) && this._addToKnowledge('new_word', lessonChar);
+                this._letters.includes(lessonChar) && this._addToKnowledge('new_word', lessonChar);
             }
             tail = tail.slice(1);
             this._saveWhenIdle();
@@ -532,12 +625,12 @@ export class KeysService {
             name: name,
             successors: [],
         };
-        this._keysKnowledge.push(newItem);
+        this._keysKnowledge[name] = newItem;
         return newItem;
     }
 
     _addToKnowledge(learningString, lessonChar) {
-        const learningTailObj = this._keysKnowledge.find(key => key.name == learningString) ||
+        const learningTailObj = this._keysKnowledge[learningString] ||
             this._newKeyKnowledgeItem(learningString);
         const successors = learningTailObj.successors;
         const successorPos = successors.indexOf(lessonChar);
@@ -551,12 +644,15 @@ export class KeysService {
         } else {
             learningTailObj.successors.push(lessonChar);
         }
-        // console.table([learningCharObj.name, ...learningCharObj.successors]);
+        // console.table([learningString, successors]);
+        // console.table(this._keysKnowledge);
     };
 
     _getText(lang = 'nl') {
         const httpClient = new HttpClient();
-        httpClient.fetch('assets/lipsum-' + lang + '.txt')
+        // httpClient.fetch('assets/aap-' + lang + '.txt')
+        // httpClient.fetch('assets/lipsum-' + lang + '.txt')
+        httpClient.fetch('assets/De-Geschiedenis-van-Woutertje-Pieterse-Multatuli.txt')
             .then(response => {
                 return response.text();
             }).then(data => {
@@ -568,20 +664,42 @@ export class KeysService {
     _train() {
         const lastPosition = this._text.length;
         if (lastPosition > 0) {
-            for (let startPos = 0; startPos < lastPosition; startPos++) {
-                const tail = this._text.substring(startPos - this._tailLength, startPos);
-                this.registerKeystroke(tail);
-            }
-            this._tail = '';
-            this._eventAggregator.publish('dataReady');
-            this._saveKnowledge();
+            let startPos = 0;
+            const chunkSize = 2000;
+
+            const processChunk = () => {
+                const endPos = Math.min(startPos + chunkSize, lastPosition);
+
+                for (; startPos < endPos; startPos++) {
+                    const tail = this._text.substring(startPos - this._tailLength, startPos);
+                    this.registerKeystroke(tail);
+                }
+
+                if (startPos < lastPosition) {
+                    setTimeout(processChunk, 0);
+                } else {
+                    this._tail = '';
+                    this._eventAggregator.publish('dataReady');
+                    this._saveKnowledge();
+                }
+            };
+
+            processChunk();
         }
-        // console.table(this._keysKnowledge);
     }
 
     _loadKnowledge() {
-        if (localStorage.getItem("magic-keys-3")) {
-            this._keysKnowledge = JSON.parse(localStorage.getItem("magic-keys-3"));
+        const data = this._settingsService.loadKnowledge();
+        if (data) {
+            if (Array.isArray(data)) {
+                // Migrate old array data to object
+                this._keysKnowledge = {};
+                data.forEach(item => {
+                    this._keysKnowledge[item.name] = item;
+                });
+            } else {
+                this._keysKnowledge = data;
+            }
         } else {
             this._getText();
         }
@@ -589,13 +707,11 @@ export class KeysService {
 
     _saveWhenIdle() {
         clearTimeout(this._saveTimeoutId);
-        this._saveTimeoutId = setTimeout(() => {
-            this._saveKnowledge();
-        }, 5000);
+        this._saveTimeoutId = setTimeout(_ => this._saveKnowledge(), 10000);
     }
 
     _saveKnowledge() {
-        localStorage.setItem("magic-keys-3", JSON.stringify(this._keysKnowledge));
+        this._settingsService.saveKnowledge(this._keysKnowledge);
     }
 
 }

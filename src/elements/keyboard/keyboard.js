@@ -1,42 +1,223 @@
-import { inject } from "aurelia-framework";
+import { inject, bindable } from "aurelia-framework";
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { KeysService } from "services/keys-service";
 
-@inject(EventAggregator, KeysService)
+import { SettingsService } from "services/settings-service";
+
+@inject(Element, EventAggregator, KeysService, SettingsService)
 export class KeyboardCustomElement {
-    constructor(eventAggregator, keysService) {
+    @bindable isMobile;
+    constructor(element, eventAggregator, keysService, settingsService) {
+        this._element = element;
         this._eventAggregator = eventAggregator;
         this._keysService = keysService;
-        this.maxKeys = 9;
-        this._keysService.setAlphaKeyCount(this.maxKeys);
+        this._settingsService = settingsService;
+        this._maxKeys = this._settingsService.getSetting('boardType', 8);
+        this._keysService.setAlphaKeyCount(this._maxKeys);
         this.keys = this._keysService.getKeys();
-        this.modifiers = this._keysService.getKeys('modifiers');
-        this._setBoardType(this.maxKeys);
         this.caps = false;
         this._resetKeysetType();
-        this._previousKeysetType = [];
+        this._previousKeysetTypes = [];
+        this.pages = [];
+        this.currentPage = 0;
+        this._isResetting = false;
+        this._keyPositionHistory = new Map();
+    }
+
+    bind() {
+        this._setBoardType(this._maxKeys);
+    }
+
+    isMobileChanged() {
+        this._setBoardType(this._maxKeys);
     }
 
     attached() {
+        this.modifiers = this._keysService.getKeys('modifiers');
+        this.nonAlpha = this._keysService.getKeys('nonAlpha');
+        this.numbers = this._keysService.getKeys('numbers');
+        this.brackets = this._keysService.getKeys('brackets');
+        this.symbols = this._keysService.getKeys('symbols');
+        this.interpunction = this._keysService.getKeys('interpunction');
         this._trainingReadySubscriber = this._eventAggregator.subscribe('dataReady', _ => {
             this.keys = this._keysService.getKeys()
-            this.keySubset = this._getAlphaSubset();
+            this._updatePages();
         });
         this._boardTypeSubscriber = this._eventAggregator.subscribe('boardType', dynamicKeysAmount => this._setBoardType(dynamicKeysAmount));
+
+        if (this.scrollContainer) {
+            this.scrollContainer.addEventListener('scroll', this._onScroll.bind(this));
+        }
+
+        const updatePageHighlights = () => {
+            const containerRect = this.scrollContainer.getBoundingClientRect();
+            const threshold = 100;
+
+            this.scrollContainer.querySelectorAll('.keys-page').forEach(page => {
+                const rect = page.getBoundingClientRect();
+                const outside = rect.right - threshold <= containerRect.left ||
+                    rect.left + threshold >= containerRect.right;
+                page.classList.toggle('highlight', outside);
+            });
+        };
+
+        let rafId = null;
+        this.scrollContainer.addEventListener('scroll', () => {
+            if (rafId) return;
+            rafId = requestAnimationFrame(() => {
+                updatePageHighlights();
+                rafId = null;
+            });
+        });
+
+        // Initial check
+        updatePageHighlights();
     }
 
     detached() {
         this._trainingReadySubscriber.dispose();
         this._boardTypeSubscriber.dispose();
+
+        if (this.scrollContainer) {
+            this.scrollContainer.removeEventListener('scroll', this._onScroll.bind(this));
+        }
+    }
+
+    _onScroll() {
+        if (this._isResetting) return;
+
+        const width = this.scrollContainer.offsetWidth;
+        const scrollLeft = this.scrollContainer.scrollLeft;
+        // Use Math.round to handle potential sub-pixel scrolling or snap behavior
+        const newPage = Math.round(scrollLeft / width);
+
+        if (newPage !== this.currentPage) {
+            this.currentPage = newPage;
+            this.keyMissedCount++;
+            this._eventAggregator.publish('keyMissed', (this.keyMissedCount));
+        }
+    }
+
+    _updatePages() {
+        const pageSize = this._maxKeys;
+        const keys = this.keys;
+
+        // 0. Update history with current page positions (before clearing)
+        // Only learn from the clicked page as it's the one the user was focused on
+        const page = this.pages[this.currentPage];
+        if (page) {
+            page.forEach((key, keyIndex) => {
+                if (!this._keyPositionHistory.has(key.name)) {
+                    this._keyPositionHistory.set(key.name, new Map());
+                }
+                const keyHistory = this._keyPositionHistory.get(key.name);
+                const currentCount = keyHistory.get(keyIndex) || 0;
+                keyHistory.set(keyIndex, currentCount + 1);
+            });
+        }
+
+        // 1. Chunk the new predictions into pages
+        const chunks = [];
+        for (let i = 0; i < keys.length; i += pageSize) {
+            chunks.push(keys.slice(i, i + pageSize));
+        }
+
+        // 1a. Fill the last page (loop around)
+        const lastPage = chunks[chunks.length - 1];
+        let needed = pageSize - lastPage.length;
+        lastPage.push(...keys.slice(0, needed));
+
+        // 2. Reorder keys in page 0 based on clicked page AND history
+        const clickedPage = this.pages[this.currentPage] || [];
+        const viewedPositions = new Map();
+        clickedPage.forEach((k, i) => viewedPositions.set(k.name, i));
+
+        const page0 = chunks[0];
+        const stabilizedPage0 = new Array(pageSize).fill(null);
+        const usedKeys = new Set();
+
+        // Pass 1: Priority 1 - Clicked Page (Absolute Priority)
+        for (const key of page0) {
+            const clickedIndex = viewedPositions.get(key.name);
+            if (clickedIndex !== undefined && clickedIndex < pageSize) {
+                stabilizedPage0[clickedIndex] = key;
+                usedKeys.add(key);
+            }
+        }
+
+        // Pass 2: Priority 2 - History (Weighted Preference)
+        for (const key of page0) {
+            if (usedKeys.has(key)) continue; // Already placed
+
+            const keyHistory = this._keyPositionHistory.get(key.name);
+            if (keyHistory) {
+                // Find the index with the highest frequency
+                let bestIndex = -1;
+                let maxCount = -1;
+
+                for (const [index, count] of keyHistory.entries()) {
+                    if (index < pageSize && count > maxCount) {
+                        // Only consider if slot is empty
+                        if (stabilizedPage0[index] === null) {
+                            maxCount = count;
+                            bestIndex = index;
+                        }
+                    }
+                }
+
+                if (bestIndex !== -1) {
+                    stabilizedPage0[bestIndex] = key;
+                    usedKeys.add(key);
+                }
+            }
+        }
+
+        // Pass 3: Collect Remaining
+        const remaining = [];
+        for (const key of page0) {
+            if (!usedKeys.has(key)) {
+                remaining.push(key);
+            }
+        }
+
+        // Pass 4: Fill holes
+        let rIndex = 0;
+        for (let j = 0; j < pageSize; j++) {
+            if (stabilizedPage0[j] === null && rIndex < remaining.length) {
+                stabilizedPage0[j] = remaining[rIndex++];
+            }
+        }
+
+        // 3. Update chunks
+        chunks[0] = stabilizedPage0;
+        this.pages = chunks;
+
+    }
+
+    _resetScrollContainer() {
+        if (this.scrollContainer) {
+            this._isResetting = true;
+            this.scrollContainer.scrollLeft = 0;
+            requestAnimationFrame(() => {
+                this._isResetting = false;
+                this.currentPage = 0;
+            });
+        }
     }
 
     _setBoardType(amount) {
-        this.maxKeys = parseInt(amount, 10);
-        this.boardType = 'board--' + amount + 'keys';
+        if (!this._keysService.isValidBoardType(this.isMobile, amount)) {
+            this._keysService.setAlphaKeyCount(8);
+            amount = 8;
+        }
+        this._maxKeys = parseInt(amount, 10);
+        const mobile = this.isMobile ? 'mobile--' : '';
+        this.boardType = 'board--' + mobile + amount + 'keys';
         this.keyHitCount = 0;
         this.keyMissedCount = 0;
+        this._keyPositionHistory.clear();
         this._resetKeysetType();
-        this._resetSubset();
+        this._updatePages();
     }
 
     _resetKeysetType() {
@@ -44,60 +225,15 @@ export class KeyboardCustomElement {
     }
 
     _setKeysetType(type) {
-        this._previousKeysetType.push(this.keysetType);
+        this._previousKeysetTypes.push(this.keysetType);
         this.keysetType = type;
-    }
-
-
-    isKeysetOftype(type) {
-        return this.keysetType === type;
-    }
-
-    _getAlphaSubset() {
-        const keys = [...this.keys, ...this.keys];
-        let newSubset = keys.slice(this.firstKey, this.lastKey);
-
-        // there's no keySubset the first time
-        if (this.keySubset) {
-
-            let currentSubset = JSON.parse(JSON.stringify(this.keySubset)) || []; // deep copy to mark items to be replaced.
-
-            // remove keys when switched to smaller keyboard
-            if (currentSubset.length && currentSubset.length > newSubset.length) {
-                currentSubset.length = newSubset.length;
-            }
-
-            // replace only unneeded keys in currentSubset
-            newSubset.forEach((key, index, subset) => {
-                key.needed = !currentSubset.some(k => k.name == key.name);
-                if (key.needed) {
-                    let replaceKeyIndex = currentSubset.findIndex(k => !subset.some(kk => kk.name == k.name));
-                    if (replaceKeyIndex > -1) {
-                        currentSubset[replaceKeyIndex] = key;
-                    } else
-                        // add key when switched to larger keyboard
-                        if (currentSubset.length && currentSubset.length < subset.length) {
-                            currentSubset.push(key);
-                        }
-                }
-            });
-
-            return currentSubset;
-        }
-        return newSubset;
-    }
-
-    _resetSubset() {
-        this.firstKey = 0;
-        this.lastKey = this.maxKeys;
-        this.keySubset = this._getAlphaSubset();
     }
 
     _toggleKeysetType(type) {
         if (type === this.keysetType) {
-            this.keysetType = this._previousKeysetType.pop();
+            this.keysetType = this._previousKeysetTypes.pop();
         } else {
-            this._previousKeysetType.push(this.keysetType);
+            this._previousKeysetTypes.push(this.keysetType);
             this.keysetType = type;
         }
     }
@@ -111,56 +247,100 @@ export class KeyboardCustomElement {
         return newSet;
     }
 
-    _nextSubset() {
-        if (this.lastKey >= this.keys.length) {
-            this.firstKey = this.lastKey % this.keys.length;
-            this.lastKey = this.firstKey + this.maxKeys;
-        } else {
-            this.firstKey = this.lastKey;
-            this.lastKey += this.maxKeys;
+    keyIsPressed(key, event) {
+        if (this._isSwiping) {
+            this._isSwiping = false;
+            return;
         }
-    }
 
-    keyIsPressed(key) {
+        if (event && event.target) {
+            const keyElement = event.target.closest('.key');
+            if (keyElement) {
+                keyElement.classList.add('flash');
+                keyElement.addEventListener('animationend', () => keyElement.classList.remove('flash'), { once: true });
+            }
+        }
+
         this._eventAggregator.publish('keyIsPressed', key);
         this._handleKey(key)
     }
 
+    swipeStart(event, key) {
+        if (!this.isMobile) return true;
+        this._startY = event.changedTouches[0].pageY;
+        this._startX = event.changedTouches[0].pageX;
+        this._isSwiping = false;
+
+        if (event && event.target) {
+            const keyElement = event.target.closest('.key');
+            if (keyElement) {
+                keyElement.classList.add('flash');
+                keyElement.addEventListener('animationend', () => keyElement.classList.remove('flash'), { once: true });
+            }
+        }
+        return true;
+    }
+
+    swipeEnd(event, key) {
+        if (!this.isMobile) return true;
+        const endY = event.changedTouches[0].pageY;
+        const endX = event.changedTouches[0].pageX;
+        const diffY = this._startY - endY;
+        const diffX = Math.abs(this._startX - endX);
+
+        if (diffY > 30 && diffY > diffX) {
+            this._isSwiping = true;
+            if (this.keysetType === 'alpha' && key.output && key.output.match(/[a-z]/)) {
+                const upperKey = { ...key, output: key.output.toUpperCase() };
+                this._eventAggregator.publish('keyIsPressed', upperKey);
+                this._handleKey(upperKey);
+            }
+            if (event.cancelable) event.preventDefault();
+        } else if (Math.abs(diffY) < 10 && diffX < 10) {
+            // It's a tap
+            this._eventAggregator.publish('keyIsPressed', key);
+            this._handleKey(key);
+            if (event.cancelable) event.preventDefault();
+        }
+        return true;
+    }
+
     _handleKey(key) {
+        this._lastKeyTyped = key;
         switch (true) {
             case key.name == 'shift':
-                this.capsLock = this.capsLockPending;
-                this.caps = !this.caps || this.capsLock;
-                this.capsLockPending = true;
+                this._capsLock = this._capsLockPending;
+                this.caps = !this.caps || this._capsLock;
+                this._capsLockPending = true;
                 setTimeout(() => {
-                    this.capsLockPending = false;
+                    this._capsLockPending = false;
                 }, 300);
                 break;
             case key.name == 'next':
-                this._resetKeysetType();
-                this._nextSubset();
-                this.keySubset = this._getAlphaSubset();
-                this.keyMissedCount++;
-                this._eventAggregator.publish('keyMissed', (this.keyMissedCount));
-                break;
-            case ['brackets', 'numeric', 'symbols', 'punctuation'].indexOf(key.name) > -1:
-                this._toggleKeysetType(key.name);
-                if (this.keysetType == 'alpha') {
-                    this.keys = this._keysService.getKeys(this.keysetType);
-                    this._resetSubset();
-                } else {
-                    this.keySubset = this._keysService.getKeys(this.keysetType);
+                let next = this.currentPage + 1;
+                if (next >= this.pages.length) {
+                    next = 0;
                 }
+                const pages = this.scrollContainer.querySelectorAll('.keys-page');
+                if (pages[next]) {
+                    pages[next].scrollIntoView();
+                }
+                break;
+            case ['brackets', 'numeric', 'symbols', 'interpunction'].includes(key.name):
+                this._toggleKeysetType(key.name);
                 break;
             default:
-                this.caps = this.capsLock;
-                this.keys = this._keysService.getKeys(this.keysetType);
-                if (this.keysetType == 'alpha') {
-                    this._resetSubset();
-                }
-                key.output?.length && this.keyHitCount++;
-                this._eventAggregator.publish('keyHit', (this.keyHitCount));
-                // console.table(this.keys)
+                this.caps = this._capsLock;
+                const newKeys = this._keysService.getKeys(this.keysetType);
+                this._element.querySelectorAll('.' + key.name)[0].addEventListener('animationend', _ => {
+                    this.keys = newKeys;
+                    if (this.keysetType == 'alpha') {
+                        this._updatePages();
+                        this._resetScrollContainer();
+                    }
+                    key.output?.length && this.keyHitCount++;
+                    this._eventAggregator.publish('keyHit', (this.keyHitCount));
+                }, { once: true });
                 break;
         }
     }

@@ -19,15 +19,21 @@
             Keyboards&nbsp;<i class="fa fa-angle-right"></i>
             <ul if.bind="settings.submenuBoardsVisible"
                 class="subMenu">
-                <li repeat.for="boardType of boardTypes"
+                <li if.bind="isMobile"
+                    repeat.for="boardType of boardTypes.mobile"
                     class="${boardType.keyAmount == settings.currentBoardType ? 'active' : ''}"
-                    click.delegate="setKeyAmount(boardType.keyAmount)"
-                    touchstart.trigger="setKeyAmount(boardType.keyAmount)">${boardType.name}</li>
+                    click.delegate="setKeyAmount(boardType.keyAmount, $event)"
+                    touchstart.trigger="setKeyAmount(boardType.keyAmount, $event)">${boardType.name}</li>
+                <li else
+                    repeat.for="boardType of boardTypes.desktop"
+                    class="${boardType.keyAmount == settings.currentBoardType ? 'active' : ''}"
+                    click.delegate="setKeyAmount(boardType.keyAmount, $event)"
+                    touchstart.trigger="setKeyAmount(boardType.keyAmount, $event)">${boardType.name}</li>
             </ul>
         </li>
 
         <li mouseenter.trigger="toggleSubmenuDepth()"
-            mouseleave.trigger="toggleSubmenutoggleSubmenuDepth()"
+            mouseleave.trigger="toggleSubmenuDepth()"
             touchend.trigger="toggleSubmenuDepth()">
             Learning&nbsp;<i class="fa fa-angle-right"></i>
             <ul if.bind="settings.submenuDepthVisible"

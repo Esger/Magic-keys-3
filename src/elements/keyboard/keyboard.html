@@ -1,21 +1,68 @@
-<template class.bind="boardType + ' ' + keysetType">
+<template class="${boardType} ${keysetType} ${isMobile ? 'swipe' : 'noSwipe'}">
     <require from="./keyboard.css"></require>
 
+    <template if.bind="keysetType == 'alpha'">
+        <div class="keys-scroll-container"
+             ref="scrollContainer">
+            <div repeat.for="page of pages"
+                 class="keys-page">
+                <button repeat.for="key of page"
+                            class="key ${key.name} ${key.className}"
+                            touchstart.delegate="swipeStart($event, key)"
+                            touchend.delegate="swipeEnd($event, key)"
+                            click.delegate="keyIsPressed(key, $event)">${key.name}</button>
+            </div>
+        </div>
+    </template>
+
     <button repeat.for="key of modifiers"
-          class="key ${key.className} 
+          class="key modifier ${key.className} ${key.name}
                 ${caps && key.name == 'shift' ? 'active' : ''}
-                ${keysetType == 'numeric' && key.name == 'numeric' ? 'active' : ''}
-                ${keysetType == 'brackets' && key.name == 'brackets' ? 'active' : ''}
-                ${keysetType == 'symbols' && key.name == 'symbols' ? 'active' : ''}
-                ${keysetType == 'punctuation' && key.name == 'punctuation' ? 'active' : ''}"
+                ${keysetType == key.name ? 'active' : ''}"
           css="grid-area: ${key.name}"
-          click.delegate="keyIsPressed(key)"
-          touchstard.delegate="keyIsPressed(key)"
+          touchstart.delegate="swipeStart($event, key)"
+          touchend.delegate="swipeEnd($event, key)"
+          click.delegate="keyIsPressed(key, $event)"
           title.one-time="key.title || ''">${key.display}</button>
 
-    <button repeat.for="key of keySubset"
-        class="key ${key.name} ${key.className}"
-        click.delegate="keyIsPressed(key)"
-        touchstard.delegate="keyIsPressed(key)">${key.name}</button>
+    <button repeat.for="key of nonAlpha"
+      class="key nonAlpha ${key.className} ${key.name}"
+      css="grid-area: ${key.name}"
+      touchstart.delegate="swipeStart($event, key)"
+      touchend.delegate="swipeEnd($event, key)"
+      click.delegate="keyIsPressed(key, $event)"
+      title.one-time="key.title || ''">${key.display}</button>
+
+    <button repeat.for="key of numbers"
+        class="key numbers ${key.className} ${key.name}"
+        css="grid-area: ${key.name}"
+        touchstart.delegate="swipeStart($event, key)"
+        touchend.delegate="swipeEnd($event, key)"
+        click.delegate="keyIsPressed(key, $event)"
+        title.one-time="key.title || ''">${key.display}</button>
+
+    <button repeat.for="key of brackets"
+      class="key brackets ${key.className} ${key.name}"
+      css="grid-area: ${key.name}"
+      touchstart.delegate="swipeStart($event, key)"
+      touchend.delegate="swipeEnd($event, key)"
+      click.delegate="keyIsPressed(key, $event)"
+      title.one-time="key.title || ''">${key.display}</button>
+
+    <button repeat.for="key of symbols"
+      class="key symbols ${key.className} ${key.name}"
+      css="grid-area: ${key.name}"
+      touchstart.delegate="swipeStart($event, key)"
+      touchend.delegate="swipeEnd($event, key)"
+      click.delegate="keyIsPressed(key, $event)"
+      title.one-time="key.title || ''">${key.display}</button>
+
+    <button repeat.for="key of interpunction"
+      class="key interpunction ${key.className} ${key.name}"
+      css="grid-area: ${key.name}"
+      touchstart.delegate="swipeStart($event, key)"
+      touchend.delegate="swipeEnd($event, key)"
+      click.delegate="keyIsPressed(key, $event)"
+      title.one-time="key.title || ''">${key.display}</button>
 
 </template>

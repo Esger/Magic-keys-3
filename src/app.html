@@ -5,9 +5,9 @@
     <require from="elements/terminal/terminal"></require>
     <require from="elements/footer/footer"></require>
 
-    <header></header>
-    <terminal></terminal>
-    <keyboard></keyboard>
+    <header is-mobile.bind="isMobile"></header>
+    <terminal is-mobile.bind="isMobile"></terminal>
+    <keyboard is-mobile.bind="isMobile"></keyboard>
     <footer></footer>
 
 </template>

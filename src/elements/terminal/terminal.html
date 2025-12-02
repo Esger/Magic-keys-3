@@ -1,7 +1,14 @@
 <template>
     <require from="./terminal.css"></require>
     <textarea class="textArea"
+            id="terminal"
+            ref="terminal"
             value.two-way="value"
             inputmode="none"
-            readonly></textarea>
+            readonly
+            touchstart.delegate="swipeStart($event)"
+            touchend.delegate="swipeEnd($event)"></textarea>
+    <label class="fa fa-times"
+            for="terminal"
+            click.delegate="clearOutput()"></label>
 </template>

@@ -1,10 +1,10 @@
-import { inject } from 'aurelia-framework';
+import { inject, bindable } from 'aurelia-framework';
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { KeysService } from "services/keys-service";
 
 @inject(EventAggregator, KeysService)
-
 export class MenuCustomElement {
+    @bindable isMobile;
 
     constructor(eventAggregator, keysService) {
         this._eventAggregator = eventAggregator;
@@ -14,13 +14,9 @@ export class MenuCustomElement {
             menuDisabled: false,
             submenuBoardsVisible: false,
             submenuDepthVisible: false,
-            currentBoardType: undefined,
             currentDepth: undefined
         };
-        this.boardTypes = [
-            { name: '8 keys', keyAmount: '8' },
-            { name: '9 keys', keyAmount: '9' },
-        ];
+        this.boardTypes = this._keyService.getBoardTypes();
         this.depths = [1, 2, 3, 4, 5];
     }
 
@@ -28,6 +24,13 @@ export class MenuCustomElement {
         this._$html = $('html');
         this.getDepth();
         this.getAlphaKeyCount();
+        this._boardTypeSubscription = this._eventAggregator.subscribe('boardType', count => {
+            this.settings.currentBoardType = count;
+        });
+    }
+
+    detached() {
+        this._boardTypeSubscription.dispose();
     }
 
     showTheMenu(event) {

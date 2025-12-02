@@ -1,9 +1,10 @@
-import { inject } from "aurelia-framework";
+import { inject, bindable } from "aurelia-framework";
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { KeysService } from "services/keys-service";
 
 @inject(Element, EventAggregator, KeysService)
 export class TerminalCustomElement {
+    @bindable isMobile;
 
     constructor(element, eventAggregator, keysService) {
         this._element = element;
@@ -15,7 +16,7 @@ export class TerminalCustomElement {
 
     attached() {
         this._keypressedSubscriber = this._eventAggregator.subscribe('keyIsPressed', key => this._handleKey(key));
-        this._clearOutputSubscriber = this._eventAggregator.subscribe('clearOutput', _ => this._clearOutput());
+        this._clearOutputSubscriber = this._eventAggregator.subscribe('clearOutput', _ => this.clearOutput());
     }
 
     detached() {
@@ -23,31 +24,62 @@ export class TerminalCustomElement {
         this._clearOutputSubscriber.dispose();
     }
 
-    _clearOutput() {
+    swipeStart(e) {
+        this._startX = e.changedTouches[0].pageX;
+        return true;
+    }
+
+    swipeEnd(event) {
+        if (!this.isMobile) return;
+
+        const endX = event.changedTouches[0].pageX;
+        const diff = endX - this._startX;
+        this._startX = endX;
+
+        if (diff < -15) {
+            this.backspace();
+        }
+        return true;
+    }
+
+    clearOutput() {
         this.value = '';
+        this._keysService.setTail('');
+    }
+
+    backspace() {
+        this.value = this.value.slice(0, -1);
+        const tail = this.value.slice(-this._tailLength);
+        this._keysService.setTail(tail.toLocaleLowerCase());
+        this._scrollToEnd();
     }
 
     _handleKey(key) {
         switch (true) {
             case key.name == 'shift':
-                this.capsLock = this.capsLockPending;
-                this.caps = !this.caps || this.capsLock;
-                this.capsLockPending = true;
+                this._capsLock = this._capsLockPending;
+                this._caps = !this._caps || this._capsLock;
+                this._capsLockPending = true;
                 setTimeout(() => {
-                    this.capsLockPending = false;
+                    this._capsLockPending = false;
                 }, 300);
                 break;
             case key.output?.length > 0:
-                this.value = this.caps ? this.value + key.output.toUpperCase() : this.value + key.output;
-                this.caps = this.capsLock;
-                const tail = this.value.substr(-this._tailLength);
+                this.value = this._caps ? this.value + key.output.toUpperCase() : this.value + key.output;
+                this._caps = this._capsLock;
+                const tail = this.value.slice(-this._tailLength);
                 this._keysService.registerKeystroke(tail.toLocaleLowerCase());
                 break;
             case key.name == 'backspace':
-                this.value = this.value.slice(0, -1);
+                this.backspace();
                 break;
             default: break;
         }
+        this._scrollToEnd();
     }
 
+
+    _scrollToEnd() {
+        requestAnimationFrame(_ => this.terminal.scrollTop = this.terminal.scrollHeight);
+    }
 }

@@ -3,20 +3,24 @@
 }
 
 footer {
-    margin-top: var(--bodyPadding);
+    margin-top: calc(2 * var(--bodyPadding));
 
     p {
         display        : flex;
         justify-content: space-between;
         flex-wrap      : wrap;
         column-gap     : 8px;
-        margin-bottom  : 4px;
         font-size      : 0.8rem;
+
+        +p {
+            margin-top     : var(--bodyPadding);
+            justify-content: space-around;
+        }
     }
 
     a {
-        color          : var(--black);
         text-decoration: none;
+        cursor         : pointer;
 
         &:hover {
             text-decoration: underline;

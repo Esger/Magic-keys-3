@@ -3,7 +3,6 @@
     <require from="./header.css"></require>
 
     <h1 click.delegate="clear()">${message}</h1>
-
-    <menu></menu>
+    <menu is-mobile.bind="isMobile"></menu>
 
 </template>
