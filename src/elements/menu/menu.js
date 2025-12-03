@@ -12,7 +12,6 @@ export class MenuCustomElement {
         this._keyService = keysService;
         this._settingsService = settingsService;
         this.settings = {
-            menuVisible: false,
             menuDisabled: false,
             submenuBoardsVisible: false,
             submenuLayoutVisible: false,
@@ -40,26 +39,9 @@ export class MenuCustomElement {
         this._boardTypeSubscription.dispose();
     }
 
-    showTheMenu(event) {
-        this._$html.on('click.closeMenu', event => {
-            const clickInside = $(event.target).closest('.menu').length > 0;
-            !clickInside && this.hideTheMenu();
-        });
-        this.settings.menuVisible = true;
-        this.settings.submenuBoardsVisible = false;
-        this.settings.submenuLayoutVisible = false;
-        this.settings.submenuLanguageVisible = false;
-    }
-
     hideTheMenu() {
-        this._$html.off('click.closeMenu');
-        setTimeout(_ => {
-            this.settings.menuVisible = false;
-            this.settings.submenuBoardsVisible = false;
-            this.settings.submenuLayoutVisible = false;
-            this.settings.submenuDepthVisible = false;
-            this.settings.submenuLanguageVisible = false;
-        });
+        document.getElementById('main-menu').hidePopover();
+        this.closeOtherSubmenus();
     }
 
     closeOtherSubmenus() {

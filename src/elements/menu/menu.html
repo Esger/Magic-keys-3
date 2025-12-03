@@ -1,16 +1,18 @@
 <template class="hamburger">
     <require from="./menu.css"></require>
-    <i class="fa fa-bars"
-    class.bind="menuDisabled ? 'disabled' : ''"
-    mouseenter.trigger="showTheMenu($event)"
-    touchstart.trigger="showTheMenu($event)"></i>
+    <button type="button"
+            class="fa fa-bars hamburger-btn"
+            popovertarget="main-menu"
+            class.bind="menuDisabled ? 'disabled' : ''">
+    </button>
 
     <ul class="menu"
-        if.bind="settings.menuVisible">
+        id="main-menu"
+        popover>
 
         <li click.delegate="hideTheMenu()"
-            touchstart.trigger="hideTheMenu()">
-            <i class="fa fa-times"></i>
+            touchstart.trigger="hideTheMenu()"
+            class="fa fa-times">
         </li>
 
         <li mouseenter.trigger="toggleSubmenuLanguage()"
