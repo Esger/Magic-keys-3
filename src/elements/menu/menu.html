@@ -47,6 +47,21 @@
             </ul>
         </li>
 
+        <li mouseenter.trigger="toggleSubmenuLayout()"
+            mouseleave.trigger="toggleSubmenuLayout()"
+            touchstart.trigger="toggleSubmenuLayout()">
+            Layout&nbsp;<i class="fa fa-angle-right"></i>
+            <ul if.bind="settings.submenuLayoutVisible"
+                class="subMenu">
+                <li class="${settings.currentLayout == 'smart' ? 'active' : ''}"
+                    click.delegate="setLayout('smart')"
+                    touchstart.trigger="setLayout('smart')">Smart</li>
+                <li class="${settings.currentLayout == 'qwerty' ? 'active' : ''}"
+                    click.delegate="setLayout('qwerty')"
+                    touchstart.trigger="setLayout('qwerty')">QWERTY</li>
+            </ul>
+        </li>
+
         <li mouseenter.trigger="toggleSubmenuDepth()"
             mouseleave.trigger="toggleSubmenuDepth()"
             touchend.trigger="toggleSubmenuDepth()">

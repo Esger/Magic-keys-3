@@ -1,27 +1,26 @@
 header {
-    display        : flex;
+    display: flex;
     justify-content: space-between;
-    align-items    : center;
-    height         : 50px;
-    color          : white;
+    align-items: center;
+    height: 50px;
+    color: white;
 
     h1 {
         font-size: 18px;
-        margin   : 0;
-        cursor   : pointer;
+        margin: 0;
     }
 
     .swipe-switch {
-        position     : relative;
-        width        : 80px;
-        height       : 30px;
-        background   : #444;
+        position: relative;
+        width: 80px;
+        height: 30px;
+        background: #444;
         border-radius: calc(var(--bodyPadding) / 2);
-        overflow     : hidden;
-        display      : flex;
-        align-items  : center;
-        padding      : 2px;
-        transition   : background 0.3s;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        padding: 2px;
+        transition: background 0.3s;
 
         &.active {
             background: var(--highlightColor);
@@ -36,21 +35,21 @@ header {
         }
 
         .slider {
-            width        : 26px;
-            height       : 26px;
-            background   : white;
+            width: 26px;
+            height: 26px;
+            background: white;
             border-radius: 50%;
-            transition   : transform 0.3s;
-            z-index      : 2;
+            transition: transform 0.3s;
+            z-index: 2;
         }
 
         .text {
-            position      : absolute;
-            left          : 35px;
-            font-size     : 10px;
+            position: absolute;
+            left: 35px;
+            font-size: 10px;
             text-transform: uppercase;
             pointer-events: none;
-            transition    : opacity 0.3s;
+            transition: opacity 0.3s;
         }
     }
 }
