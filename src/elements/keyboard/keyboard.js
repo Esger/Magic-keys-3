@@ -23,11 +23,11 @@ export class KeyboardCustomElement {
         this.currentPage = 0;
         this._isResetting = false;
         this._keyPositionHistory = new Map();
-        this.showScrollIndicator = true;
     }
 
     bind() {
         this._setBoardType(this._maxKeys);
+        this.showScrollIndicator = this.isMobile;
     }
 
     isMobileChanged() {
