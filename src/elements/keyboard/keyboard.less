@@ -581,6 +581,25 @@ keyboard {
         }
     }
 
+    .showScrollIndicator &:first-child {
+        position: relative;
+
+        &::after {
+            display        : flex;
+            justify-content: center;
+            align-items    : center;
+            translate      : 0 50%;
+            content        : "< < <";
+            position       : absolute;
+            inset          : 0;
+            font-family    : "Source Code Pro";
+            font-size      : 74px;
+            color          : var(--highlightColor);
+            animation      : scrollHint 1.5s infinite;
+            pointer-events : none;
+        }
+    }
+
     /* Inherit columns from parent logic, but we need to be explicit because we are inside a flex item */
     /* The parent grid defines columns, but we are breaking out of the direct grid placement for individual keys */
     /* We need to replicate the grid column definition here */
@@ -616,5 +635,22 @@ keyboard {
     100% {
         transform: scale(1.4);
         opacity  : 0;
+    }
+}
+
+@keyframes scrollHint {
+    0% {
+        transform: translate(0, -50%);
+        opacity  : 0.3;
+    }
+
+    50% {
+        transform: translate(-10px, -50%);
+        opacity  : 0.6;
+    }
+
+    100% {
+        transform: translate(0, -50%);
+        opacity  : 0.3;
     }
 }

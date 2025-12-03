@@ -661,9 +661,7 @@ export class KeysService {
         } else {
             learningTailObj.successors.push(lessonChar);
         }
-        // console.table([learningString, successors]);
-        // console.table(this._keysKnowledge);
-    };
+    }
 
     _getText() {
         const httpClient = new HttpClient();
