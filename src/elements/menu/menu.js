@@ -12,12 +12,7 @@ export class MenuCustomElement {
         this._keyService = keysService;
         this._settingsService = settingsService;
         this.settings = {
-            menuVisible: false,
             menuDisabled: false,
-            submenuBoardsVisible: false,
-            submenuLayoutVisible: false,
-            submenuDepthVisible: false,
-            submenuLanguageVisible: false,
             currentDepth: undefined
         };
         this.boardTypes = this._keyService.getBoardTypes();
@@ -40,65 +35,14 @@ export class MenuCustomElement {
         this._boardTypeSubscription.dispose();
     }
 
-    showTheMenu(event) {
-        this._$html.on('click.closeMenu', event => {
-            const clickInside = $(event.target).closest('.menu').length > 0;
-            !clickInside && this.hideTheMenu();
-        });
-        this.settings.menuVisible = true;
-        this.settings.submenuBoardsVisible = false;
-        this.settings.submenuLayoutVisible = false;
-        this.settings.submenuLanguageVisible = false;
-    }
-
     hideTheMenu() {
-        this._$html.off('click.closeMenu');
-        setTimeout(_ => {
-            this.settings.menuVisible = false;
-            this.settings.submenuBoardsVisible = false;
-            this.settings.submenuLayoutVisible = false;
-            this.settings.submenuDepthVisible = false;
-            this.settings.submenuLanguageVisible = false;
-        });
+        document.getElementById('main-menu').hidePopover();
+        this.closeOtherSubmenus();
     }
 
     closeOtherSubmenus() {
-        this.settings.submenuBoardsVisible = false;
-        this.settings.submenuLayoutVisible = false;
-        this.settings.submenuDepthVisible = false;
-        this.settings.submenuLanguageVisible = false;
-    }
-
-    toggleSubmenuBoards() {
-        this.settings.submenuBoardsVisible = !this.settings.submenuBoardsVisible;
-        this.settings.submenuLayoutVisible = false;
-        this.settings.submenuDepthVisible = false;
-        this.settings.submenuLanguageVisible = false;
-        return false;
-    }
-
-    toggleSubmenuDepth() {
-        this.settings.submenuDepthVisible = !this.settings.submenuDepthVisible;
-        this.settings.submenuBoardsVisible = false;
-        this.settings.submenuLayoutVisible = false;
-        this.settings.submenuLanguageVisible = false;
-        return false;
-    }
-
-    toggleSubmenuLanguage() {
-        this.settings.submenuLanguageVisible = !this.settings.submenuLanguageVisible;
-        this.settings.submenuBoardsVisible = false;
-        this.settings.submenuLayoutVisible = false;
-        this.settings.submenuDepthVisible = false;
-        return false;
-    }
-
-    toggleSubmenuLayout() {
-        this.settings.submenuLayoutVisible = !this.settings.submenuLayoutVisible;
-        this.settings.submenuBoardsVisible = false;
-        this.settings.submenuDepthVisible = false;
-        this.settings.submenuLanguageVisible = false;
-        return false;
+        // Submenus close automatically via popover light dismiss or we can force close them if needed
+        // document.querySelectorAll('.subMenu').forEach(el => el.hidePopover());
     }
 
     setKeyAmount(amount) {
