@@ -23,6 +23,7 @@ export class KeyboardCustomElement {
         this.currentPage = 0;
         this._isResetting = false;
         this._keyPositionHistory = new Map();
+        this.showScrollIndicator = true;
     }
 
     bind() {
@@ -70,6 +71,7 @@ export class KeyboardCustomElement {
         this.scrollContainer.addEventListener('scroll', () => {
             if (rafId) return;
             rafId = requestAnimationFrame(() => {
+                this.showScrollIndicator = false;
                 updatePageHighlights();
                 rafId = null;
             });
@@ -271,16 +273,16 @@ export class KeyboardCustomElement {
             return;
         }
 
-        if (event && event.target) {
-            const keyElement = event.target.closest('.key');
-            if (keyElement) {
-                keyElement.classList.add('flash');
-                keyElement.addEventListener('animationend', () => keyElement.classList.remove('flash'), { once: true });
-            }
-        }
+        if (event && event.target)
+            this._flash(event.target);
 
         this._eventAggregator.publish('keyIsPressed', key);
-        this._handleKey(key)
+        this._handleKey(key, event.target)
+    }
+
+    _flash(keyElement) {
+        keyElement.classList.add('flash');
+        keyElement.addEventListener('animationend', _ => keyElement.classList.remove('flash'), { once: true });
     }
 
     swipeStart(event, key) {
@@ -290,10 +292,9 @@ export class KeyboardCustomElement {
         this._isSwiping = false;
 
         if (event && event.target) {
-            const keyElement = event.target.closest('.key');
+            const keyElement = event.target;
             if (keyElement) {
-                keyElement.classList.add('flash');
-                keyElement.addEventListener('animationend', () => keyElement.classList.remove('flash'), { once: true });
+                this._flash(keyElement);
             }
         }
         return true;
@@ -311,19 +312,20 @@ export class KeyboardCustomElement {
             if (this.keysetType === 'alpha' && key.output && key.output.match(/[a-z]/)) {
                 const upperKey = { ...key, output: key.output.toUpperCase() };
                 this._eventAggregator.publish('keyIsPressed', upperKey);
-                this._handleKey(upperKey);
+                this._handleKey(upperKey, event.target);
             }
-            if (event.cancelable) event.preventDefault();
+            // if (event.cancelable) event.preventDefault();
         } else if (Math.abs(diffY) < 10 && diffX < 10) {
             // It's a tap
             this._eventAggregator.publish('keyIsPressed', key);
-            this._handleKey(key);
+            this._handleKey(key, event.target);
             if (event.cancelable) event.preventDefault();
         }
+        this._flash(event.target);
         return true;
     }
 
-    _handleKey(key) {
+    _handleKey(key, target = null) {
         this._lastKeyTyped = key;
         switch (true) {
             case key.name == 'shift':
@@ -350,7 +352,8 @@ export class KeyboardCustomElement {
             default:
                 this.caps = this._capsLock;
                 const newKeys = this._keysService.getKeys(this.keysetType);
-                this._element.querySelectorAll('.' + key.name)[0].addEventListener('animationend', _ => {
+                const theKey = target || this._element.querySelector('.' + key.name)[0];
+                theKey.addEventListener('animationend', _ => {
                     this.keys = newKeys;
                     if (this.keysetType == 'alpha') {
                         this._updatePages();

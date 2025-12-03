@@ -2,15 +2,15 @@
     <require from="./keyboard.css"></require>
 
     <template if.bind="keysetType == 'alpha'">
-        <div class="keys-scroll-container"
+        <div class="keys-scroll-container ${showScrollIndicator ? 'showScrollIndicator' : ''}"
              ref="scrollContainer">
             <div repeat.for="page of pages"
                  class="keys-page">
                 <button repeat.for="key of page"
-                            class="key ${key.name} ${key.className}"
-                            touchstart.delegate="swipeStart($event, key)"
-                            touchend.delegate="swipeEnd($event, key)"
-                            click.delegate="keyIsPressed(key, $event)">${key.name}</button>
+                        class="key ${key.name} ${key.className}"
+                        touchstart.delegate="swipeStart($event, key)"
+                        touchend.delegate="swipeEnd($event, key)"
+                        click.delegate="keyIsPressed(key, $event)">${key.name}</button>
             </div>
         </div>
     </template>
