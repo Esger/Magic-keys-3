@@ -13,6 +13,7 @@ export class KeyboardCustomElement {
         this._keysService = keysService;
         this._settingsService = settingsService;
         this._maxKeys = this._settingsService.getSetting('boardType', 8);
+        this.layoutMode = this._settingsService.getSetting('layout', 'smart');
         this._keysService.setAlphaKeyCount(this._maxKeys);
         this.keys = this._keysService.getKeys();
         this.caps = false;
@@ -44,6 +45,10 @@ export class KeyboardCustomElement {
             this._updatePages();
         });
         this._boardTypeSubscriber = this._eventAggregator.subscribe('boardType', dynamicKeysAmount => this._setBoardType(dynamicKeysAmount));
+        this._layoutModeSubscriber = this._eventAggregator.subscribe('layoutMode', mode => {
+            this.layoutMode = mode;
+            this._updatePages();
+        });
 
         if (this.scrollContainer) {
             this.scrollContainer.addEventListener('scroll', this._onScroll.bind(this));
@@ -77,6 +82,7 @@ export class KeyboardCustomElement {
     detached() {
         this._trainingReadySubscriber.dispose();
         this._boardTypeSubscriber.dispose();
+        this._layoutModeSubscriber.dispose();
 
         if (this.scrollContainer) {
             this.scrollContainer.removeEventListener('scroll', this._onScroll.bind(this));
@@ -136,60 +142,74 @@ export class KeyboardCustomElement {
         const stabilizedPage0 = new Array(pageSize).fill(null);
         const usedKeys = new Set();
 
-        // Pass 1: Priority 1 - Clicked Page (Absolute Priority)
-        for (const key of page0) {
-            const clickedIndex = viewedPositions.get(key.name);
-            if (clickedIndex !== undefined && clickedIndex < pageSize) {
-                stabilizedPage0[clickedIndex] = key;
-                usedKeys.add(key);
-            }
-        }
-
-        // Pass 2: Priority 2 - History (Weighted Preference)
-        for (const key of page0) {
-            if (usedKeys.has(key)) continue; // Already placed
-
-            const keyHistory = this._keyPositionHistory.get(key.name);
-            if (keyHistory) {
-                // Find the index with the highest frequency
-                let bestIndex = -1;
-                let maxCount = -1;
-
-                for (const [index, count] of keyHistory.entries()) {
-                    if (index < pageSize && count > maxCount) {
-                        // Only consider if slot is empty
-                        if (stabilizedPage0[index] === null) {
-                            maxCount = count;
-                            bestIndex = index;
-                        }
-                    }
-                }
-
-                if (bestIndex !== -1) {
-                    stabilizedPage0[bestIndex] = key;
+        if (this.layoutMode === 'smart') {
+            // Pass 1: Priority 1 - Clicked Page (Absolute Priority)
+            for (const key of page0) {
+                const clickedIndex = viewedPositions.get(key.name);
+                if (clickedIndex !== undefined && clickedIndex < pageSize) {
+                    stabilizedPage0[clickedIndex] = key;
                     usedKeys.add(key);
                 }
             }
-        }
 
-        // Pass 3: Collect Remaining
-        const remaining = [];
-        for (const key of page0) {
-            if (!usedKeys.has(key)) {
-                remaining.push(key);
+            // Pass 2: Priority 2 - History (Weighted Preference)
+            for (const key of page0) {
+                if (usedKeys.has(key)) continue; // Already placed
+
+                const keyHistory = this._keyPositionHistory.get(key.name);
+                if (keyHistory) {
+                    // Find the index with the highest frequency
+                    let bestIndex = -1;
+                    let maxCount = -1;
+
+                    for (const [index, count] of keyHistory.entries()) {
+                        if (index < pageSize && count > maxCount) {
+                            // Only consider if slot is empty
+                            if (stabilizedPage0[index] === null) {
+                                maxCount = count;
+                                bestIndex = index;
+                            }
+                        }
+                    }
+
+                    if (bestIndex !== -1) {
+                        stabilizedPage0[bestIndex] = key;
+                        usedKeys.add(key);
+                    }
+                }
             }
-        }
 
-        // Pass 4: Fill holes
-        let rIndex = 0;
-        for (let j = 0; j < pageSize; j++) {
-            if (stabilizedPage0[j] === null && rIndex < remaining.length) {
-                stabilizedPage0[j] = remaining[rIndex++];
+            // Pass 3: Collect Remaining
+            const remaining = [];
+            for (const key of page0) {
+                if (!usedKeys.has(key)) {
+                    remaining.push(key);
+                }
             }
+
+            // Pass 4: Fill holes
+            let rIndex = 0;
+            for (let j = 0; j < pageSize; j++) {
+                if (stabilizedPage0[j] === null && rIndex < remaining.length) {
+                    stabilizedPage0[j] = remaining[rIndex++];
+                }
+            }
+
+            // 3. Update chunks
+            chunks[0] = stabilizedPage0;
+        } else if (this.layoutMode === 'qwerty') {
+            const qwertyOrder = 'qwertyuiopasdfghjklzxcvbnm'.split('');
+            const sortFn = (a, b) => {
+                const indexA = qwertyOrder.indexOf(a.name);
+                const indexB = qwertyOrder.indexOf(b.name);
+                // Handle keys not in qwertyOrder (if any) by putting them at the end
+                if (indexA === -1) return 1;
+                if (indexB === -1) return -1;
+                return indexA - indexB;
+            };
+            chunks.forEach(chunk => chunk.sort(sortFn));
         }
 
-        // 3. Update chunks
-        chunks[0] = stabilizedPage0;
         this.pages = chunks;
 
     }

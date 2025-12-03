@@ -15,6 +15,7 @@ export class MenuCustomElement {
             menuVisible: false,
             menuDisabled: false,
             submenuBoardsVisible: false,
+            submenuLayoutVisible: false,
             submenuDepthVisible: false,
             submenuLanguageVisible: false,
             currentDepth: undefined
@@ -27,7 +28,9 @@ export class MenuCustomElement {
         this._$html = $('html');
         this.getDepth();
         this.getAlphaKeyCount();
+        this.getAlphaKeyCount();
         this.getLanguage();
+        this.getLayout();
         this._boardTypeSubscription = this._eventAggregator.subscribe('boardType', count => {
             this.settings.currentBoardType = count;
         });
@@ -44,6 +47,7 @@ export class MenuCustomElement {
         });
         this.settings.menuVisible = true;
         this.settings.submenuBoardsVisible = false;
+        this.settings.submenuLayoutVisible = false;
         this.settings.submenuLanguageVisible = false;
     }
 
@@ -52,13 +56,22 @@ export class MenuCustomElement {
         setTimeout(_ => {
             this.settings.menuVisible = false;
             this.settings.submenuBoardsVisible = false;
+            this.settings.submenuLayoutVisible = false;
             this.settings.submenuDepthVisible = false;
             this.settings.submenuLanguageVisible = false;
         });
     }
 
+    closeOtherSubmenus() {
+        this.settings.submenuBoardsVisible = false;
+        this.settings.submenuLayoutVisible = false;
+        this.settings.submenuDepthVisible = false;
+        this.settings.submenuLanguageVisible = false;
+    }
+
     toggleSubmenuBoards() {
         this.settings.submenuBoardsVisible = !this.settings.submenuBoardsVisible;
+        this.settings.submenuLayoutVisible = false;
         this.settings.submenuDepthVisible = false;
         this.settings.submenuLanguageVisible = false;
         return false;
@@ -67,6 +80,7 @@ export class MenuCustomElement {
     toggleSubmenuDepth() {
         this.settings.submenuDepthVisible = !this.settings.submenuDepthVisible;
         this.settings.submenuBoardsVisible = false;
+        this.settings.submenuLayoutVisible = false;
         this.settings.submenuLanguageVisible = false;
         return false;
     }
@@ -74,7 +88,16 @@ export class MenuCustomElement {
     toggleSubmenuLanguage() {
         this.settings.submenuLanguageVisible = !this.settings.submenuLanguageVisible;
         this.settings.submenuBoardsVisible = false;
+        this.settings.submenuLayoutVisible = false;
         this.settings.submenuDepthVisible = false;
+        return false;
+    }
+
+    toggleSubmenuLayout() {
+        this.settings.submenuLayoutVisible = !this.settings.submenuLayoutVisible;
+        this.settings.submenuBoardsVisible = false;
+        this.settings.submenuDepthVisible = false;
+        this.settings.submenuLanguageVisible = false;
         return false;
     }
 
@@ -101,6 +124,17 @@ export class MenuCustomElement {
     setLanguage(lang) {
         this.settings.currentLanguage = lang;
         this._keyService.setLanguage(lang);
+        this.hideTheMenu();
+    }
+
+    getLayout() {
+        this.settings.currentLayout = this._settingsService.getSetting('layout', 'smart');
+    }
+
+    setLayout(mode) {
+        this.settings.currentLayout = mode;
+        this._settingsService.setSetting('layout', mode);
+        this._eventAggregator.publish('layoutMode', mode);
         this.hideTheMenu();
     }
 
