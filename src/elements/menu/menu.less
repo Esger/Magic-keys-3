@@ -1,68 +1,66 @@
 .hamburger {
     .hamburger-btn {
-        display: block;
-        background: none;
-        border: none;
-        cursor: pointer;
-        color: inherit;
+        display    : block;
+        background : none;
+        border     : none;
+        cursor     : pointer;
+        color      : inherit;
+        font-size  : 1.2rem;
+        padding    : 10px;
+        margin-left: -10px;
         /* Inherit color from parent/header */
         anchor-name: --main-menu-anchor;
 
-        .fa-bars {
-            font-size: 1.2rem;
-            padding: 10px;
-        }
-
         &.disabled {
             pointer-events: none;
-            cursor: not-allowed;
-            color: rgba(255, 255, 255, .2);
+            cursor        : not-allowed;
+            color         : rgba(255, 255, 255, .2);
         }
     }
 }
 
 menu ul li.disabled {
     pointer-events: none;
-    cursor: not-allowed;
-    color: rgba(255, 255, 255, .2);
+    cursor        : not-allowed;
+    color         : rgba(255, 255, 255, .2);
 }
 
 menu {
     position: relative;
-    order: -1;
+    order   : -1;
 
     ul {
-        list-style: none;
+        list-style      : none;
         background-color: rgba(34, 34, 34, .7);
-        min-width: 100px;
+        min-width       : 100px;
 
         &.menu {
-            position: fixed;
+            position       : fixed;
             position-anchor: --main-menu-anchor;
-            top: anchor(top);
-            left: anchor(left);
-            margin: 0;
-            inset: unset;
+            top            : anchor(top);
+            left           : anchor(left);
+            margin         : 0;
+            inset          : unset;
         }
 
         li {
-            position: relative;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            font-size: 14px;
-            color: #333;
+            position        : relative;
+            width           : 100%;
+            display         : flex;
+            align-items     : center;
+            justify-content : space-between;
+            font-size       : 14px;
+            color           : #333;
             background-color: ghostwhite;
-            line-height: 20px;
-            padding: 10px;
-            margin: 1px;
-            white-space: nowrap;
-            cursor: pointer;
+            line-height     : 20px;
+            padding         : 10px;
+            margin          : 1px;
+            white-space     : nowrap;
+            cursor          : pointer;
 
             &.fa {
                 display: flex;
-                width: 100%;
+                width  : 100%;
             }
 
             li {
@@ -75,9 +73,9 @@ menu {
 
             &.active {
                 background-color: silver;
-                cursor: default;
-                pointer-events: none;
-                font-weight: bold;
+                cursor          : default;
+                pointer-events  : none;
+                font-weight     : bold;
             }
 
             &.disabled {
@@ -87,16 +85,16 @@ menu {
         }
 
         .submenu-btn {
-            background: none;
-            border: none;
-            padding: 0;
-            cursor: pointer;
-            color: inherit;
-            font-size: inherit;
-            width: 100%;
-            display: flex;
+            background     : none;
+            border         : none;
+            padding        : 0;
+            cursor         : pointer;
+            color          : inherit;
+            font-size      : inherit;
+            width          : 100%;
+            display        : flex;
             justify-content: space-between;
-            align-items: center;
+            align-items    : center;
 
             &[popovertarget="submenu-language"] {
                 anchor-name: --anchor-language;
@@ -116,10 +114,10 @@ menu {
         }
 
         .subMenu {
-            position: fixed;
-            margin: -11px 0 0 10px;
+            position     : fixed;
+            margin       : -11px 0 0 10px;
             padding-right: 2px;
-            inset: unset;
+            inset        : unset;
 
             &[id="submenu-language"] {
                 position-anchor: --anchor-language;
@@ -137,7 +135,7 @@ menu {
                 position-anchor: --anchor-depth;
             }
 
-            top: anchor(top);
+            top : anchor(top);
             left: anchor(right);
         }
     }
