@@ -15,11 +15,12 @@
             class="fa fa-times">
         </li>
 
-        <li mouseenter.trigger="toggleSubmenuLanguage()"
-            mouseleave.trigger="toggleSubmenuLanguage()"
-            touchstart.trigger="toggleSubmenuLanguage()">
-            Language&nbsp;<i class="fa fa-angle-right"></i>
-            <ul if.bind="settings.submenuLanguageVisible"
+        <li>
+            <button type="button" class="submenu-btn" popovertarget="submenu-language">
+                Language&nbsp;<i class="fa fa-angle-right"></i>
+            </button>
+            <ul id="submenu-language"
+                popover
                 class="subMenu">
                 <li class="${settings.currentLanguage == 'en' ? 'active' : ''}"
                     click.delegate="setLanguage('en')"
@@ -30,11 +31,12 @@
             </ul>
         </li>
 
-        <li mouseenter.trigger="toggleSubmenuBoards()"
-            mouseleave.trigger="toggleSubmenuBoards()"
-            touchstart.trigger="toggleSubmenuBoards()">
-            Keyboards&nbsp;<i class="fa fa-angle-right"></i>
-            <ul if.bind="settings.submenuBoardsVisible"
+        <li>
+            <button type="button" class="submenu-btn" popovertarget="submenu-boards">
+                Keyboards&nbsp;<i class="fa fa-angle-right"></i>
+            </button>
+            <ul id="submenu-boards"
+                popover
                 class="subMenu">
                 <li if.bind="isMobile"
                     repeat.for="boardType of boardTypes.mobile"
@@ -49,11 +51,12 @@
             </ul>
         </li>
 
-        <li mouseenter.trigger="toggleSubmenuLayout()"
-            mouseleave.trigger="toggleSubmenuLayout()"
-            touchstart.trigger="toggleSubmenuLayout()">
-            Layout&nbsp;<i class="fa fa-angle-right"></i>
-            <ul if.bind="settings.submenuLayoutVisible"
+        <li>
+            <button type="button" class="submenu-btn" popovertarget="submenu-layout">
+                Layout&nbsp;<i class="fa fa-angle-right"></i>
+            </button>
+            <ul id="submenu-layout"
+                popover
                 class="subMenu">
                 <li class="${settings.currentLayout == 'smart' ? 'active' : ''}"
                     click.delegate="setLayout('smart')"
@@ -64,11 +67,12 @@
             </ul>
         </li>
 
-        <li mouseenter.trigger="toggleSubmenuDepth()"
-            mouseleave.trigger="toggleSubmenuDepth()"
-            touchend.trigger="toggleSubmenuDepth()">
-            Learning&nbsp;<i class="fa fa-angle-right"></i>
-            <ul if.bind="settings.submenuDepthVisible"
+        <li>
+            <button type="button" class="submenu-btn" popovertarget="submenu-depth">
+                Learning&nbsp;<i class="fa fa-angle-right"></i>
+            </button>
+            <ul id="submenu-depth"
+                popover
                 class="subMenu">
                 <li repeat.for="depth of depths"
                     class="${depth == settings.currentDepth ? 'active' : ''}"

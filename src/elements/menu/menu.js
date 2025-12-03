@@ -13,10 +13,6 @@ export class MenuCustomElement {
         this._settingsService = settingsService;
         this.settings = {
             menuDisabled: false,
-            submenuBoardsVisible: false,
-            submenuLayoutVisible: false,
-            submenuDepthVisible: false,
-            submenuLanguageVisible: false,
             currentDepth: undefined
         };
         this.boardTypes = this._keyService.getBoardTypes();
@@ -45,42 +41,8 @@ export class MenuCustomElement {
     }
 
     closeOtherSubmenus() {
-        this.settings.submenuBoardsVisible = false;
-        this.settings.submenuLayoutVisible = false;
-        this.settings.submenuDepthVisible = false;
-        this.settings.submenuLanguageVisible = false;
-    }
-
-    toggleSubmenuBoards() {
-        this.settings.submenuBoardsVisible = !this.settings.submenuBoardsVisible;
-        this.settings.submenuLayoutVisible = false;
-        this.settings.submenuDepthVisible = false;
-        this.settings.submenuLanguageVisible = false;
-        return false;
-    }
-
-    toggleSubmenuDepth() {
-        this.settings.submenuDepthVisible = !this.settings.submenuDepthVisible;
-        this.settings.submenuBoardsVisible = false;
-        this.settings.submenuLayoutVisible = false;
-        this.settings.submenuLanguageVisible = false;
-        return false;
-    }
-
-    toggleSubmenuLanguage() {
-        this.settings.submenuLanguageVisible = !this.settings.submenuLanguageVisible;
-        this.settings.submenuBoardsVisible = false;
-        this.settings.submenuLayoutVisible = false;
-        this.settings.submenuDepthVisible = false;
-        return false;
-    }
-
-    toggleSubmenuLayout() {
-        this.settings.submenuLayoutVisible = !this.settings.submenuLayoutVisible;
-        this.settings.submenuBoardsVisible = false;
-        this.settings.submenuDepthVisible = false;
-        this.settings.submenuLanguageVisible = false;
-        return false;
+        // Submenus close automatically via popover light dismiss or we can force close them if needed
+        // document.querySelectorAll('.subMenu').forEach(el => el.hidePopover());
     }
 
     setKeyAmount(amount) {
