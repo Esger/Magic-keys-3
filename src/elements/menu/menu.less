@@ -5,9 +5,13 @@
         border: none;
         cursor: pointer;
         color: inherit;
-        font-size: 1.2rem;
-        padding: 10px;
         /* Inherit color from parent/header */
+        anchor-name: --main-menu-anchor;
+
+        .fa-bars {
+            font-size: 1.2rem;
+            padding: 10px;
+        }
 
         &.disabled {
             pointer-events: none;
@@ -35,8 +39,9 @@ menu {
 
         &.menu {
             position: fixed;
-            left: calc(2 * var(--bodyPadding));
-            top: calc(2 * var(--bodyPadding));
+            position-anchor: --main-menu-anchor;
+            top: anchor(top);
+            left: anchor(left);
             margin: 0;
             inset: unset;
         }
